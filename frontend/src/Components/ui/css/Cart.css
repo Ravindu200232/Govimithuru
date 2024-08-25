@@ -1,0 +1,128 @@
+.cart-page {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #f1f1f1;
+    min-height: 100vh;
+}
+
+.cart-items {
+    width: 60%;
+    background-color: #f5f7f1;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* Allows scrolling if items overflow */
+    max-height: 600px; /* Adjust based on your design */
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cart-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.item-select {
+    margin-right: 15px;
+}
+
+.cart-item img {
+    width: 100px;
+    height: 100px; /* Ensure image has consistent size */
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.cart-item-info {
+    flex-grow: 1;
+    padding-left: 15px;
+}
+
+.cart-item-info h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.cart-item-info p {
+    margin: 5px 0;
+}
+
+.buy-btn {
+    padding: 8px 16px;
+    background-color: #e67e22;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.buy-btn:hover {
+    background-color: #d35400;
+    transform: scale(1.05);
+}
+
+.buy-btn:active {
+    background-color: #c0392b;
+}
+
+.remove-item {
+    font-size: 20px;
+    color: #e74c3c;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.remove-item:hover {
+    color: #c0392b;
+    transform: scale(1.2);
+}
+
+.cart-summary {
+    width: 35%;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.cart-summary h3 {
+    margin-top: 0;
+    font-size: 24px;
+}
+
+.cart-summary p {
+    margin: 15px 0;
+    font-size: 16px;
+}
+
+.checkout-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.checkout-btn:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
+}
+
+.checkout-btn:active {
+    background-color: #1f6f99;
+}

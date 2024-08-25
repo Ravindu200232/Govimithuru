@@ -1,0 +1,25 @@
+/* Dashboard.css */
+.dashboard {
+    padding: 20px;
+}
+
+.card-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card-item {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    width: calc(33% - 20px);
+}
+
+.card-item h3 {
+    margin-top: 0;
+}
+
+.card-item p {
+    margin: 5px 0;
+}

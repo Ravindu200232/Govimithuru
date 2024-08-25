@@ -1,0 +1,173 @@
+.seeds-page {
+    font-family: Arial, sans-serif;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #d6e8ba;
+  }
+  
+  .header .logo {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .header nav ul {
+    list-style-type: none;
+    display: flex;
+    gap: 20px;
+  }
+  
+  .header nav ul li {
+    cursor: pointer;
+  }
+  
+  .header .user-profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  
+  .seeds-section {
+    padding: 20px;
+  }
+  
+  .seeds-section h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .seeds-info {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .info-left {
+    flex: 1;
+    background-color: #f7f7f7;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .info-left h3, .info-left h4 {
+    margin-bottom: 10px;
+  }
+  
+  .info-left ul {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 20px;
+  }
+  
+  .info-left ul li {
+    margin-bottom: 5px;
+  }
+  
+  .read-more-btn {
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .info-right {
+    flex: 3;
+  }
+  
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  
+  .product-card {
+    background-color: white;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    text-align: center;
+  }
+  
+  .product-card img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+  }
+  
+  .product-card h4 {
+    margin-bottom: 10px;
+  }
+  
+  .product-card p {
+    margin-bottom: 20px;
+  }
+  
+  .buy-now-btn {
+    padding: 10px 20px;
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .footer {
+    background-color: #333;
+    color: white;
+    padding: 40px 20px;
+    margin-top: 40px;
+  }
+  
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .footer-logo, .footer-explore, .footer-news, .footer-contact {
+    flex: 1 1 20%;
+  }
+  
+  .footer-logo h2 {
+    margin-bottom: 10px;
+  }
+  
+  .footer-logo p {
+    margin-bottom: 20px;
+  }
+  
+  .footer-logo .social-icons i {
+    margin-right: 10px;
+  }
+  
+  .footer-explore ul, .footer-news ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .footer-explore ul li, .footer-news ul li {
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  
+  .footer-contact input[type="email"] {
+    padding: 10px;
+    width: calc(100% - 20px);
+    border-radius: 5px;
+    border: none;
+    margin-bottom: 10px;
+  }
+  
+  .footer-contact button {
+    padding: 10px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
