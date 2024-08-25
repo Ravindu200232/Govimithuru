@@ -3,7 +3,7 @@ import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 // User-facing components
-import Navbar from './Components/ui/Navbar';
+import Navbar from './Components/ui/Navbarui';
 import Banner from './Components/ui/Banner';
 import Poster from './Components/ui/Poster';
 import BestSeller from './Components/ui/BestSelling';
@@ -43,9 +43,14 @@ function App() {
         {/* User-facing routes */}
         <Routes>
           <Route
+          
             path="/"
+            
             element={
+              
               <>
+              <Navbar/>
+              
                 <Banner />
                 <Poster />
                 <Offer />
@@ -55,7 +60,7 @@ function App() {
               </>
             }
           />
-          <Route path="/products" element={<Products />} />
+          <Route path="/products" element={<div><Products /></div>} />
           <Route path="/seeds" element={<Seeds />} />
           <Route path="/description/:id" element={<Description />} />
           <Route path="/cart" element={<Card />} />
