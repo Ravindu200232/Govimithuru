@@ -1,2 +1,0 @@
-# Govimithuru
-ITP_Project
