@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react'; // Import useState
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
@@ -31,26 +31,26 @@ import DileverySidebar from './Components/Deliver/SidebarA';
 import FinanceSidebar from './Components/finance/SidebarA';
 import OrderSide from './Components/Order/SidebarA';
 import UserSide from './Components/User/SidebarA';
+import ShowcaseForm from './Components/inventry/ShowcaseForm';
+import ShowcaseDashboard from './Components/inventry/ShowcaseDashboard'; // Import the ShowcaseDashboard component
 
 function App() {
+  const [sidebarVisible, setSidebarVisible] = useState(true); // State for sidebar visibility
+
+  const toggleSidebar = () => {
+    setSidebarVisible(!sidebarVisible);
+  };
+
   return (
-
-
-    
-
     <Router>
       <div>
         {/* User-facing routes */}
         <Routes>
           <Route
-          
             path="/"
-            
             element={
-              
               <>
-              <Navbar/>
-              
+                <Navbar />
                 <Banner />
                 <Poster />
                 <Offer />
@@ -72,7 +72,7 @@ function App() {
             path="/admin/inventory"
             element={
               <>
-              <NavbarA/>
+                <NavbarA />
                 <div className="main-content">
                   <SidebarA />
                   <div className="content">
@@ -86,7 +86,7 @@ function App() {
             path="/admin/inventory/supply-form"
             element={
               <>
-               <NavbarA/>
+                <NavbarA />
                 <div className="main-content">
                   <SidebarA />
                   <div className="content">
@@ -100,7 +100,7 @@ function App() {
             path="/admin/inventory/all"
             element={
               <>
-               <NavbarA/>
+                <NavbarA />
                 <div className="main-content">
                   <SidebarA />
                   <div className="content">
@@ -114,7 +114,7 @@ function App() {
             path="/admin/cart"
             element={
               <>
-               <NavbarA/>
+                <NavbarA />
                 <div className="main-content">
                   <CartSidebar />
                   <div className="content">
@@ -128,7 +128,7 @@ function App() {
             path="/admin/orders"
             element={
               <>
-               <NavbarA/>
+                <NavbarA />
                 <div className="main-content">
                   <OrderSide />
                   <div className="content">
@@ -142,7 +142,7 @@ function App() {
             path="/admin/delivery"
             element={
               <>
-               <NavbarA/>
+                <NavbarA />
                 <div className="main-content">
                   <DileverySidebar />
                   <div className="content">
@@ -156,7 +156,7 @@ function App() {
             path="/admin/customers"
             element={
               <>
-               <NavbarA/>
+                <NavbarA />
                 <div className="main-content">
                   <UserSide />
                   <div className="content">
@@ -170,7 +170,7 @@ function App() {
             path="/admin/finance"
             element={
               <>
-               <NavbarA/>
+                <NavbarA />
                 <div className="main-content">
                   <FinanceSidebar />
                   <div className="content">
@@ -180,33 +180,43 @@ function App() {
               </>
             }
           />
+          <Route
+            path="/admin/showcase"
+            element={
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarA />
+                  <div className="content">
+                    <ShowcaseDashboard />
+                  </div>
+                </div>
+              </>
+            }
+          />
+
+          {/* ShowcaseForm route with sidebar toggle */}
+          <Route
+            path="/admin/showcase/ShowcaseForm"
+            element={
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  {sidebarVisible && <SidebarA />}
+                  <button onClick={toggleSidebar} className="sidebar-toggle-btn">
+                    {sidebarVisible ? 'Hide Sidebar' : 'Show Sidebar'}
+                  </button>
+                  <div className={`content ${sidebarVisible ? 'with-sidebar' : 'without-sidebar'}`}>
+                    <ShowcaseForm />
+                  </div>
+                </div>
+              </>
+            }
+          />
         </Routes>
       </div>
     </Router>
-
-
-
-
-
-
   );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
 }
 
 export default App;

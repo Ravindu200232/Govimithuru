@@ -9,6 +9,7 @@ function ShowcaseForm() {
   const [description, setDescription] = useState('');
   const [unit, setUnit] = useState('');
   const [price, setPrice] = useState('');
+  const [discount, setDiscount] = useState(''); // Added state for discount
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -23,6 +24,7 @@ function ShowcaseForm() {
     setDescription('');
     setUnit('');
     setPrice('');
+    setDiscount(''); // Reset discount
   }
 
   async function sendData(e) {
@@ -37,6 +39,7 @@ function ShowcaseForm() {
     formData.append('description', description);
     formData.append('unit', unit);
     formData.append('price', price);
+    formData.append('discount', discount); // Added discount field
 
     try {
       await axios.post('http://localhost:8090/showcase/add', formData);
@@ -128,6 +131,18 @@ function ShowcaseForm() {
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="discount">Discount (%)</label>
+          <input
+            type="number"
+            id="discount"
+            placeholder="Enter Discount"
+            value={discount}
+            onChange={(e) => setDiscount(e.target.value)}
+            min="0"
+            max="100"
           />
         </div>
         <div className="form-buttons">

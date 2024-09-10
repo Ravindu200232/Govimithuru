@@ -42,8 +42,18 @@ function Seeds() {
                       alt={item.name} 
                     />
                     <h4>{item.name}</h4>
-                    <p>{item.description}</p>
-                    <p>Price: ${item.price.toFixed(2)}</p>
+                    
+                    {/* Display Price and Discount */}
+                    <p>
+                      Price: ${item.price.toFixed(2)}
+                      {item.discount > 0 && (
+                        <>
+                          <span className="discount"> (${(item.price - (item.price * (item.discount / 100))).toFixed(2)})</span>
+                          <span className="discount-percentage"> {item.discount}% off</span>
+                        </>
+                      )}
+                    </p>
+                    
                     <button 
                       className="buy-now-btn"
                       onClick={() => handleBuyNow(item._id)}
