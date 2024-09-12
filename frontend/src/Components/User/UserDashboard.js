@@ -6,7 +6,7 @@ function UserDashboard() {
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
-        axios.get("http://localhost:8090/user/")
+        axios.get("http://localhost:8000/user/")
             .then((res) => {
                 setUsers(res.data);
             })
@@ -16,7 +16,7 @@ function UserDashboard() {
     }, []);
 
     const handleDelete = (id) => {
-        axios.delete(`http://localhost:8090/user/delete/${id}`)
+        axios.delete(`http://localhost:8000/user/delete/${id}`)
             .then(() => {
                 setUsers(users.filter(user => user._id !== id));
                 alert("User deleted successfully");

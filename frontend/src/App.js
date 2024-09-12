@@ -33,6 +33,7 @@ import OrderSide from './Components/Order/SidebarA';
 import UserSide from './Components/User/SidebarA';
 import ShowcaseForm from './Components/inventry/ShowcaseForm';
 import ShowcaseDashboard from './Components/inventry/ShowcaseDashboard';
+import EmployeeList from './Components/Employee/EmployeeList';
 
 function App() {
   const [sidebarVisible, setSidebarVisible] = useState(true); // State for sidebar visibility
@@ -258,6 +259,22 @@ function App() {
                   </button>
                   <div className={`content ${sidebarVisible ? 'with-sidebar' : 'without-sidebar'}`}>
                     <ShowcaseForm />
+                  </div>
+                </div>
+              </>
+            }
+          />
+
+          {/* EmployeeList route */}
+          <Route
+            path="/admin/employee"
+            element={
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarA />
+                  <div className="content">
+                    <EmployeeList />
                   </div>
                 </div>
               </>
