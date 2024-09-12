@@ -13,7 +13,7 @@ function FinanceDashboard() {
     }, []);
 
     const fetchFinances = () => {
-        axios.get("http://localhost:8090/finance/")
+        axios.get("http://localhost:8000/finance/")
             .then((res) => {
                 setFinances(res.data);
             })
@@ -29,7 +29,7 @@ function FinanceDashboard() {
             return;
         }
 
-        axios.get(`http://localhost:8090/finance/search?query=${encodeURIComponent(search)}`)
+        axios.get(`http://localhost:8000/finance/search?query=${encodeURIComponent(search)}`)
             .then((res) => {
                 setFinances(res.data);
             })

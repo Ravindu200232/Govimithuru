@@ -7,7 +7,7 @@ const dotenv = require("dotenv");
 const app = express();
 require("dotenv").config();
 
-const PORT = process.env.PORT || 8090;
+const PORT = process.env.PORT || 8000;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -30,6 +30,7 @@ const AvailableItemRouter = require("./routes/AvailableItems");
 const financemanage = require("./routes/finances.js");
 const DeliverRouter = require("./routes/Deliveries.js");
 const UserRoute = require("./routes/userDashboard.js");
+const ReviewRouter = require("./routes/reviews.js");
 
 
 app.use("/inventoryitem",InventoryItemRouter)
@@ -41,6 +42,7 @@ app.use("/orders",OrderRouter);
 app.use("/finance", financemanage);
 app.use("/delivery",DeliverRouter);
 app.use("/user",UserRoute);
+app.use("/reviews", ReviewRouter);
 
 
 app.listen(PORT, () => {

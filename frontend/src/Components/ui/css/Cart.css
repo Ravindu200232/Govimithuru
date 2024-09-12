@@ -1,48 +1,56 @@
+/* Overall Cart Page Layout */
 .cart-page {
     display: flex;
     justify-content: space-between;
     padding: 20px;
-    background-color: #f1f1f1;
+    background-color: #f9fafb; /* Slightly lighter background */
     min-height: 100vh;
+    font-family: 'Arial', sans-serif; /* Use a clean, readable font */
 }
 
+/* Cart Items Section */
 .cart-items {
     width: 60%;
-    background-color: #f5f7f1;
+    background-color: #ffffff; /* Pure white for a cleaner look */
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow */
     overflow-y: auto; /* Allows scrolling if items overflow */
     max-height: 600px; /* Adjust based on your design */
 }
 
+/* Individual Cart Item */
 .cart-item {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
-    padding: 10px;
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    margin-bottom: 20px; /* Larger margin for better spacing */
+    padding: 15px; /* Increased padding for a more spacious feel */
+    background-color: #f9f9f9; /* Slightly off-white for subtle contrast */
+    border: 1px solid #e0e0e0; /* Lighter border */
+    border-radius: 10px; /* Softer corners */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .cart-item:hover {
-    transform: scale(1.02);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: scale(1.03); /* Slightly increased hover effect */
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }
 
+/* Checkbox Styling */
 .item-select {
-    margin-right: 15px;
+    margin-right: 20px; /* Space between checkbox and item info */
 }
 
+/* Cart Item Image */
 .cart-item img {
     width: 100px;
-    height: 100px; /* Ensure image has consistent size */
+    height: 100px;
     object-fit: cover;
     border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for the image */
 }
 
+/* Cart Item Info */
 .cart-item-info {
     flex-grow: 1;
     padding-left: 15px;
@@ -50,13 +58,58 @@
 
 .cart-item-info h3 {
     margin: 0;
-    font-size: 18px;
+    font-size: 20px; /* Slightly larger font size */
+    color: #333; /* Darker text for better readability */
 }
 
 .cart-item-info p {
     margin: 5px 0;
+    color: #555; /* Lighter shade for secondary info */
 }
 
+/* Quantity Control Buttons */
+.quantity-control {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.quantity-control button {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.quantity-control button:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
+}
+
+.quantity-control span {
+    margin: 0 15px;
+    font-size: 16px;
+}
+
+/* Warning Message */
+.quantity-control .warning-message {
+    color: red;
+    font-size: 12px;
+    margin-left: 5px;
+    display: inline-block;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.quantity-control button:disabled .warning-message {
+    opacity: 1;
+}
+
+/* Buy Button */
 .buy-btn {
     padding: 8px 16px;
     background-color: #e67e22;
@@ -76,8 +129,9 @@
     background-color: #c0392b;
 }
 
+/* Remove Item Button */
 .remove-item {
-    font-size: 20px;
+    font-size: 22px; /* Slightly larger icon */
     color: #e74c3c;
     cursor: pointer;
     transition: color 0.3s ease, transform 0.3s ease;
@@ -88,24 +142,30 @@
     transform: scale(1.2);
 }
 
+/* Cart Summary Section */
 .cart-summary {
     width: 35%;
     background-color: #ffffff;
-    padding: 20px;
+    padding: 25px; /* Increased padding for more breathing room */
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    position: sticky; /* Keeps summary visible when scrolling */
+    top: 20px; /* Adjust based on design needs */
 }
 
 .cart-summary h3 {
     margin-top: 0;
-    font-size: 24px;
+    font-size: 26px;
+    color: #333;
 }
 
 .cart-summary p {
     margin: 15px 0;
-    font-size: 16px;
+    font-size: 18px;
+    color: #555;
 }
 
+/* Checkout Button */
 .checkout-btn {
     width: 100%;
     padding: 12px;
@@ -125,4 +185,18 @@
 
 .checkout-btn:active {
     background-color: #1f6f99;
+}
+
+/* Scrollbar Styling for Cart Items */
+.cart-items::-webkit-scrollbar {
+    width: 8px;
+}
+
+.cart-items::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 8px;
+}
+
+.cart-items::-webkit-scrollbar-thumb:hover {
+    background-color: #999;
 }

@@ -5,10 +5,11 @@ import './css/dashboard.css';
 
 function OrderManagement() {
     const [orders, setOrders] = useState([]);
+    const [searchQuery, setSearchQuery] = useState(""); // State to hold search query
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get("http://localhost:8090/orders/")
+        axios.get("http://localhost:8000/orders/")
             .then((res) => {
                 setOrders(res.data);
             })
@@ -17,12 +18,26 @@ function OrderManagement() {
             });
     }, []);
 
+    // Handle search input change
+    const handleSearch = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    // Filter orders based on search query
+    const filteredOrders = orders.filter((order) => {
+        return (
+            order.orderId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            order.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            order.product.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    });
+
     const handleView = (id) => {
-        navigate(`/order/${id}`);
+        navigate(`/order/${id}`); // Ensure you navigate to the correct path
     };
 
     const handleDelete = (id) => {
-        axios.delete(`http://localhost:8090/orders/delete/${id}`)
+        axios.delete(`http://localhost:8000/orders/delete/${id}`)
             .then(() => {
                 alert("Order deleted successfully");
                 setOrders(orders.filter(order => order._id !== id));
@@ -32,11 +47,30 @@ function OrderManagement() {
             });
     };
 
+    // Handle order confirmation
+    const handleConfirm = (id) => {
+        axios.put(`http://localhost:8000/orders/update/${id}`, { status: "Confirmed" })
+            .then(() => {
+                alert("Order confirmed successfully");
+                setOrders(orders.map(order => 
+                    order._id === id ? { ...order, status: "Confirmed" } : order
+                ));
+            })
+            .catch((err) => {
+                alert("Error confirming order: " + err.message);
+            });
+    };
+
     return (
         <div>
             <h2 className="order-list-title">Order List</h2>
             <div className="search-bar">
-                <input type="text" placeholder="Search Order, Customer, Product" />
+                <input
+                    type="text"
+                    placeholder="Search Order, Customer, Product"
+                    value={searchQuery} // Bind search query state
+                    onChange={handleSearch} // Handle search input change
+                />
                 <button className="search-btn">Search</button>
             </div>
             <table className="order-table">
@@ -53,7 +87,7 @@ function OrderManagement() {
                     </tr>
                 </thead>
                 <tbody>
-                    {orders.map((order, index) => (
+                    {filteredOrders.map((order) => ( // Render filtered orders
                         <tr key={order._id}>
                             <td>{order.orderId}</td>
                             <td>{order.customerName}</td>
@@ -65,6 +99,7 @@ function OrderManagement() {
                             <td>
                                 <button className="view-btn" onClick={() => handleView(order._id)}>View</button>
                                 <button className="delete-btn" onClick={() => handleDelete(order._id)}>Delete</button>
+                                <button className="confirm-btn" onClick={() => handleConfirm(order._id)}>Confirm</button>
                             </td>
                         </tr>
                     ))}

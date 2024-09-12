@@ -56,13 +56,13 @@ function Product() {
             <img src={gardeningImage} alt="Gardening" />
             <span>Gardening</span>
           </div>
-          {/* <div className="category">
+          <div className="category">
             <img src={bulkImage} alt="Bulk" />
             <span>Bulk</span>
-          </div> */}
+          </div>
         </div>
 
-        <a href="#" className="see-more">See More</a>
+        {/* <a href="#" className="see-more">See More</a> */}
       </section>
     </div>
   );

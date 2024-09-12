@@ -1,4 +1,3 @@
-// models/Card.js
 const mongoose = require("mongoose");
 
 // Define the Card Schema
@@ -16,6 +15,16 @@ const CardSchema = new mongoose.Schema({
         required: [true, "Price is required"],
         min: [0, "Price must be a positive number"]
     },
+    available: {
+        type: Number,
+        required: [true, "Available count is required"],
+        min: [0, "Available count must be a non-negative number"]
+    },
+    quantityc: {
+        type: Number,
+        default: 1,
+        min: [1, "Quantity must be at least 1"]
+    }
 }, { 
     timestamps: true  // Automatically manage createdAt and updatedAt fields
 });

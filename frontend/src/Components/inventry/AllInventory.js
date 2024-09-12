@@ -8,7 +8,7 @@ function AllInventory() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get("http://localhost:8090/inventoryitem/")
+        axios.get("http://localhost:8000/inventoryitem/")
             .then((res) => {
                 setItems(res.data);
             })
@@ -26,7 +26,7 @@ function AllInventory() {
     };
 
     const handleAggregate = () => {
-        axios.post("http://localhost:8090/availableitem/aggregate")
+        axios.post("http://localhost:8000/availableitem/aggregate")
             .then((res) => {
                 alert(res.data.message);
             })
