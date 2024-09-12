@@ -5,10 +5,11 @@ import './css/Seeds.css';
 
 function Seeds() {
   const [seedItems, setSeedItems] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(''); // State for the search query
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('http://localhost:8090/showcase/seeds')
+    axios.get('http://localhost:8000/showcase/seeds')
       .then((res) => {
         setSeedItems(res.data);
       })
@@ -16,6 +17,16 @@ function Seeds() {
         console.error('Error fetching seed items:', err);
       });
   }, []);
+
+  // Function to handle search input
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Filter seeds based on the search query
+  const filteredSeeds = seedItems.filter((item) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleBuyNow = (id) => {
     navigate(`/description/${id}`);
@@ -25,17 +36,29 @@ function Seeds() {
     <div className="seeds-page">
       <section className="seeds-section">
         <h1>Seeds</h1>
+        
+        {/* Search Bar */}
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Search for seeds..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="search-input"
+          />
+        </div>
+
         <div className="seeds-info">
           <div className="info-left">
             <h3>AGRICULTURAL SEEDS</h3>
-            <p>(Total products: {seedItems.length})</p>
+            <p>(Total products: {filteredSeeds.length})</p>
             {/* Categories, Manufacturers, Sizes */}
           </div>
-          
+
           <div className="info-right">
             <div className="products-grid">
-              {seedItems.length > 0 ? (
-                seedItems.map((item) => (
+              {filteredSeeds.length > 0 ? (
+                filteredSeeds.map((item) => (
                   <div className="product-card" key={item._id}>
                     <img 
                       src={`data:image/jpeg;base64,${item.imageBase64}`} 
@@ -53,7 +76,7 @@ function Seeds() {
                         </>
                       )}
                     </p>
-                    
+
                     <button 
                       className="buy-now-btn"
                       onClick={() => handleBuyNow(item._id)}

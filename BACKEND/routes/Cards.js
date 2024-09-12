@@ -15,10 +15,10 @@ router.get('/', async (req, res) => {
 
 // Add Card Item
 router.post('/add', async (req, res) => {
-    const { itemNamec, categoryc, pricec } = req.body;
+    const { itemNamec, categoryc, pricec, quantityc } = req.body; // Include quantityc
 
     // Validate that required fields are provided
-    if (!itemNamec || !categoryc || !pricec) {
+    if (!itemNamec || !categoryc || !pricec || !quantityc) {
         return res.status(400).send({ status: "Error with adding card item", error: "Missing required fields" });
     }
 
@@ -35,6 +35,7 @@ router.post('/add', async (req, res) => {
             itemNamec,
             categoryc,
             pricec,
+            quantityc, // Save quantity in the database
             available: availableItem.availableItem,  // Add available count
         });
 
@@ -46,7 +47,6 @@ router.post('/add', async (req, res) => {
         res.status(500).send({ status: "Error with adding card item", error: err.message });
     }
 });
-
 // Update Card Item
 router.put('/update/:id', async (req, res) => {
     const { id } = req.params;

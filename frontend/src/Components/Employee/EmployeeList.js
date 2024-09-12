@@ -12,7 +12,7 @@ function EmployeeList() {
     useEffect(() => {
         const fetchEmployees = async () => {
             try {
-                const response = await axios.get("http://localhost:8090/employee/");
+                const response = await axios.get("http://localhost:8000/employee/");
                 setEmployees(response.data);
             } catch (error) {
                 console.error("There was an error fetching the employees:", error);
@@ -28,7 +28,7 @@ function EmployeeList() {
     const handleUpdate = (id) => navigate(`/employee/update/${id}`);
     const handleDelete = (id) => {
         if (window.confirm("Are you sure you want to delete this employee?")) {
-            axios.delete(`http://localhost:8090/employee/delete/${id}`)
+            axios.delete(`http://localhost:8000/employee/delete/${id}`)
                 .then(() => setEmployees(employees.filter(emp => emp._id !== id)))
                 .catch((err) => alert("Error deleting employee: " + err.message));
         }

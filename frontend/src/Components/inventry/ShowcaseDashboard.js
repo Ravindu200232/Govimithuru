@@ -10,7 +10,7 @@ function ShowcaseDashboard() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get("http://localhost:8090/showcase/")
+        axios.get("http://localhost:8000/showcase/")
             .then((res) => {
                 setItems(res.data);
                 setLoading(false);
@@ -27,7 +27,7 @@ function ShowcaseDashboard() {
 
     const handleDelete = (id) => {
         if (window.confirm("Are you sure you want to delete this item?")) {
-            axios.delete(`http://localhost:8090/showcase/delete/${id}`)
+            axios.delete(`http://localhost:8000/showcase/delete/${id}`)
                 .then(() => {
                     setItems(items.filter(item => item._id !== id));
                     alert("Showcase Item Deleted");

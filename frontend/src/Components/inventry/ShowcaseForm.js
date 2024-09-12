@@ -42,7 +42,7 @@ function ShowcaseForm() {
     formData.append('discount', discount); // Added discount field
 
     try {
-      await axios.post('http://localhost:8090/showcase/add', formData);
+      await axios.post('http://localhost:8000/showcase/add', formData);
       alert('Showcase Item Added');
       resetForm();
     } catch (err) {

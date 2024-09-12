@@ -9,7 +9,7 @@ function Cart() {
   const [availability, setAvailability] = useState({}); // To store available quantities for each item
 
   useEffect(() => {
-    axios.get('http://localhost:8090/card/')
+    axios.get('http://localhost:8000/card/')
       .then(response => {
         setCartItems(response.data);
         const initialQuantities = {};
@@ -44,7 +44,7 @@ function Cart() {
     cartItems.forEach(item => {
       if (checkedItems[item._id]) { // Only update quantity for selected items
         const updatedQuantity = quantities[item._id];
-        axios.put(`http://localhost:8090/card/update/${item._id}`, { quantityc: updatedQuantity })
+        axios.put(`http://localhost:8000/card/update/${item._id}`, { quantityc: updatedQuantity })
           .then(() => {
             console.log(`Quantity for item ${item._id} updated successfully`);
           })
@@ -64,7 +64,7 @@ function Cart() {
   };
 
   const removeItem = (id) => {
-    axios.delete(`http://localhost:8090/card/delete/${id}`)
+    axios.delete(`http://localhost:8000/card/delete/${id}`)
       .then(() => {
         setCartItems(cartItems.filter(item => item._id !== id));
       })

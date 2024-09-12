@@ -32,7 +32,7 @@ import FinanceSidebar from './Components/finance/SidebarA';
 import OrderSide from './Components/Order/SidebarA';
 import UserSide from './Components/User/SidebarA';
 import ShowcaseForm from './Components/inventry/ShowcaseForm';
-import ShowcaseDashboard from './Components/inventry/ShowcaseDashboard'; // Import the ShowcaseDashboard component
+import ShowcaseDashboard from './Components/inventry/ShowcaseDashboard';
 
 function App() {
   const [sidebarVisible, setSidebarVisible] = useState(true); // State for sidebar visibility
@@ -44,8 +44,9 @@ function App() {
   return (
     <Router>
       <div>
-        {/* User-facing routes */}
+        {/* User-facing routes with shared Navbar and Footer */}
         <Routes>
+          {/* User-facing routes */}
           <Route
             path="/"
             element={
@@ -60,14 +61,51 @@ function App() {
               </>
             }
           />
-          <Route path="/products" element={<div><Products /></div>} />
-          <Route path="/seeds" element={<Seeds />} />
-          <Route path="/description/:id" element={<Description />} />
-          <Route path="/cart" element={<Card />} />
+          <Route
+            path="/products"
+            element={
+              <>
+                <Navbar />
+                <Products />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/seeds"
+            element={
+              <>
+                <Navbar />
+                <Seeds />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/description/:id"
+            element={
+              <>
+                <Navbar />
+                <Description />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/cart"
+            element={
+              <>
+                <Navbar />
+                <Card />
+                <Footer />
+              </>
+            }
+          />
         </Routes>
 
         {/* Admin-facing routes */}
         <Routes>
+          {/* Inventory routes */}
           <Route
             path="/admin/inventory"
             element={
@@ -110,6 +148,8 @@ function App() {
               </>
             }
           />
+
+          {/* Cart routes */}
           <Route
             path="/admin/cart"
             element={
@@ -124,6 +164,8 @@ function App() {
               </>
             }
           />
+
+          {/* Order routes */}
           <Route
             path="/admin/orders"
             element={
@@ -138,6 +180,8 @@ function App() {
               </>
             }
           />
+
+          {/* Delivery routes */}
           <Route
             path="/admin/delivery"
             element={
@@ -152,6 +196,8 @@ function App() {
               </>
             }
           />
+
+          {/* Customer management routes */}
           <Route
             path="/admin/customers"
             element={
@@ -166,6 +212,8 @@ function App() {
               </>
             }
           />
+
+          {/* Finance routes */}
           <Route
             path="/admin/finance"
             element={
@@ -180,6 +228,8 @@ function App() {
               </>
             }
           />
+
+          {/* Showcase routes */}
           <Route
             path="/admin/showcase"
             element={

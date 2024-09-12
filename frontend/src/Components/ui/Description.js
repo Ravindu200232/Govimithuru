@@ -13,7 +13,7 @@ function Description() {
 
   useEffect(() => {
     // Fetch item details by ID
-    axios.get(`http://localhost:8090/showcase/get/${id}`)
+    axios.get(`http://localhost:8000/showcase/get/${id}`)
       .then((res) => {
         setSeedItem(res.data.showcaseItem);
       })
@@ -23,7 +23,7 @@ function Description() {
       });
 
     // Fetch reviews for the item
-    axios.get(`http://localhost:8090/reviews/item/${id}`)
+    axios.get(`http://localhost:8000/reviews/item/${id}`)
       .then((res) => {
         setReviews(res.data);
       })
@@ -37,6 +37,14 @@ function Description() {
     setQuantity(value >= 1 ? value : 1); // Ensure quantity is at least 1
   };
 
+  const increaseQuantity = () => {
+    setQuantity(prev => prev + 1); // Increase quantity
+  };
+
+  const decreaseQuantity = () => {
+    setQuantity(prev => (prev > 1 ? prev - 1 : 1)); // Decrease quantity but ensure it's at least 1
+  };
+
   // Function to calculate discounted price
   const getDiscountedPrice = (price, discount) => {
     return price - (price * (discount / 100));
@@ -44,26 +52,26 @@ function Description() {
 
   const addToCart = () => {
     if (!seedItem) {
-      return alert('Item details are not available');
+        return alert('Item details are not available');
     }
 
     const discountedPrice = getDiscountedPrice(seedItem.price, seedItem.discount);
 
-    axios.post('http://localhost:8090/card/add', {
-      itemNamec: seedItem.name,
-      categoryc: seedItem.category,
-      pricec: discountedPrice.toFixed(2), // Send the discounted price to the backend
-      quantityc: quantity, // Send the quantity to the backend
+    axios.post('http://localhost:8000/card/add', {
+        itemNamec: seedItem.name,
+        categoryc: seedItem.category,
+        pricec: discountedPrice.toFixed(2), // Send the discounted price to the backend
+        quantityc: quantity, // Send the quantity to the backend
     })
     .then(response => {
-      if (response.status === 200) {
-        alert('Item added to cart successfully!');
-        navigate('/cart'); // Redirect to the cart page
-      }
+        if (response.status === 200) {
+            alert('Item added to cart successfully!');
+            navigate('/cart'); // Redirect to the cart page
+        }
     })
     .catch(err => {
-      console.error('Error adding item to cart:', err);
-      alert('Error adding item to cart');
+        console.error('Error adding item to cart:', err);
+        alert('Error adding item to cart');
     });
   };
 
@@ -87,7 +95,7 @@ function Description() {
       alert('Review added successfully');
       setNewReview({ reviewerName: '', reviewText: '', rating: 1 });
       // Refresh reviews
-      axios.get(`http://localhost:8090/reviews/item/${id}`)
+      axios.get(`http://localhost:8000/reviews/item/${id}`)
         .then((res) => setReviews(res.data))
         .catch((err) => console.error('Error fetching reviews:', err));
     })
@@ -111,17 +119,18 @@ function Description() {
           <div className="price-section">
             {seedItem.discount > 0 ? (
               <>
-                <p className="discount">Original Price: ${seedItem.price.toFixed(2)}</p>
+                <p className="discount">Original Price: ₹{seedItem.price.toFixed(2)}</p>
                 <p className="discount-percentage">Discount: {seedItem.discount}% off</p>
-                <p>Discounted Price: ${ (seedItem.price - (seedItem.price * (seedItem.discount / 100))).toFixed(2) }</p>
+                <p>Discounted Price: ₹{ (seedItem.price - (seedItem.price * (seedItem.discount / 100))).toFixed(2) }</p>
               </>
             ) : (
-              <p>Price: ${seedItem.price.toFixed(2)}</p>
+              <p>Price: ₹{seedItem.price.toFixed(2)}</p>
             )}
           </div>
           
           <div className="quantity-control">
             <label htmlFor="quantity">Quantity:</label>
+            <button onClick={decreaseQuantity} className="quantity-btn">-</button>
             <input 
               type="number" 
               id="quantity" 
@@ -129,6 +138,7 @@ function Description() {
               min="1" 
               onChange={handleQuantityChange} 
             />
+            <button onClick={increaseQuantity} className="quantity-btn">+</button>
           </div>
           
           <button className="add-to-cart-btn" onClick={addToCart}>

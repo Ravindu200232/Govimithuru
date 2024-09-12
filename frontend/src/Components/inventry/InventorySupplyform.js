@@ -24,7 +24,7 @@ function InventorySupplyform() {
       supplyDate
     };
 
-    axios.post("http://localhost:8090/inventoryitem/add", newSupItem)
+    axios.post("http://localhost:8000/inventoryitem/add", newSupItem)
       .then(() => {
         alert("Item Added");
         // Reset form fields

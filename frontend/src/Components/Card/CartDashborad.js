@@ -9,7 +9,7 @@ function Carts() {
 
     useEffect(() => {
         // Fetch all card items from the backend
-        axios.get('http://localhost:8090/card')
+        axios.get('http://localhost:8000/card')
             .then((res) => {
                 // Set the card items in state
                 setCardItems(res.data);
@@ -21,7 +21,7 @@ function Carts() {
 
     // Handle delete operation
     const handleDelete = (id) => {
-        axios.delete(`http://localhost:8090/card/delete/${id}`)
+        axios.delete(`http://localhost:8000/card/delete/${id}`)
             .then((res) => {
                 // Refresh the card items
                 setCardItems(cardItems.filter(item => item._id !== id));

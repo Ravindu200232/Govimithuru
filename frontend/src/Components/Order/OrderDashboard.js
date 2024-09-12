@@ -9,7 +9,7 @@ function OrderManagement() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get("http://localhost:8090/orders/")
+        axios.get("http://localhost:8000/orders/")
             .then((res) => {
                 setOrders(res.data);
             })
@@ -37,7 +37,7 @@ function OrderManagement() {
     };
 
     const handleDelete = (id) => {
-        axios.delete(`http://localhost:8090/orders/delete/${id}`)
+        axios.delete(`http://localhost:8000/orders/delete/${id}`)
             .then(() => {
                 alert("Order deleted successfully");
                 setOrders(orders.filter(order => order._id !== id));
@@ -49,7 +49,7 @@ function OrderManagement() {
 
     // Handle order confirmation
     const handleConfirm = (id) => {
-        axios.put(`http://localhost:8090/orders/update/${id}`, { status: "Confirmed" })
+        axios.put(`http://localhost:8000/orders/update/${id}`, { status: "Confirmed" })
             .then(() => {
                 alert("Order confirmed successfully");
                 setOrders(orders.map(order => 
