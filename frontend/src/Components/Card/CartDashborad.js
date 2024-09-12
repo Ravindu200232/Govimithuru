@@ -46,7 +46,8 @@ function Carts() {
             <table className="dashboard-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>ID</th> {/* Sequential ID */}
+                        <th>Image</th>
                         <th>Name</th>
                         <th>Category</th>
                         <th>Price</th>
@@ -57,12 +58,19 @@ function Carts() {
                 </thead>
                 <tbody>
                     {cardItems.length > 0 ? (
-                        cardItems.map((item) => (
+                        cardItems.map((item, index) => ( // Add index here
                             <tr key={item._id}>
-                                <td>{item._id}</td>
+                                <td>{index + 1}</td> {/* Display sequential ID */}
+                                <td>
+                                    <img 
+                                        src={`data:image/jpeg;base64,${item.imagec}`} 
+                                        alt={item.itemNamec} 
+                                        className="cart-item-image" // You can define CSS to style this
+                                    />
+                                </td>
                                 <td>{item.itemNamec}</td>
                                 <td>{item.categoryc}</td>
-                                <td>${item.pricec.toFixed(2)}</td>
+                                <td>₹{item.pricec.toFixed(2)}</td>
                                 <td>{item.available}</td>
                                 <td>{item.quantityc}</td>
                                 <td>
@@ -73,7 +81,7 @@ function Carts() {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="7">No items in the cart.</td>
+                            <td colSpan="8">No items in the cart.</td> {/* Adjusted colspan for the extra column */}
                         </tr>
                     )}
                 </tbody>

@@ -24,10 +24,15 @@ const CardSchema = new mongoose.Schema({
         type: Number,
         default: 1,
         min: [1, "Quantity must be at least 1"]
+    },
+    imagec: {
+        type: String, // Store image as base64 string
+        required: true
     }
 }, { 
     timestamps: true  // Automatically manage createdAt and updatedAt fields
 });
+
 
 // Create the Card model
 const Card = mongoose.model("Card", CardSchema);

@@ -22,7 +22,7 @@
 /* Individual Cart Item */
 .cart-item {
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* Align items to the top */
     margin-bottom: 20px; /* Larger margin for better spacing */
     padding: 15px; /* Increased padding for a more spacious feel */
     background-color: #f9f9f9; /* Slightly off-white for subtle contrast */
@@ -36,11 +36,6 @@
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }
 
-/* Checkbox Styling */
-.item-select {
-    margin-right: 20px; /* Space between checkbox and item info */
-}
-
 /* Cart Item Image */
 .cart-item img {
     width: 100px;
@@ -48,12 +43,12 @@
     object-fit: cover;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for the image */
+    margin-right: 15px; /* Space between image and text */
 }
 
 /* Cart Item Info */
 .cart-item-info {
     flex-grow: 1;
-    padding-left: 15px;
 }
 
 .cart-item-info h3 {

@@ -62,6 +62,7 @@ function Description() {
         categoryc: seedItem.category,
         pricec: discountedPrice.toFixed(2), // Send the discounted price to the backend
         quantityc: quantity, // Send the quantity to the backend
+        imagec: seedItem.imageBase64 // Add imageBase64 to the cart data
     })
     .then(response => {
         if (response.status === 200) {
@@ -73,7 +74,8 @@ function Description() {
         console.error('Error adding item to cart:', err);
         alert('Error adding item to cart');
     });
-  };
+};
+
 
   const handleReviewChange = (e) => {
     const { name, value } = e.target;
@@ -85,7 +87,7 @@ function Description() {
       return alert('Please fill out all fields');
     }
 
-    axios.post('http://localhost:8090/reviews/add', {
+    axios.post('http://localhost:8000/reviews/add', {
       itemId: id,
       reviewerName: newReview.reviewerName,
       reviewText: newReview.reviewText,
