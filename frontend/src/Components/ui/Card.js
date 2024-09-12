@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import './css/Cart.css';
 
 function Cart() {
   const [cartItems, setCartItems] = useState([]);
-  const [quantities, setQuantities] = useState({}); // To store quantity for each item
-  const [checkedItems, setCheckedItems] = useState({}); // To track selected items
-  const [availability, setAvailability] = useState({}); // To store available quantities for each item
+  const [quantities, setQuantities] = useState({});
+  const [checkedItems, setCheckedItems] = useState({});
+  const [availability, setAvailability] = useState({});
+
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     axios.get('http://localhost:8000/card/')
@@ -16,9 +19,9 @@ function Cart() {
         const initialChecked = {};
         const initialAvailability = {};
         response.data.forEach(item => {
-          initialQuantities[item._id] = item.quantityc || 1; // Initialize quantities
-          initialChecked[item._id] = false; // Initialize all items as unchecked
-          initialAvailability[item._id] = item.available || 0; // Initialize availability
+          initialQuantities[item._id] = item.quantityc || 1;
+          initialChecked[item._id] = false;
+          initialAvailability[item._id] = item.available || 0;
         });
         setQuantities(initialQuantities);
         setCheckedItems(initialChecked);
@@ -32,7 +35,7 @@ function Cart() {
 
   const handleQuantityChange = (id, change) => {
     setQuantities(prevQuantities => {
-      const newQuantity = Math.max(1, prevQuantities[id] + change); // Ensure quantity doesn't go below 1
+      const newQuantity = Math.max(1, prevQuantities[id] + change);
       return {
         ...prevQuantities,
         [id]: newQuantity,
@@ -42,7 +45,7 @@ function Cart() {
 
   const handleCheckout = () => {
     cartItems.forEach(item => {
-      if (checkedItems[item._id]) { // Only update quantity for selected items
+      if (checkedItems[item._id]) {
         const updatedQuantity = quantities[item._id];
         axios.put(`http://localhost:8000/card/update/${item._id}`, { quantityc: updatedQuantity })
           .then(() => {
@@ -53,13 +56,16 @@ function Cart() {
           });
       }
     });
+    
+    // Navigate to the order form after updating quantities
+    navigate('/admin/orders/add');
     alert('Checkout successful! Quantities updated for selected items.');
   };
 
   const handleSelectItem = (id) => {
     setCheckedItems(prevCheckedItems => ({
       ...prevCheckedItems,
-      [id]: !prevCheckedItems[id], // Toggle item selection
+      [id]: !prevCheckedItems[id],
     }));
   };
 
@@ -77,7 +83,7 @@ function Cart() {
   const calculateTotal = () => {
     return cartItems.reduce((sum, item) => {
       if (checkedItems[item._id]) {
-        return sum + (item.pricec * quantities[item._id]); // Add only if selected
+        return sum + (item.pricec * quantities[item._id]);
       }
       return sum;
     }, 0).toFixed(2);
@@ -96,6 +102,11 @@ function Cart() {
                 onChange={() => handleSelectItem(item._id)} 
               />
               <div className="cart-item-info">
+                <img 
+                  src={`data:image/jpeg;base64,${item.imagec}`} 
+                  alt={item.itemNamec} 
+                  className="cart-item-image"
+                />
                 <h3>{item.itemNamec}</h3>
                 <p>Category: {item.categoryc}</p>
                 <p>Price: ₹{item.pricec.toFixed(2)}</p>
@@ -117,7 +128,7 @@ function Cart() {
                     )}
                   </button>
                 </div>
-                <p>Available: {availability[item._id]}</p> {/* Display available item count */}
+                <p>Available: {availability[item._id]}</p>
                 <button className="buy-btn">Buy</button>
               </div>
               <div className="remove-item" onClick={() => removeItem(item._id)}>X</div>
