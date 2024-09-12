@@ -9,7 +9,7 @@ const upload = multer({ storage: storage });
 
 // Add Showcase Item
 router.post("/add", upload.single('image'), (req, res) => {
-    const { name, category, description, unit, price } = req.body;
+    const { name, category, description, unit, price, discount } = req.body;
     const image = req.file; // multer stores the file here
 
     if (!image) {
@@ -23,6 +23,7 @@ router.post("/add", upload.single('image'), (req, res) => {
         description,
         unit,
         price,
+        discount: discount ? Number(discount) : 0, // Handle optional discount field
     });
 
     newShowcaseItem.save()
@@ -40,7 +41,7 @@ router.get("/", (req, res) => {
 // Update Showcase Item
 router.put("/update/:id", upload.single('image'), async (req, res) => {
     let itemId = req.params.id;
-    const { name, category, description, unit, price } = req.body;
+    const { name, category, description, unit, price, discount } = req.body;
     const image = req.file; // multer stores the file here
 
     const updateShowcaseItem = {
@@ -49,6 +50,7 @@ router.put("/update/:id", upload.single('image'), async (req, res) => {
         description,
         unit,
         price,
+        discount: discount ? Number(discount) : 0, // Handle optional discount field
     };
 
     if (image) {
@@ -78,8 +80,6 @@ router.get("/get/:id", async (req, res) => {
         .catch((err) => res.status(500).send({ status: "Error with getting item", error: err.message }));
 });
 
-
-
 // Get all Showcase items with category 'Seeds'
 router.get("/seeds", async (req, res) => {
     try {
@@ -89,6 +89,5 @@ router.get("/seeds", async (req, res) => {
         res.status(500).send({ status: "Error with getting items", error: err.message });
     }
 });
-
 
 module.exports = router;

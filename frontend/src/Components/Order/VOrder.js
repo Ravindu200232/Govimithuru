@@ -9,7 +9,7 @@ function OrderView() {
 
     useEffect(() => {
         // Fetch the order details from the server using the order ID
-        axios.get(`http://localhost:8090/orders/get/${id}`)
+        axios.get(`http://localhost:8000/orders/get/${id}`)
             .then((res) => {
                 console.log(res.data); // Log the entire response to check the structure
                 setOrder(res.data);  // Check if res.data contains the expected order object

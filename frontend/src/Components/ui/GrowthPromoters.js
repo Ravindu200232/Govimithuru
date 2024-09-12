@@ -6,7 +6,7 @@ function GrowthPromoters() {
   const [growthPromotersItems, setGrowthPromotersItems] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:8090/showcase/growth-promoters')
+    axios.get('http://localhost:8000/showcase/growth-promoters')
       .then((res) => {
         setGrowthPromotersItems(res.data);
       })

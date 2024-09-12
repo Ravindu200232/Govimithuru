@@ -1,88 +1,86 @@
-// routes/Card.js
-const router = require("express").Router();
-const Card = require("../models/Card");
+const express = require('express');
+const router = express.Router();
+const Card = require('../models/Card');
+const AvailableItem = require('../models/AvailableItem');
+
+// Get all cart items
+router.get('/', async (req, res) => {
+  try {
+    const cards = await Card.find({});
+    res.status(200).json(cards);
+  } catch (err) {
+    res.status(500).send({ status: "Error with fetching cart items", error: err.message });
+  }
+});
 
 // Add Card Item
-router.post("/add", (req, res) => {
-    const { itemNamec, categoryc, pricec } = req.body;
+router.post('/add', async (req, res) => {
+    const { itemNamec, categoryc, pricec, quantityc } = req.body; // Include quantityc
 
     // Validate that required fields are provided
-    if (!itemNamec || !categoryc || !pricec) {
+    if (!itemNamec || !categoryc || !pricec || !quantityc) {
         return res.status(400).send({ status: "Error with adding card item", error: "Missing required fields" });
     }
 
-    const newCard = new Card({
-        itemNamec,
-        categoryc,
-        pricec,
-    });
+    try {
+        // Find the corresponding available item
+        const availableItem = await AvailableItem.findOne({ name: itemNamec });
 
-    newCard.save()
-        .then(() => res.status(200).json("Card Item Added"))
-        .catch((err) => res.status(500).send({ status: "Error with adding card item", error: err.message }));
-});
+        if (!availableItem) {
+            return res.status(404).send({ status: "Error with adding card item", error: "Available item not found" });
+        }
 
-// Get All Card Items
-router.get("/", (req, res) => {
-    Card.find()
-        .then((cardItems) => res.status(200).json(cardItems))
-        .catch((err) => res.status(500).send({ status: "Error with fetching card items", error: err.message }));
-});
+        // Create a new card item with available count
+        const newCard = new Card({
+            itemNamec,
+            categoryc,
+            pricec,
+            quantityc, // Save quantity in the database
+            available: availableItem.availableItem,  // Add available count
+        });
 
-// Update Card Item
-router.put("/update/:id", async (req, res) => {
-    const itemId = req.params.id;
-    const { itemNamec, categoryc, pricec } = req.body;
+        // Save the new card item
+        await newCard.save();
 
-    // Validate that required fields are provided
-    if (!itemNamec || !categoryc || !pricec) {
-        return res.status(400).send({ status: "Error with updating card item", error: "Missing required fields" });
+        res.status(200).json("Card Item Added with Available Count");
+    } catch (err) {
+        res.status(500).send({ status: "Error with adding card item", error: err.message });
     }
-
-    const updateCardItem = {
-        itemNamec,
-        categoryc,
-        pricec,
-    };
+});
+// Update Card Item
+router.put('/update/:id', async (req, res) => {
+    const { id } = req.params;
+    const { quantityc } = req.body;
 
     try {
-        const updatedItem = await Card.findByIdAndUpdate(itemId, updateCardItem, { new: true });
-        if (!updatedItem) {
+        const card = await Card.findById(id);
+        if (!card) {
             return res.status(404).send({ status: "Error with updating card item", error: "Card item not found" });
         }
-        res.status(200).send({ status: "Card item updated", updatedItem });
+
+        // Update the quantity
+        card.quantityc = quantityc;
+        await card.save();
+
+        res.status(200).json("Card Item Updated");
     } catch (err) {
         res.status(500).send({ status: "Error with updating card item", error: err.message });
     }
 });
 
 // Delete Card Item
-router.delete("/delete/:id", async (req, res) => {
-    const itemId = req.params.id;
+router.delete('/delete/:id', async (req, res) => {
+    const { id } = req.params;
 
     try {
-        const deletedItem = await Card.findByIdAndDelete(itemId);
-        if (!deletedItem) {
+        const card = await Card.findByIdAndDelete(id);
+        if (!card) {
             return res.status(404).send({ status: "Error with deleting card item", error: "Card item not found" });
         }
-        res.status(200).send({ status: "Card item deleted" });
+
+        res.status(200).json("Card Item Deleted");
     } catch (err) {
         res.status(500).send({ status: "Error with deleting card item", error: err.message });
-    }
-});
-
-// Get One Card Item by ID
-router.get("/get/:id", async (req, res) => {
-    const itemId = req.params.id;
-
-    try {
-        const cardItem = await Card.findById(itemId);
-        if (!cardItem) {
-            return res.status(404).send({ status: "Error with fetching card item", error: "Card item not found" });
-        }
-        res.status(200).send({ status: "Card item fetched", cardItem });
-    } catch (err) {
-        res.status(500).send({ status: "Error with fetching card item", error: err.message });
     }
 });
 

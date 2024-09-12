@@ -25,6 +25,10 @@ const ShowcaseSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    discount: {
+        type: Number, // Discount as a percentage (e.g., 10 for 10%)
+        default: 0,
+    }
 }, { toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
 // Virtual property to convert image buffer to base64 string

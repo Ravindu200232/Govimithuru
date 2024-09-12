@@ -13,6 +13,9 @@ function Navbar() {
         <li><a href="/products">Products</a></li>
         <li><a href="/cart">Cart</a></li>
         <li><a href="/login">Login</a></li>
+        <li><a href="/login">About</a></li>
+        <li><a href="/login">Contact</a></li>
+        <li><a href="/login">Other</a></li>
       </ul>
     </nav>
   );

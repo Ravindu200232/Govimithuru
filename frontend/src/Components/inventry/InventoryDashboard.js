@@ -11,7 +11,7 @@ function InventoryDashboard() {
     }, []);
 
     const fetchItems = () => {
-        axios.get("http://localhost:8090/availableitem/")
+        axios.get("http://localhost:8000/availableitem/")
             .then((res) => {
                 setItems(res.data);
             })
