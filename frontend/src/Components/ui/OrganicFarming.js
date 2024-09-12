@@ -6,7 +6,7 @@ function OrganicFarming() {
   const [organicFarmingItems, setOrganicFarmingItems] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:8090/showcase/organic-farming')
+    axios.get('http://localhost:8000/showcase/organic-farming')
       .then((res) => {
         setOrganicFarmingItems(res.data);
       })

@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import './css/Dashboard.css';
 
 function Carts() {
     const [cardItems, setCardItems] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Fetch all card items from the backend
-        axios.get('http://localhost:8090/card')
+        axios.get('http://localhost:8000/card')
             .then((res) => {
                 // Set the card items in state
                 setCardItems(res.data);
@@ -16,6 +18,23 @@ function Carts() {
                 console.error('Error fetching card items:', err);
             });
     }, []);
+
+    // Handle delete operation
+    const handleDelete = (id) => {
+        axios.delete(`http://localhost:8000/card/delete/${id}`)
+            .then((res) => {
+                // Refresh the card items
+                setCardItems(cardItems.filter(item => item._id !== id));
+            })
+            .catch((err) => {
+                console.error('Error deleting card item:', err);
+            });
+    };
+
+    // Handle view operation
+    const handleView = (id) => {
+        navigate(`/card/${id}`); // Navigate to a detailed view page (you'll need to set up this route separately)
+    };
 
     return (
         <div className="dashboard">
@@ -31,6 +50,9 @@ function Carts() {
                         <th>Name</th>
                         <th>Category</th>
                         <th>Price</th>
+                        <th>Available</th>
+                        <th>Quantity</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,11 +63,17 @@ function Carts() {
                                 <td>{item.itemNamec}</td>
                                 <td>{item.categoryc}</td>
                                 <td>${item.pricec.toFixed(2)}</td>
+                                <td>{item.available}</td>
+                                <td>{item.quantityc}</td>
+                                <td>
+                                    <button onClick={() => handleView(item._id)}>View</button>
+                                    <button onClick={() => handleDelete(item._id)}>Delete</button>
+                                </td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="4">No items in the cart.</td>
+                            <td colSpan="7">No items in the cart.</td>
                         </tr>
                     )}
                 </tbody>

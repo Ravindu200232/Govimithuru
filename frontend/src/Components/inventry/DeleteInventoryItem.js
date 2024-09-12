@@ -9,7 +9,7 @@ function DeleteInventoryItem() {
     const [item, setItem] = useState(null);
 
     useEffect(() => {
-        axios.get(`http://localhost:8090/inventoryitem/get/${id}`)
+        axios.get(`http://localhost:8000/inventoryitem/get/${id}`)
             .then((res) => {
                 setItem(res.data.inventoryitems);
             })
@@ -19,7 +19,7 @@ function DeleteInventoryItem() {
     }, [id]);
 
     const handleDelete = () => {
-        axios.delete(`http://localhost:8090/inventoryitem/delete/${id}`)
+        axios.delete(`http://localhost:8000/inventoryitem/delete/${id}`)
             .then(() => {
                 alert("Item deleted successfully");
                 navigate('/supplyshow');
