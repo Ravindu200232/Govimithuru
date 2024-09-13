@@ -4,22 +4,25 @@ import axios from "axios";
 
 function InventorySupplyform() {
   const [name, setName] = useState("");
-  const [supName, setSupName] = useState("");
+  const [companyName, setCompanyName] = useState(""); // Renamed
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
-  const [unit, setUnit] = useState("");
+  const [packetSize, setPacketSize] = useState(1); // Added packet size
+  const [unit, setUnit] = useState("kg"); // Default unit
   const [quantityAvailable, setQuantityAvailable] = useState("");
   const [supplyDate, setSupplyDate] = useState("");
 
   function sendDate(e) {
     e.preventDefault();
-    // Ensure quantityAvailable is a number
+    const finalUnit = `${packetSize}${unit}`; // Concatenate packet size and unit
+    const formattedName = `${name} (${finalUnit})`; // Format item name
+
     const newSupItem = {
-      name,
-      supName,
+      name: formattedName, // Use formatted name
+      supName: companyName, // Renamed in the payload
       description,
       category,
-      unit,
+      unit: finalUnit, // Store the concatenated unit
       quantityAvailable: Number(quantityAvailable),
       supplyDate
     };
@@ -29,10 +32,11 @@ function InventorySupplyform() {
         alert("Item Added");
         // Reset form fields
         setName("");
-        setSupName("");
+        setCompanyName("");
         setDescription("");
         setCategory("");
-        setUnit("");
+        setPacketSize(1); // Reset packet size
+        setUnit("kg"); // Reset unit
         setQuantityAvailable("");
         setSupplyDate("");
       })
@@ -56,13 +60,13 @@ function InventorySupplyform() {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="supplyName">Supply Name</label>
+          <label htmlFor="companyName">Company Name</label> {/* Renamed */}
           <input
             type="text"
-            id="supplyName"
-            placeholder="Enter Supply Name"
-            value={supName}
-            onChange={(e) => setSupName(e.target.value)}
+            id="companyName"
+            placeholder="Enter Company Name"
+            value={companyName}
+            onChange={(e) => setCompanyName(e.target.value)}
           />
         </div>
         <div className="form-group">
@@ -95,14 +99,26 @@ function InventorySupplyform() {
           </select>
         </div>
         <div className="form-group">
-          <label htmlFor="unit">Unit</label>
+          <label htmlFor="packetSize">Packet Size</label> {/* Added packet size */}
           <input
-            type="text"
+            type="number"
+            id="packetSize"
+            min="1"
+            max="150"
+            value={packetSize}
+            onChange={(e) => setPacketSize(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="unit">Unit</label> {/* Added unit dropdown */}
+          <select
             id="unit"
-            placeholder="Enter Units"
             value={unit}
             onChange={(e) => setUnit(e.target.value)}
-          />
+          >
+            <option value="kg">KG</option>
+            <option value="l">L</option>
+          </select>
         </div>
         <div className="form-group">
           <label htmlFor="quantity">Quantity Available</label>

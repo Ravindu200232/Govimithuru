@@ -7,9 +7,10 @@ function ShowcaseForm() {
   const [image, setImage] = useState(null);
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
-  const [unit, setUnit] = useState('');
+  const [packetSize, setPacketSize] = useState(1); // Added packet size state
+  const [unit, setUnit] = useState('kg'); // Added unit state, defaulting to kg
   const [price, setPrice] = useState('');
-  const [discount, setDiscount] = useState(''); // Added state for discount
+  const [discount, setDiscount] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -22,9 +23,10 @@ function ShowcaseForm() {
     setImage(null);
     setCategory('');
     setDescription('');
-    setUnit('');
+    setPacketSize(1); // Reset packet size
+    setUnit('kg'); // Reset unit to default kg
     setPrice('');
-    setDiscount(''); // Reset discount
+    setDiscount('');
   }
 
   async function sendData(e) {
@@ -32,12 +34,16 @@ function ShowcaseForm() {
     setLoading(true);
     setError('');
 
+    // Format the unit and name
+    const formattedUnit = `${packetSize}${unit}`;
+    const formattedName = `${name} (${formattedUnit})`; // Format name with unit
+
     const formData = new FormData();
-    formData.append('name', name);
+    formData.append('name', formattedName); // Use formatted name
     formData.append('image', image);
     formData.append('category', category);
     formData.append('description', description);
-    formData.append('unit', unit);
+    formData.append('unit', formattedUnit); // Store the concatenated unit
     formData.append('price', price);
     formData.append('discount', discount); // Added discount field
 
@@ -112,15 +118,28 @@ function ShowcaseForm() {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="unit">Unit</label>
+          <label htmlFor="packetSize">Packet Size</label>
           <input
-            type="text"
+            type="number"
+            id="packetSize"
+            min="1"
+            max="150"
+            value={packetSize}
+            onChange={(e) => setPacketSize(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="unit">Unit</label>
+          <select
             id="unit"
-            placeholder="Enter Unit"
             value={unit}
             onChange={(e) => setUnit(e.target.value)}
             required
-          />
+          >
+            <option value="kg">KG</option>
+            <option value="l">L</option>
+          </select>
         </div>
         <div className="form-group">
           <label htmlFor="price">Price</label>

@@ -226,3 +226,15 @@
   border-radius: 5px;
   cursor: pointer;
 }
+
+.item-unit {
+  color: blue;
+  display: block; /* Ensures unit appears on a new line */
+}
+
+/* Ensure this class exists for other styling */
+.search-input {
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
