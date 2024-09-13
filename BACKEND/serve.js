@@ -30,7 +30,9 @@ const AvailableItemRouter = require("./routes/AvailableItems");
 const financemanage = require("./routes/finances.js");
 const DeliverRouter = require("./routes/Deliveries.js");
 const UserRoute = require("./routes/userDashboard.js");
+const EmployeeRoute = require("./routes/employeeItem");
 const ReviewRouter = require("./routes/reviews.js");
+
 
 
 app.use("/inventoryitem",InventoryItemRouter)
@@ -43,6 +45,7 @@ app.use("/finance", financemanage);
 app.use("/delivery",DeliverRouter);
 app.use("/user",UserRoute);
 app.use("/reviews", ReviewRouter);
+app.use("/employee",EmployeeRoute);
 
 
 app.listen(PORT, () => {

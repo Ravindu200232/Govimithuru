@@ -8,7 +8,7 @@ function Deliveries() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get("http://localhost:8090/delivery/")
+        axios.get("http://localhost:8000/delivery/")
             .then((res) => {
                 setDeliveries(res.data);
             })

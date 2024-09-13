@@ -58,33 +58,40 @@ function Seeds() {
           <div className="info-right">
             <div className="products-grid">
               {filteredSeeds.length > 0 ? (
-                filteredSeeds.map((item) => (
-                  <div className="product-card" key={item._id}>
-                    <img 
-                      src={`data:image/jpeg;base64,${item.imageBase64}`} 
-                      alt={item.name} 
-                    />
-                    <h4>{item.name}</h4>
-                    
-                    {/* Display Price and Discount */}
-                    <p>
-                      Price: ${item.price.toFixed(2)}
-                      {item.discount > 0 && (
-                        <>
-                          <span className="discount"> (${(item.price - (item.price * (item.discount / 100))).toFixed(2)})</span>
-                          <span className="discount-percentage"> {item.discount}% off</span>
-                        </>
-                      )}
-                    </p>
+                filteredSeeds.map((item) => {
+                  // Extract name and unit for styling
+                  const [name, unit] = item.name.split(/(\(\d+kg\))/);
+                  return (
+                    <div className="product-card" key={item._id}>
+                      <img 
+                        src={`data:image/jpeg;base64,${item.imageBase64}`} 
+                        alt={item.name} 
+                      />
+                      <h4>
+                        {name}
+                        <span className="item-unit">{unit}</span> {/* Add unit with styling */}
+                      </h4>
+                      
+                      {/* Display Price and Discount */}
+                      <p>
+                        Price: ${item.price.toFixed(2)}
+                        {item.discount > 0 && (
+                          <>
+                            <span className="discount"> (${(item.price - (item.price * (item.discount / 100))).toFixed(2)})</span>
+                            <span className="discount-percentage"> {item.discount}% off</span>
+                          </>
+                        )}
+                      </p>
 
-                    <button 
-                      className="buy-now-btn"
-                      onClick={() => handleBuyNow(item._id)}
-                    >
-                      Buy Now
-                    </button>
-                  </div>
-                ))
+                      <button 
+                        className="buy-now-btn"
+                        onClick={() => handleBuyNow(item._id)}
+                      >
+                        Buy Now
+                      </button>
+                    </div>
+                  );
+                })
               ) : (
                 <p>No seed items available.</p>
               )}
