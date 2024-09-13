@@ -7,7 +7,7 @@ router.post("/add", async (req, res) => {
     try {
         const newEmployee = new Employee(req.body);
         await newEmployee.save();
-        res.json("Employee Added");
+        res.status(201).json({ message: "Employee Added" });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -17,7 +17,7 @@ router.post("/add", async (req, res) => {
 router.get("/", async (req, res) => {
     try {
         const employees = await Employee.find();
-        res.json(employees);
+        res.status(200).json(employees);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -29,11 +29,11 @@ router.put("/update/:id", async (req, res) => {
         const { id } = req.params;
         const updatedEmployee = await Employee.findByIdAndUpdate(id, req.body, { new: true });
         if (!updatedEmployee) {
-            return res.status(404).json({ status: "Employee not found" });
+            return res.status(404).json({ message: "Employee not found" });
         }
-        res.status(200).json({ status: "Employee updated", updatedEmployee });
+        res.status(200).json({ message: "Employee updated", updatedEmployee });
     } catch (err) {
-        res.status(500).json({ status: "Error with updating data", error: err.message });
+        res.status(500).json({ message: "Error updating employee", error: err.message });
     }
 });
 
@@ -43,11 +43,11 @@ router.delete("/delete/:id", async (req, res) => {
         const { id } = req.params;
         const deletedEmployee = await Employee.findByIdAndDelete(id);
         if (!deletedEmployee) {
-            return res.status(404).json({ status: "Employee not found" });
+            return res.status(404).json({ message: "Employee not found" });
         }
-        res.status(200).json({ status: "Employee deleted" });
+        res.status(200).json({ message: "Employee deleted" });
     } catch (err) {
-        res.status(500).json({ status: "Error with deleting employee", error: err.message });
+        res.status(500).json({ message: "Error deleting employee", error: err.message });
     }
 });
 
@@ -57,11 +57,11 @@ router.get("/get/:id", async (req, res) => {
         const { id } = req.params;
         const employee = await Employee.findById(id);
         if (!employee) {
-            return res.status(404).json({ status: "Employee not found" });
+            return res.status(404).json({ message: "Employee not found" });
         }
-        res.status(200).json({ status: "Employee fetched", employee });
+        res.status(200).json({ message: "Employee fetched", employee });
     } catch (err) {
-        res.status(500).json({ status: "Error with getting employee", error: err.message });
+        res.status(500).json({ message: "Error getting employee", error: err.message });
     }
 });
 

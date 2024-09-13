@@ -14,11 +14,12 @@ router.get('/', async (req, res) => {
 });
 
 // Add Card Item
+// Add Card Item
 router.post('/add', async (req, res) => {
-    const { itemNamec, categoryc, pricec, quantityc } = req.body; // Include quantityc
+    const { itemNamec, categoryc, pricec, quantityc, imagec } = req.body; // Include imagec
 
     // Validate that required fields are provided
-    if (!itemNamec || !categoryc || !pricec || !quantityc) {
+    if (!itemNamec || !categoryc || !pricec || !quantityc || !imagec) {
         return res.status(400).send({ status: "Error with adding card item", error: "Missing required fields" });
     }
 
@@ -30,23 +31,25 @@ router.post('/add', async (req, res) => {
             return res.status(404).send({ status: "Error with adding card item", error: "Available item not found" });
         }
 
-        // Create a new card item with available count
+        // Create a new card item with available count and image
         const newCard = new Card({
             itemNamec,
             categoryc,
             pricec,
-            quantityc, // Save quantity in the database
+            quantityc, 
             available: availableItem.availableItem,  // Add available count
+            imagec // Save the image in the card database
         });
 
         // Save the new card item
         await newCard.save();
 
-        res.status(200).json("Card Item Added with Available Count");
+        res.status(200).json("Card Item Added with Available Count and Image");
     } catch (err) {
         res.status(500).send({ status: "Error with adding card item", error: err.message });
     }
 });
+
 // Update Card Item
 router.put('/update/:id', async (req, res) => {
     const { id } = req.params;

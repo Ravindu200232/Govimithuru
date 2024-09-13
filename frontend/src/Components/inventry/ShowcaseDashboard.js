@@ -73,12 +73,12 @@ function ShowcaseDashboard() {
                                 <td>{item.name}</td>
                                 <td>{item.category}</td>
                                 <td>{item.description}</td>
-                                <td>{item.unit}</td>
+                                <td>{item.unit}</td> {/* Concatenated Unit */}
                                 <td>{item.price}</td>
-                                <td>{item.discount} %</td> {/* Display Discount */}
+                                <td>{item.discount ? `${item.discount} %` : 'No Discount'}</td> {/* Display Discount */}
                                 <td>
                                     <img
-                                        src={`data:image/jpeg;base64,${item.imageBase64}`}
+                                        src={`data:image/jpeg;base64,${item.imageBase64}`} // Image handling logic
                                         alt={item.name}
                                         className="showcase-image"
                                     />
