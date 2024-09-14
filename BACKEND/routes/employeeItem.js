@@ -1,68 +1,84 @@
-const express = require("express");
+// routes/employeeRoutes.js
+const express = require('express');
 const router = express.Router();
-const Employee = require("../models/employeeshowcase");
+const multer = require('multer');
+const Employee = require('../models/employeeshowcase');
+
+// Configure multer for file uploads
+const storage = multer.memoryStorage(); // Store files in memory as buffer
+const upload = multer({ storage: storage });
 
 // Add Employee
-router.post("/add", async (req, res) => {
-    try {
-        const newEmployee = new Employee(req.body);
-        await newEmployee.save();
-        res.status(201).json({ message: "Employee Added" });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+router.post('/add', upload.single('profileImage'), (req, res) => {
+    const { firstName, lastName, email, position, department, phoneNumber, nic, drivingNic } = req.body;
+    const profileImage = req.file; // multer stores the file here
+
+    const newEmployee = new Employee({
+        firstName,
+        lastName,
+        email,
+        position,
+        department,
+        phoneNumber,
+        nic,
+        drivingNic,
+        profileImage: profileImage ? profileImage.buffer : undefined // Save the image buffer directly if present
+    });
+
+    newEmployee.save()
+        .then(() => res.json('Employee Added'))
+        .catch((err) => res.status(500).send(err));
 });
 
 // Get All Employees
-router.get("/", async (req, res) => {
-    try {
-        const employees = await Employee.find();
-        res.status(200).json(employees);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+router.get('/', (req, res) => {
+    Employee.find()
+        .then((employees) => res.json(employees))
+        .catch((err) => res.status(500).send(err));
 });
 
 // Update Employee
-router.put("/update/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-        const updatedEmployee = await Employee.findByIdAndUpdate(id, req.body, { new: true });
-        if (!updatedEmployee) {
-            return res.status(404).json({ message: "Employee not found" });
-        }
-        res.status(200).json({ message: "Employee updated", updatedEmployee });
-    } catch (err) {
-        res.status(500).json({ message: "Error updating employee", error: err.message });
+router.put('/update/:id', upload.single('profileImage'), async (req, res) => {
+    let employeeId = req.params.id;
+    const { firstName, lastName, email, position, department, phoneNumber, nic, drivingNic } = req.body;
+    const profileImage = req.file; // multer stores the file here
+
+    const updateEmployee = {
+        firstName,
+        lastName,
+        email,
+        position,
+        department,
+        phoneNumber,
+        nic,
+        drivingNic,
+    };
+
+    if (profileImage) {
+        updateEmployee.profileImage = profileImage.buffer; // Update the image if provided
     }
+
+    await Employee.findByIdAndUpdate(employeeId, updateEmployee)
+        .then(() => res.status(200).send({ status: 'Employee updated' }))
+        .catch((err) => res.status(500).send({ status: 'Error with updating data', error: err.message }));
 });
 
 // Delete Employee
-router.delete("/delete/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-        const deletedEmployee = await Employee.findByIdAndDelete(id);
-        if (!deletedEmployee) {
-            return res.status(404).json({ message: "Employee not found" });
-        }
-        res.status(200).json({ message: "Employee deleted" });
-    } catch (err) {
-        res.status(500).json({ message: "Error deleting employee", error: err.message });
-    }
+router.delete('/delete/:id', async (req, res) => {
+    let employeeId = req.params.id;
+
+    await Employee.findByIdAndDelete(employeeId)
+        .then(() => res.status(200).send({ status: 'Employee deleted' }))
+        .catch((err) => res.status(500).send({ status: 'Error with deleting employee', error: err.message }));
 });
 
 // Get One Employee by ID
-router.get("/get/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-        const employee = await Employee.findById(id);
-        if (!employee) {
-            return res.status(404).json({ message: "Employee not found" });
-        }
-        res.status(200).json({ message: "Employee fetched", employee });
-    } catch (err) {
-        res.status(500).json({ message: "Error getting employee", error: err.message });
-    }
+router.get('/get/:id', async (req, res) => {
+    let employeeId = req.params.id;
+
+    await Employee.findById(employeeId)
+        .then((employee) => res.status(200).send({ status: 'Employee fetched', employee }))
+        .catch((err) => res.status(500).send({ status: 'Error with getting employee', error: err.message }));
 });
 
 module.exports = router;
