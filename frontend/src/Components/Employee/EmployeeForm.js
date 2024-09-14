@@ -1,4 +1,3 @@
-// components/EmployeeForm.js
 import React, { useState } from 'react';
 import './EmployeeForm.css';
 import axios from 'axios';
@@ -12,6 +11,7 @@ function EmployeeForm() {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [nic, setNic] = useState('');
     const [drivingNic, setDrivingNic] = useState('');
+    const [birthday, setBirthday] = useState('');
     const [profileImage, setProfileImage] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -29,13 +29,58 @@ function EmployeeForm() {
         setPhoneNumber('');
         setNic('');
         setDrivingNic('');
+        setBirthday('');
         setProfileImage(null);
+    }
+
+    function calculateAge(dateOfBirth) {
+        const today = new Date();
+        const birthDate = new Date(dateOfBirth);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
+    }
+
+    function isValidAge(birthday) {
+        const age = calculateAge(birthday);
+        return age >= 18 && age <= 45;
+    }
+
+    async function validateUniqueFields() {
+        try {
+            const response = await axios.post('http://localhost:8000/employee/validate', {
+                email,
+                nic,
+                drivingNic
+            });
+            return response.data.isUnique;
+        } catch (err) {
+            setError('Failed to validate unique fields. Please try again.');
+            console.error(err);
+            return false;
+        }
     }
 
     async function sendData(e) {
         e.preventDefault();
         setLoading(true);
         setError('');
+
+        if (!isValidAge(birthday)) {
+            setError('Age must be between 18 and 45 years.');
+            setLoading(false);
+            return;
+        }
+
+        const isUnique = await validateUniqueFields();
+        if (!isUnique) {
+            setError('Email, NIC, or Driving NIC already exists.');
+            setLoading(false);
+            return;
+        }
 
         const formData = new FormData();
         formData.append('firstName', firstName);
@@ -46,6 +91,7 @@ function EmployeeForm() {
         formData.append('phoneNumber', phoneNumber);
         formData.append('nic', nic);
         formData.append('drivingNic', drivingNic);
+        formData.append('birthday', birthday);
         if (profileImage) {
             formData.append('profileImage', profileImage);
         }
@@ -153,6 +199,15 @@ function EmployeeForm() {
                         value={drivingNic}
                         onChange={(e) => setDrivingNic(e.target.value)}
                         required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="birthday">Birthday</label>
+                    <input
+                        type="date"
+                        id="birthday"
+                        value={birthday}
+                        onChange={(e) => setBirthday(e.target.value)}
                     />
                 </div>
                 <div className="form-group">

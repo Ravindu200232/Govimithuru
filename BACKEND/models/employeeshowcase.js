@@ -37,6 +37,10 @@ const EmployeeSchema = new mongoose.Schema({
     profileImage: {
         type: Buffer, // Store profile image as binary data
         required: false,
+    },
+    birthday: {
+        type: Date, // Store birthday as a Date
+        required: false, // Optional field
     }
 }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 

@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const Employee = require('../models/employeeshowcase');
+const Employee = require('../models/employeeshowcase'); // Ensure the correct model is required
 
 // Configure multer for file uploads
 const storage = multer.memoryStorage(); // Store files in memory as buffer
@@ -10,7 +10,7 @@ const upload = multer({ storage: storage });
 
 // Add Employee
 router.post('/add', upload.single('profileImage'), (req, res) => {
-    const { firstName, lastName, email, position, department, phoneNumber, nic, drivingNic } = req.body;
+    const { firstName, lastName, email, position, department, phoneNumber, nic, drivingNic, birthday } = req.body;
     const profileImage = req.file; // multer stores the file here
 
     const newEmployee = new Employee({
@@ -22,6 +22,7 @@ router.post('/add', upload.single('profileImage'), (req, res) => {
         phoneNumber,
         nic,
         drivingNic,
+        birthday: birthday ? new Date(birthday) : undefined, // Convert birthday to Date if provided
         profileImage: profileImage ? profileImage.buffer : undefined // Save the image buffer directly if present
     });
 
@@ -40,7 +41,7 @@ router.get('/', (req, res) => {
 // Update Employee
 router.put('/update/:id', upload.single('profileImage'), async (req, res) => {
     let employeeId = req.params.id;
-    const { firstName, lastName, email, position, department, phoneNumber, nic, drivingNic } = req.body;
+    const { firstName, lastName, email, position, department, phoneNumber, nic, drivingNic, birthday } = req.body;
     const profileImage = req.file; // multer stores the file here
 
     const updateEmployee = {
@@ -52,6 +53,7 @@ router.put('/update/:id', upload.single('profileImage'), async (req, res) => {
         phoneNumber,
         nic,
         drivingNic,
+        birthday: birthday ? new Date(birthday) : undefined, // Convert birthday to Date if provided
     };
 
     if (profileImage) {
@@ -79,6 +81,25 @@ router.get('/get/:id', async (req, res) => {
     await Employee.findById(employeeId)
         .then((employee) => res.status(200).send({ status: 'Employee fetched', employee }))
         .catch((err) => res.status(500).send({ status: 'Error with getting employee', error: err.message }));
+});
+
+// Validate Unique Fields
+router.post('/validate', async (req, res) => {
+    const { email, nic, drivingNic } = req.body;
+
+    try {
+        const emailExists = await Employee.findOne({ email });
+        const nicExists = await Employee.findOne({ nic });
+        const drivingNicExists = await Employee.findOne({ drivingNic });
+
+        if (emailExists || nicExists || drivingNicExists) {
+            return res.json({ isUnique: false });
+        }
+        
+        res.json({ isUnique: true });
+    } catch (err) {
+        res.status(500).send({ status: 'Error with validation', error: err.message });
+    }
 });
 
 module.exports = router;

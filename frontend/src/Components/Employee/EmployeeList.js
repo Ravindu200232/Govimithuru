@@ -1,4 +1,3 @@
-// components/EmployeeList.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -64,6 +63,7 @@ function EmployeeList() {
                         <th>Phone Number</th>
                         <th>NIC</th>
                         <th>Driving NIC</th>
+                        <th>Birthday</th> {/* Added column for Birthday */}
                         <th>Profile Image</th>
                         <th>Action</th>
                     </tr>
@@ -81,6 +81,13 @@ function EmployeeList() {
                                 <td>{employee.phoneNumber}</td>
                                 <td>{employee.nic}</td>
                                 <td>{employee.drivingNic}</td>
+                                <td>
+                                    {employee.birthday ? (
+                                        new Date(employee.birthday).toLocaleDateString() // Format the date
+                                    ) : (
+                                        'No Birthday'
+                                    )}
+                                </td>
                                 <td>
                                     {employee.profileImageBase64 ? (
                                         <img
@@ -100,7 +107,7 @@ function EmployeeList() {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="11">No employees available</td>
+                            <td colSpan="12">No employees available</td> {/* Updated colspan to 12 */}
                         </tr>
                     )}
                 </tbody>
