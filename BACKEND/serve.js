@@ -32,7 +32,7 @@ const DeliverRouter = require("./routes/Deliveries.js");
 const UserRoute = require("./routes/userDashboard.js");
 const EmployeeRoute = require("./routes/employeeItem");
 const ReviewRouter = require("./routes/reviews.js");
-
+const salaryRoutes = require('./routes/salary');
 
 
 app.use("/inventoryitem",InventoryItemRouter)
@@ -46,6 +46,7 @@ app.use("/delivery",DeliverRouter);
 app.use("/user",UserRoute);
 app.use("/reviews", ReviewRouter);
 app.use("/employee",EmployeeRoute);
+app.use('/salary', salaryRoutes);
 
 
 app.listen(PORT, () => {

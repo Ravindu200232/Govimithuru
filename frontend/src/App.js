@@ -34,6 +34,10 @@ import UserSide from './Components/User/SidebarA';
 import ShowcaseForm from './Components/inventry/ShowcaseForm';
 import ShowcaseDashboard from './Components/inventry/ShowcaseDashboard';
 import EmployeeList from './Components/Employee/EmployeeList';
+import EmployeeForm from './Components/Employee/EmployeeForm';
+import SidebarE from './Components/Employee/SidebarE';
+import EmployeeSalaryForm from './Components/Employee/EmployeeSalaryForm';
+import SalaryDashboard from './Components/Employee/SalaryDashboard';
 
 function App() {
   const [sidebarVisible, setSidebarVisible] = useState(true); // State for sidebar visibility
@@ -265,16 +269,58 @@ function App() {
             }
           />
 
-          {/* EmployeeList route */}
+          {/* Employee routes */}
           <Route
             path="/admin/employee"
             element={
               <>
                 <NavbarA />
                 <div className="main-content">
-                  <SidebarA />
+                  <SidebarE />
                   <div className="content">
                     <EmployeeList />
+                  </div>
+                </div>
+              </>
+            }
+          />
+          <Route
+            path="/admin/employee/form"
+            element={
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarE />
+                  <div className="content">
+                    <EmployeeForm />
+                  </div>
+                </div>
+              </>
+            }
+          />
+          <Route
+            path="/admin/employee/salary-form"
+            element={
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarE />
+                  <div className="content">
+                    <EmployeeSalaryForm />
+                  </div>
+                </div>
+              </>
+            }
+          />
+          <Route
+            path="/admin/employee/salary-dashboard"
+            element={
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarE />
+                  <div className="content">
+                    <SalaryDashboard />
                   </div>
                 </div>
               </>

@@ -1,0 +1,34 @@
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import '../inventry/css/Sidebar.css';
+
+function SidebarE() {
+  return (
+    <aside className="sidebar">
+      <ul className="sidebar-menu">
+        <li>
+          <NavLink to="/admin/employee" className={({ isActive }) => (isActive ? 'active-link' : '')}>
+            Employee List
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/admin/employee/form" className={({ isActive }) => (isActive ? 'active-link' : '')}>
+            Add New Employee
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/admin/employee/salary-form" className={({ isActive }) => (isActive ? 'active-link' : '')}>
+            Add Employee Salary
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/admin/employee/salary-dashboard" className={({ isActive }) => (isActive ? 'active-link' : '')}>
+            Salary Dashboard
+          </NavLink>
+        </li>
+      </ul>
+    </aside>
+  );
+}
+
+export default SidebarE;
