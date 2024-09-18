@@ -38,6 +38,7 @@ import EmployeeForm from './Components/Employee/EmployeeForm';
 import SidebarE from './Components/Employee/SidebarE';
 import EmployeeSalaryForm from './Components/Employee/EmployeeSalaryForm';
 import SalaryDashboard from './Components/Employee/SalaryDashboard';
+import OrderSummary from './Components/ui/OrderSummary';
 
 function App() {
   const [sidebarVisible, setSidebarVisible] = useState(true); // State for sidebar visibility
@@ -102,6 +103,16 @@ function App() {
               <>
                 <Navbar />
                 <Card />
+                <Footer />
+              </>
+            }
+          />
+           <Route
+            path="/order-summary"
+            element={
+              <>
+                <Navbar />
+                <OrderSummary />
                 <Footer />
               </>
             }
