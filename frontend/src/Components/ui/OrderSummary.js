@@ -1,7 +1,7 @@
 // OrderSummary.js
 import React, { useState, useEffect } from 'react'; 
 import axios from 'axios';
-import './css/OrderSummary .css'
+import './css/OrderSummary .css';
 
 function OrderSummary() {
   const [orderSummary, setOrderSummary] = useState([]);
@@ -78,9 +78,34 @@ function OrderSummary() {
       }))
     };
 
+    // New Delivery Data
+    const deliveryData = {
+      deliveryPersonName: "Default Person", // Replace with dynamic logic if needed
+      deliveryDate: new Date(),
+      status: "Pending",
+      address: `${customerInfo.address1} ${customerInfo.address2}`.trim(),
+      postalCode: customerInfo.postalCode,
+      email: customerInfo.email,
+      phoneNumber: customerInfo.phoneNumber,
+      deliveryType: customerInfo.paymentType === 'cash' ? 'standard' : 'express',
+      deliveryDetails: orderSummary.map(item => ({
+        itemName: item.itemName,
+        quantity: item.quantity,
+        itemPrice: item.price,
+        totalPrice: item.totalPrice
+      }))
+    };
+
     try {
-      const response = await axios.post('http://localhost:8000/orders/add', orderData);
+      // Submit order
+      await axios.post('http://localhost:8000/orders/add', orderData);
       alert("Order submitted successfully!");
+
+      // Submit delivery
+      await axios.post('http://localhost:8000/delivery/add', deliveryData);
+      alert("Delivery information submitted successfully!");
+
+      // Clear state after submission
       setOrderSummary([]);
       setCustomerInfo({
         name: '',
@@ -93,8 +118,8 @@ function OrderSummary() {
         paymentType: 'cash',
       });
     } catch (error) {
-      console.error("Error submitting order:", error);
-      alert(`Failed to submit order: ${error.response?.data?.error || "Unknown error"}`);
+      console.error("Error submitting order or delivery:", error);
+      alert(`Failed to submit: ${error.response?.data?.error || "Unknown error"}`);
     } finally {
       setLoading(false);
     }
