@@ -102,4 +102,18 @@ router.post('/validate', async (req, res) => {
     }
 });
 
+
+
+// routes/employeeRoutes.js
+router.get('/position/driver', async (req, res) => {
+    try {
+        const drivers = await Employee.find({ position: 'Driver' });
+        res.json(drivers);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+
+
 module.exports = router;

@@ -31,12 +31,12 @@ const DriverSchema = new mongoose.Schema({
         required: true,
     },
     profileImage: {
-        type: Buffer,
+        type: Buffer, // Store profile image as binary data
         required: false,
     },
     birthday: {
-        type: Date,
-        required: false,
+        type: Date, // Store birthday as a Date
+        required: false, // Optional field
     }
 }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 

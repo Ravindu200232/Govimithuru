@@ -1,70 +1,53 @@
-.deliveries-list-title {
-    font-size: 24px;
-    margin-bottom: 20px;
-    font-family: "Alegreya Sans SC", sans-serif;
+.delivery-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+.delivery-table th, .delivery-table td {
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #ddd;
+    white-space: nowrap; /* Prevent line breaks */
+    overflow: hidden;    /* Hide overflow if the content is too wide */
+    text-overflow: ellipsis; /* Add ellipsis (...) if content is too wide */
+}
+
+.delivery-table th {
+    background-color: #f2f2f2;
+}
+
+.delivery-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.details-btn, .view-btn, .delete-btn, .confirm-btn {
+    padding: 5px 10px;
+    margin: 5px;
+    cursor: pointer;
 }
 
 .search-bar {
-    display: flex;
-    align-items: center;
     margin-bottom: 20px;
 }
 
 .search-bar input {
     padding: 10px;
     font-size: 16px;
-    width: 60%;
     margin-right: 10px;
-    font-family: "Alegreya Sans SC", sans-serif;
 }
 
-.search-bar .search-btn {
-    padding: 10px 20px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    font-family: "Alegreya Sans SC", sans-serif;
-    cursor: pointer;
-    border-radius: 10px;
-}
-
-.deliveries-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-.deliveries-table th, .deliveries-table td {
-    padding: 15px;
-    text-align: left;
-    font-family: "Alegreya Sans SC", sans-serif;
-    border-bottom: 1px solid #ddd;
-}
-
-.deliveries-table th {
-    background-color: #f2f2f2;
-    color: green;
-    font-family: "Alegreya Sans SC", sans-serif;
-}
-
-.view-btn, .delete-btn {
+.search-btn {
     padding: 10px 15px;
-    margin-right: 5px;
+    font-size: 16px;
     cursor: pointer;
-    border: none;
-    border-radius: 10px;
-    color: white;
 }
 
-.view-btn {
-    background-color: #007bff;
+.delivery-details {
+    padding-top: 10px;
 }
 
-.delete-btn {
-    background-color: #dc3545;
-}
-
-.view-btn:hover, .delete-btn:hover, .search-btn:hover {
-    opacity: 0.8;
-    color: #000;
+.product-detail {
+    font-size: 14px;
+    padding: 5px 0;
 }

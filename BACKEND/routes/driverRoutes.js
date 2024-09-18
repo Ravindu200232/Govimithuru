@@ -11,7 +11,7 @@ const upload = multer({ storage: storage });
 // Add Driver
 router.post('/add', upload.single('profileImage'), (req, res) => {
     const { firstName, lastName, email, department, phoneNumber, nic, drivingNic, birthday } = req.body;
-    const profileImage = req.file;
+    const profileImage = req.file; // multer stores the file here
 
     const newDriver = new Driver({
         firstName,
@@ -21,8 +21,8 @@ router.post('/add', upload.single('profileImage'), (req, res) => {
         phoneNumber,
         nic,
         drivingNic,
-        birthday: birthday ? new Date(birthday) : undefined,
-        profileImage: profileImage ? profileImage.buffer : undefined
+        birthday: birthday ? new Date(birthday) : undefined, // Convert birthday to Date if provided
+        profileImage: profileImage ? profileImage.buffer : undefined // Save the image buffer directly if present
     });
 
     newDriver.save()
@@ -39,9 +39,9 @@ router.get('/', (req, res) => {
 
 // Update Driver
 router.put('/update/:id', upload.single('profileImage'), async (req, res) => {
-    const driverId = req.params.id;
+    let driverId = req.params.id;
     const { firstName, lastName, email, department, phoneNumber, nic, drivingNic, birthday } = req.body;
-    const profileImage = req.file;
+    const profileImage = req.file; // multer stores the file here
 
     const updateDriver = {
         firstName,
@@ -51,11 +51,11 @@ router.put('/update/:id', upload.single('profileImage'), async (req, res) => {
         phoneNumber,
         nic,
         drivingNic,
-        birthday: birthday ? new Date(birthday) : undefined,
+        birthday: birthday ? new Date(birthday) : undefined, // Convert birthday to Date if provided
     };
 
     if (profileImage) {
-        updateDriver.profileImage = profileImage.buffer;
+        updateDriver.profileImage = profileImage.buffer; // Update the image if provided
     }
 
     await Driver.findByIdAndUpdate(driverId, updateDriver)
@@ -65,7 +65,7 @@ router.put('/update/:id', upload.single('profileImage'), async (req, res) => {
 
 // Delete Driver
 router.delete('/delete/:id', async (req, res) => {
-    const driverId = req.params.id;
+    let driverId = req.params.id;
 
     await Driver.findByIdAndDelete(driverId)
         .then(() => res.status(200).send({ status: 'Driver deleted' }))
@@ -74,7 +74,7 @@ router.delete('/delete/:id', async (req, res) => {
 
 // Get One Driver by ID
 router.get('/get/:id', async (req, res) => {
-    const driverId = req.params.id;
+    let driverId = req.params.id;
 
     await Driver.findById(driverId)
         .then((driver) => res.status(200).send({ status: 'Driver fetched', driver }))
@@ -93,7 +93,7 @@ router.post('/validate', async (req, res) => {
         if (emailExists || nicExists || drivingNicExists) {
             return res.json({ isUnique: false });
         }
-
+        
         res.json({ isUnique: true });
     } catch (err) {
         res.status(500).send({ status: 'Error with validation', error: err.message });
