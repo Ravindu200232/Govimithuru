@@ -80,7 +80,7 @@ function OrderSummary() {
 
     // New Delivery Data
     const deliveryData = {
-      deliveryPersonName: "Default Person", // Replace with dynamic logic if needed
+      deliveryPersonName:  customerInfo.name, // Replace with dynamic logic if needed
       deliveryDate: new Date(),
       status: "Pending",
       address: `${customerInfo.address1} ${customerInfo.address2}`.trim(),
