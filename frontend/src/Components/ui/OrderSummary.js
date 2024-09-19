@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'; 
+import { useNavigate } from 'react-router-dom'; // Use useNavigate
 import axios from 'axios';
 import './css/OrderSummary .css';
 
 function OrderSummary() {
+  const navigate = useNavigate(); // Initialize useNavigate
   const [orderSummary, setOrderSummary] = useState([]);
   const [customerInfo, setCustomerInfo] = useState({
     name: '',
@@ -92,7 +94,7 @@ function OrderSummary() {
     return newErrors;
   };
 
-  const handlePaymentSubmit = async (e) => {
+  const handleCompleteProcess = async (e) => {
     e.preventDefault();
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
@@ -102,17 +104,12 @@ function OrderSummary() {
 
     setErrors({});
     setLoading(true);
-    alert("Payment details submitted successfully!");
-    setLoading(false);
-  };
 
-  const handleSaveOrder = async () => {
-    if (orderSummary.length === 0) {
-      alert("No items in order summary");
-      return;
-    }
+    // Generate a unique order ID
+    const orderId = `O${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
 
     const orderData = {
+      orderId, // Include order ID
       customerName: customerInfo.name,
       saleDate: new Date(),
       status: "Pending",
@@ -151,32 +148,14 @@ function OrderSummary() {
       await axios.post('http://localhost:8000/orders/add', orderData);
       // Submit delivery
       await axios.post('http://localhost:8000/delivery/add', deliveryData);
-      alert("Order and delivery information submitted successfully!");
-
-    
-
-      // Clear state after submission
-      setOrderSummary([]);
-      setCustomerInfo({
-        name: '',
-        address1: '',
-        address2: '',
-        postalCode: '',
-        email: '',
-        phoneNumber: '',
-        secondPhoneNumber: '',
-        paymentType: 'cash',
-      });
-      setPaymentDetails({
-        cardName: '',
-        cardType: 'visa',
-        cardNumber: '',
-        expirationDate: '',
-        cvv: '',
-      });
+      
+      // Redirect to confirmation page using navigate
+      navigate(`/confirmation/${orderId}`);
     } catch (error) {
       console.error("Error submitting order or delivery:", error);
       alert(`Failed to submit: ${error.response?.data?.error || "Unknown error"}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -211,7 +190,7 @@ function OrderSummary() {
       )}
 
       <h2>Customer Information</h2>
-      <form onSubmit={handlePaymentSubmit}>
+      <form onSubmit={handleCompleteProcess}>
         <label>
           Customer Name:
           <input type="text" name="name" value={customerInfo.name} onChange={handleInputChange} required />
@@ -270,8 +249,8 @@ function OrderSummary() {
           </label>
         </fieldset>
         
-        <button onClick={handleSaveOrder} disabled={loading}>
-          {loading ? 'Saving...' : 'Save Order and Delivery'}
+        <button type="submit" disabled={loading}>
+          {loading ? 'Processing...' : 'Complete Order and Payment'}
         </button>
 
         {customerInfo.paymentType === 'online' && (
@@ -338,15 +317,7 @@ function OrderSummary() {
             </div>
           </div>
         )}
-
-        <br />
-
-        <button type="submit" disabled={loading}>
-          {loading ? 'Submitting...' : 'Submit Payment'}
-        </button>
       </form>
-
-
     </div>
   );
 }
