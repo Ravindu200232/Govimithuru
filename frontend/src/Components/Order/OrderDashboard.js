@@ -83,6 +83,7 @@ function OrderDashboard() {
                         <th>Address</th>
                         <th>Postal Code</th>
                         <th>Email</th>
+                        <th>Phone Number</th>
                         <th>Payment Type</th>
                         <th>Actions</th>
                     </tr>
@@ -114,6 +115,7 @@ function OrderDashboard() {
                             <td>{order.address}</td>
                             <td>{order.postalCode}</td>
                             <td>{order.email}</td>
+                            <td>{order.phoneNumber}</td>
                             <td>{order.paymentType}</td>
                             <td>
                                 <button className="view-btn" onClick={() => handleView(order._id)}>View</button>

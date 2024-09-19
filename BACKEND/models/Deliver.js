@@ -8,6 +8,7 @@ const deliverySchema = new mongoose.Schema({
     postalCode: { type: String, required: true },
     email: { type: String, required: true },
     phoneNumber: { type: String, required: true },
+    driverName: { type: String, required: false },
     deliveryType: { type: String, enum: ['standard', 'express'], required: true },
     deliveryDetails: [
         {

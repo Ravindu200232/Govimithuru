@@ -97,4 +97,12 @@ router.post('/validate', async (req, res) => {
     }
 });
 
+// Get Available Drivers
+router.get('/status/available', (req, res) => {
+    Driver.find({ status: 'available' })
+        .then(drivers => res.json(drivers))
+        .catch(err => res.status(500).send(err));
+});
+
+
 module.exports = router;

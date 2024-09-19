@@ -4,8 +4,8 @@ const Order = require('../models/Order');
 
 // Middleware for validating request body
 const validateOrder = (req, res, next) => {
-    const { customerName, saleDate, status, address, postalCode, email, paymentType, productDetails } = req.body;
-    if (!customerName || !saleDate || !status || !address || !postalCode || !email || !paymentType || !productDetails) {
+    const { customerName, saleDate, status, address, postalCode, email,phoneNumber, paymentType, productDetails } = req.body;
+    if (!customerName || !saleDate || !status || !address || !postalCode || !email || !phoneNumber ||!paymentType || !productDetails) {
         return res.status(400).json({ status: "Error", error: "Missing required fields" });
     }
     next();

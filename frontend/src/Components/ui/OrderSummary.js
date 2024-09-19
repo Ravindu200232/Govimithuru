@@ -1,4 +1,3 @@
-// OrderSummary.js
 import React, { useState, useEffect } from 'react'; 
 import axios from 'axios';
 import './css/OrderSummary .css';
@@ -14,6 +13,13 @@ function OrderSummary() {
     phoneNumber: '',
     secondPhoneNumber: '',
     paymentType: 'cash',
+  });
+  const [paymentDetails, setPaymentDetails] = useState({
+    cardName: '',
+    cardType: 'visa',
+    cardNumber: '',
+    expirationDate: '',
+    cvv: '',
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -31,6 +37,33 @@ function OrderSummary() {
     }));
   };
 
+  const handlePaymentChange = (e) => {
+    const { name, value } = e.target;
+    setPaymentDetails(prevDetails => ({
+      ...prevDetails,
+      [name]: value,
+    }));
+  };
+
+  const validateCardNumber = (number) => {
+    const cardPattern = {
+      visa: /^4[0-9]{12}(?:[0-9]{3})?$/,
+      mastercard: /^5[1-5][0-9]{14}$/,
+      amex: /^3[47][0-9]{13}$/
+    };
+    return cardPattern[paymentDetails.cardType].test(number);
+  };
+
+  const validateExpirationDate = (date) => {
+    const [month, year] = date.split('/');
+    const currentDate = new Date();
+    const expiryDate = new Date(`20${year}`, month - 1);
+    return (
+      month >= 1 && month <= 12 && 
+      expiryDate >= currentDate
+    );
+  };
+
   const validateForm = () => {
     const newErrors = {};
     if (!customerInfo.name) newErrors.name = "Customer name is required.";
@@ -42,10 +75,24 @@ function OrderSummary() {
       newErrors.email = "Email is invalid.";
     }
     if (!customerInfo.phoneNumber) newErrors.phoneNumber = "Phone number is required.";
+    if (customerInfo.paymentType === 'online') {
+      if (!paymentDetails.cardName) newErrors.cardName = "Card name is required.";
+      if (!paymentDetails.cardNumber) {
+        newErrors.cardNumber = "Card number is required.";
+      } else if (!validateCardNumber(paymentDetails.cardNumber)) {
+        newErrors.cardNumber = "Invalid card number.";
+      }
+      if (!paymentDetails.expirationDate) {
+        newErrors.expirationDate = "Expiration date is required.";
+      } else if (!validateExpirationDate(paymentDetails.expirationDate)) {
+        newErrors.expirationDate = "Invalid expiration date.";
+      }
+      if (!paymentDetails.cvv) newErrors.cvv = "CVV is required.";
+    }
     return newErrors;
   };
 
-  const handleSubmit = async (e) => {
+  const handlePaymentSubmit = async (e) => {
     e.preventDefault();
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
@@ -55,10 +102,13 @@ function OrderSummary() {
 
     setErrors({});
     setLoading(true);
+    alert("Payment details submitted successfully!");
+    setLoading(false);
+  };
 
+  const handleSaveOrder = async () => {
     if (orderSummary.length === 0) {
       alert("No items in order summary");
-      setLoading(false);
       return;
     }
 
@@ -69,6 +119,7 @@ function OrderSummary() {
       address: `${customerInfo.address1} ${customerInfo.address2}`.trim(),
       postalCode: customerInfo.postalCode,
       email: customerInfo.email,
+      phoneNumber: customerInfo.phoneNumber,
       paymentType: customerInfo.paymentType,
       productDetails: orderSummary.map(item => ({
         itemName: item.itemName,
@@ -78,9 +129,8 @@ function OrderSummary() {
       }))
     };
 
-    // New Delivery Data
     const deliveryData = {
-      deliveryPersonName:  customerInfo.name, // Replace with dynamic logic if needed
+      deliveryPersonName: customerInfo.name,
       deliveryDate: new Date(),
       status: "Pending",
       address: `${customerInfo.address1} ${customerInfo.address2}`.trim(),
@@ -99,11 +149,11 @@ function OrderSummary() {
     try {
       // Submit order
       await axios.post('http://localhost:8000/orders/add', orderData);
-      alert("Order submitted successfully!");
-
       // Submit delivery
       await axios.post('http://localhost:8000/delivery/add', deliveryData);
-      alert("Delivery information submitted successfully!");
+      alert("Order and delivery information submitted successfully!");
+
+    
 
       // Clear state after submission
       setOrderSummary([]);
@@ -117,13 +167,20 @@ function OrderSummary() {
         secondPhoneNumber: '',
         paymentType: 'cash',
       });
+      setPaymentDetails({
+        cardName: '',
+        cardType: 'visa',
+        cardNumber: '',
+        expirationDate: '',
+        cvv: '',
+      });
     } catch (error) {
       console.error("Error submitting order or delivery:", error);
       alert(`Failed to submit: ${error.response?.data?.error || "Unknown error"}`);
-    } finally {
-      setLoading(false);
     }
   };
+
+  const totalPrice = orderSummary.reduce((total, item) => total + item.totalPrice, 0).toFixed(2);
 
   return (
     <div className="order-summary">
@@ -154,7 +211,7 @@ function OrderSummary() {
       )}
 
       <h2>Customer Information</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handlePaymentSubmit}>
         <label>
           Customer Name:
           <input type="text" name="name" value={customerInfo.name} onChange={handleInputChange} required />
@@ -212,11 +269,84 @@ function OrderSummary() {
             Online Pay
           </label>
         </fieldset>
+        
+        <button onClick={handleSaveOrder} disabled={loading}>
+          {loading ? 'Saving...' : 'Save Order and Delivery'}
+        </button>
+
+        {customerInfo.paymentType === 'online' && (
+          <div>
+            <label>
+              Card Name:
+              <input
+                type="text"
+                name="cardName"
+                value={paymentDetails.cardName}
+                onChange={handlePaymentChange}
+                required
+              />
+              {errors.cardName && <span className="error">{errors.cardName}</span>}
+            </label>
+            <label>
+              Card Type:
+              <select
+                name="cardType"
+                value={paymentDetails.cardType}
+                onChange={handlePaymentChange}
+              >
+                <option value="visa">Visa</option>
+                <option value="mastercard">MasterCard</option>
+                <option value="amex">American Express</option>
+              </select>
+            </label>
+            <label>
+              Card Number:
+              <input
+                type="text"
+                name="cardNumber"
+                value={paymentDetails.cardNumber}
+                onChange={handlePaymentChange}
+                required
+              />
+              {errors.cardNumber && <span className="error">{errors.cardNumber}</span>}
+            </label>
+            <label>
+              Expiration Date:
+              <input
+                type="text"
+                name="expirationDate"
+                placeholder="MM/YY"
+                value={paymentDetails.expirationDate}
+                onChange={handlePaymentChange}
+                required
+              />
+              {errors.expirationDate && <span className="error">{errors.expirationDate}</span>}
+            </label>
+            <label>
+              CVV:
+              <input
+                type="text"
+                name="cvv"
+                value={paymentDetails.cvv}
+                onChange={handlePaymentChange}
+                required
+              />
+              {errors.cvv && <span className="error">{errors.cvv}</span>}
+            </label>
+            <div>
+              <strong>Total Price: ₹{totalPrice}</strong>
+            </div>
+          </div>
+        )}
+
+        <br />
 
         <button type="submit" disabled={loading}>
-          {loading ? 'Submitting...' : 'Submit Order'}
+          {loading ? 'Submitting...' : 'Submit Payment'}
         </button>
       </form>
+
+
     </div>
   );
 }

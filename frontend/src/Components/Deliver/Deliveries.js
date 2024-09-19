@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './css/deliverAll.css'; // Assuming you have similar CSS
+import './css/deliverAll.css';
 
 function DeliveryDashboard() {
     const [deliveries, setDeliveries] = useState([]);
-    const [drivers, setDrivers] = useState([]); // State to store drivers
+    const [drivers, setDrivers] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [expandedDeliveryId, setExpandedDeliveryId] = useState(null);
     const navigate = useNavigate();
 
-    // Fetch deliveries
     useEffect(() => {
         const fetchDeliveries = async () => {
             try {
@@ -23,11 +22,10 @@ function DeliveryDashboard() {
         fetchDeliveries();
     }, []);
 
-    // Fetch drivers with position 'Driver'
     useEffect(() => {
         const fetchDrivers = async () => {
             try {
-                const res = await axios.get('http://localhost:8000/employee/position/driver');
+                const res = await axios.get('http://localhost:8000/drivers/status/available');
                 setDrivers(res.data);
             } catch (err) {
                 alert('Error fetching drivers: ' + err.message);
@@ -76,12 +74,23 @@ function DeliveryDashboard() {
     };
 
     const handleAssignDriver = async (deliveryId, driverId) => {
-        try {
-            await axios.put(`http://localhost:8000/delivery/update/${deliveryId}`, { assignedDriver: driverId });
-            alert('Driver assigned successfully');
-            // Optionally update the UI
-        } catch (err) {
-            alert('Error assigning driver: ' + err.message);
+        if (driverId) {
+            const driver = drivers.find(driver => driver._id === driverId);
+            const driverName = driver ? `${driver.firstName} ${driver.lastName}` : "";
+
+            try {
+                await axios.put(`http://localhost:8000/delivery/update/${deliveryId}`, { driverName });
+                alert('Driver assigned successfully');
+                setDeliveries(prevDeliveries =>
+                    prevDeliveries.map(delivery =>
+                        delivery._id === deliveryId ? { ...delivery, driverName } : delivery
+                    )
+                );
+            } catch (err) {
+                alert('Error assigning driver: ' + err.message);
+            }
+        } else {
+            alert('Please select a driver');
         }
     };
 
@@ -117,11 +126,11 @@ function DeliveryDashboard() {
                 <tbody>
                     {filteredDeliveries.map((delivery, index) => (
                         <tr key={delivery._id}>
-                            <td>{`D${index + 1}`}</td> {/* Format Delivery ID as D1, D2, etc. */}
+                            <td>{`D${index + 1}`}</td>
                             <td>{delivery.deliveryPersonName}</td>
                             <td>
-                                <button 
-                                    className="details-btn" 
+                                <button
+                                    className="details-btn"
                                     onClick={() => setExpandedDeliveryId(expandedDeliveryId === delivery._id ? null : delivery._id)}
                                 >
                                     {expandedDeliveryId === delivery._id ? 'Hide Details' : 'Show Details'}
@@ -146,7 +155,7 @@ function DeliveryDashboard() {
                             <td>
                                 <select
                                     onChange={(e) => handleAssignDriver(delivery._id, e.target.value)}
-                                    defaultValue="" // Optionally set default value based on delivery.assignedDriver
+                                    defaultValue=""
                                 >
                                     <option value="" disabled>Select a driver</option>
                                     {drivers.map((driver) => (

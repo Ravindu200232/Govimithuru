@@ -34,11 +34,12 @@ router.post('/add', validateDelivery, async (req, res) => {
 });
 
 // Update a delivery
-router.put('/update/:id', validateDelivery, async (req, res) => {
+router.put('/update/:id', async (req, res) => {
     const { id } = req.params;
+    const { driverName, status } = req.body; 
 
     try {
-        const delivery = await Delivery.findByIdAndUpdate(id, req.body, { new: true });
+        const delivery = await Delivery.findByIdAndUpdate(id, { driverName, status }, { new: true });
         if (!delivery) {
             return res.status(404).json({ status: "Error", error: "Delivery not found" });
         }
