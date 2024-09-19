@@ -10,7 +10,7 @@ import equipmentsImage from './img/eqump.jpg';
 import fertilizersImage from './img/fertilizer.jpg';
 import irrigationImage from './img/irrigation.jpg';
 import gardeningImage from './img/gardening.png';
-import bulkImage from './img/bulk.png';
+//import bulkImage from './img/bulk.png';
 
 function Product() {
   return (
@@ -56,10 +56,10 @@ function Product() {
             <img src={gardeningImage} alt="Gardening" />
             <span>Gardening</span>
           </div>
-          <div className="category">
-            <img src={bulkImage} alt="Bulk" />
+          {/* <div className="category">
+           <img src={bulkImage} alt="Bulk" />
             <span>Bulk</span>
-          </div>
+          </div> */}
         </div>
 
         {/* <a href="#" className="see-more">See More</a> */}

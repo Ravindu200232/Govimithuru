@@ -39,6 +39,7 @@ import SidebarE from './Components/Employee/SidebarE';
 import EmployeeSalaryForm from './Components/Employee/EmployeeSalaryForm';
 import SalaryDashboard from './Components/Employee/SalaryDashboard';
 import OrderSummary from './Components/ui/OrderSummary';
+import DriverList from './Components/Deliver/DriverList';
 
 function App() {
   const [sidebarVisible, setSidebarVisible] = useState(true); // State for sidebar visibility
@@ -212,6 +213,22 @@ function App() {
               </>
             }
           />
+          <Route
+            path="/admin/driver"
+            element={
+              <>
+                <NavbarA />
+                <div className="main-content">
+                <DileverySidebar />
+                  <div className="content">
+                    <DriverList />
+                  </div>
+                </div>
+              </>
+            }
+          />
+
+
 
           {/* Customer management routes */}
           <Route

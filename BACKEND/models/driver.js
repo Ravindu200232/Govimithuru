@@ -1,4 +1,3 @@
-// models/driver.js
 const mongoose = require('mongoose');
 
 const DriverSchema = new mongoose.Schema({
@@ -30,23 +29,16 @@ const DriverSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    profileImage: {
-        type: Buffer, // Store profile image as binary data
-        required: false,
-    },
     birthday: {
         type: Date, // Store birthday as a Date
-        required: false, // Optional field
+        required: false,
+    },
+    status: {
+        type: String,
+        required: false,
+        default: "unavailable",
     }
 }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
-
-// Virtual property to convert image buffer to base64 string
-DriverSchema.virtual('profileImageBase64').get(function () {
-    if (this.profileImage) {
-        return this.profileImage.toString('base64');
-    }
-    return null;
-});
 
 const Driver = mongoose.model('Driver', DriverSchema);
 
