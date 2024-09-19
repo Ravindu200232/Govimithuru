@@ -35,6 +35,8 @@ const ReviewRouter = require("./routes/reviews.js");
 const salaryRoutes = require('./routes/salary');
 const driverRoutes = require('./routes/driverRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
+const authRouter = require("./routes/auth");
+app.use("/auth", authRouter);
 
 
 app.use("/inventoryitem",InventoryItemRouter)

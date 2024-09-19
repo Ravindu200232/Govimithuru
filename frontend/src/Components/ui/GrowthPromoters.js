@@ -1,63 +1,85 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './css/GrowthPromoters.css';
+import './css/Seeds.css';
 
 function GrowthPromoters() {
-  const [growthPromotersItems, setGrowthPromotersItems] = useState([]);
+  const [promoterItems, setPromoterItems] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get('http://localhost:8000/showcase/growth-promoters')
       .then((res) => {
-        setGrowthPromotersItems(res.data);
+        setPromoterItems(res.data);
       })
       .catch((err) => {
-        console.error('Error fetching growth promoters items:', err);
+        console.error('Error fetching growth promoters:', err);
       });
   }, []);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredPromoters = promoterItems.filter((item) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleBuyNow = (id) => {
+    navigate(`/description/${id}`);
+  };
 
   return (
     <div className="growth-promoters-page">
       <section className="growth-promoters-section">
         <h1>Growth Promoters</h1>
-        <div className="growth-promoters-info">
-          <div className="info-left">
-            <h3>AGRICULTURAL GROWTH PROMOTERS</h3>
-            <p>(Total products: {growthPromotersItems.length})</p>
-            <h4>Category</h4>
-            <ul>
-              {/* List categories if needed */}
-            </ul>
-            
-            <h4>Company / Manufacturer</h4>
-            <ul>
-              {/* List manufacturers if needed */}
-            </ul>
-            
-            <h4>Size / Volume</h4>
-            <ul>
-              {/* List sizes if needed */}
-            </ul>
+        
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Search for growth promoters..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="search-input"
+          />
+        </div>
 
-            <button className="read-more-btn">Read more</button>
+        <div className="promoters-info">
+          <div className="info-left">
+            <h3>GROWTH PROMOTERS</h3>
+            <p>(Total products: {filteredPromoters.length})</p>
           </div>
-          
+
           <div className="info-right">
             <div className="products-grid">
-              {growthPromotersItems.length > 0 ? (
-                growthPromotersItems.map((item) => (
+              {filteredPromoters.length > 0 ? (
+                filteredPromoters.map((item) => (
                   <div className="product-card" key={item._id}>
                     <img 
                       src={`data:image/jpeg;base64,${item.imageBase64}`} 
                       alt={item.name} 
                     />
                     <h4>{item.name}</h4>
-                    <p>{item.description}</p>
-                    <p>Price: ${item.price.toFixed(2)}</p>
-                    <button className="buy-now-btn">Buy Now</button>
+                    <p>
+                      Price: ${item.price.toFixed(2)}
+                      {item.discount > 0 && (
+                        <>
+                          <span className="discount"> (${(item.price - (item.price * (item.discount / 100))).toFixed(2)})</span>
+                          <span className="discount-percentage"> {item.discount}% off</span>
+                        </>
+                      )}
+                    </p>
+                    <button 
+                      className="buy-now-btn"
+                      onClick={() => handleBuyNow(item._id)}
+                    >
+                      Buy Now
+                    </button>
                   </div>
                 ))
               ) : (
-                <p>No growth promoters items available.</p>
+                <p>No growth promoter items available.</p>
               )}
             </div>
           </div>

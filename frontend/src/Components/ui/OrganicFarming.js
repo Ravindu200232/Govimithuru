@@ -1,59 +1,81 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './css/OrganicFarming.css';
+import './css/Seeds.css';
 
 function OrganicFarming() {
-  const [organicFarmingItems, setOrganicFarmingItems] = useState([]);
+  const [farmingItems, setFarmingItems] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get('http://localhost:8000/showcase/organic-farming')
       .then((res) => {
-        setOrganicFarmingItems(res.data);
+        setFarmingItems(res.data);
       })
       .catch((err) => {
         console.error('Error fetching organic farming items:', err);
       });
   }, []);
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredFarming = farmingItems.filter((item) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleBuyNow = (id) => {
+    navigate(`/description/${id}`);
+  };
+
   return (
     <div className="organic-farming-page">
       <section className="organic-farming-section">
         <h1>Organic Farming</h1>
-        <div className="organic-farming-info">
-          <div className="info-left">
-            <h3>ORGANIC FARMING PRODUCTS</h3>
-            <p>(Total products: {organicFarmingItems.length})</p>
-            <h4>Category</h4>
-            <ul>
-              {/* List categories if needed */}
-            </ul>
-            
-            <h4>Company / Manufacturer</h4>
-            <ul>
-              {/* List manufacturers if needed */}
-            </ul>
-            
-            <h4>Size / Volume</h4>
-            <ul>
-              {/* List sizes if needed */}
-            </ul>
+        
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Search for organic farming items..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="search-input"
+          />
+        </div>
 
-            <button className="read-more-btn">Read more</button>
+        <div className="farming-info">
+          <div className="info-left">
+            <h3>ORGANIC FARMING</h3>
+            <p>(Total products: {filteredFarming.length})</p>
           </div>
-          
+
           <div className="info-right">
             <div className="products-grid">
-              {organicFarmingItems.length > 0 ? (
-                organicFarmingItems.map((item) => (
+              {filteredFarming.length > 0 ? (
+                filteredFarming.map((item) => (
                   <div className="product-card" key={item._id}>
                     <img 
                       src={`data:image/jpeg;base64,${item.imageBase64}`} 
                       alt={item.name} 
                     />
                     <h4>{item.name}</h4>
-                    <p>{item.description}</p>
-                    <p>Price: ${item.price.toFixed(2)}</p>
-                    <button className="buy-now-btn">Buy Now</button>
+                    <p>
+                      Price: ${item.price.toFixed(2)}
+                      {item.discount > 0 && (
+                        <>
+                          <span className="discount"> (${(item.price - (item.price * (item.discount / 100))).toFixed(2)})</span>
+                          <span className="discount-percentage"> {item.discount}% off</span>
+                        </>
+                      )}
+                    </p>
+                    <button 
+                      className="buy-now-btn"
+                      onClick={() => handleBuyNow(item._id)}
+                    >
+                      Buy Now
+                    </button>
                   </div>
                 ))
               ) : (

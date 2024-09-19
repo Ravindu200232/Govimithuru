@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 // User-facing components
 import Navbar from './Components/ui/Navbarui';
@@ -13,9 +14,19 @@ import Footer from './Components/ui/Footer';
 import Seeds from './Components/ui/Seeds';
 import Description from './Components/ui/Description';
 import Products from './Components/ui/Product';
+import GrowthPromoters from './Components/ui/GrowthPromoters';
+import Remedies from './Components/ui/Remedies';
+import OrganicFarming from './Components/ui/OrganicFarming';
+import Equipments from './Components/ui/Equipments';
+import Fertilizers from './Components/ui/Fertilizers';
+import Irrigation from './Components/ui/Irrigation';
+import Gardening from './Components/ui/Gardening';
 import Card from './Components/ui/Card';
 import OrderSummary from './Components/ui/OrderSummary';
 import OrderConfirmation from './Components/ui/OrderConfirmation';
+import Signup from './Signup';
+import Login from './Login';
+import AdminLogin from './AdminLogin';
 
 // Admin-facing components
 import NavbarA from './Components/inventry/NavbarA';
@@ -43,259 +54,434 @@ import SalaryDashboard from './Components/Employee/SalaryDashboard';
 import DriverList from './Components/Deliver/DriverList';
 
 function App() {
-  const [sidebarVisible, setSidebarVisible] = useState(true); // State for sidebar visibility
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  const toggleSidebar = () => {
-    setSidebarVisible(!sidebarVisible);
+  useEffect(() => {
+    const loggedInUser = Cookies.get('isLoggedIn') === 'true';
+    const adminUser = Cookies.get('isAdmin') === 'true';
+    setIsLoggedIn(loggedInUser);
+    setIsAdmin(adminUser);
+  }, []);
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+    Cookies.set('isLoggedIn', 'true', { expires: 1 / 288 });
+    alert("Logged in successfully!");
+  };
+
+  const handleAdminLogin = (email, password) => {
+    if (email === 'admin2232@gmail.com' && password === 'R2232r#') {
+      setIsAdmin(true);
+      Cookies.set('isAdmin', 'true', { expires: 1 / 288 });
+      alert("Admin logged in successfully!");
+    } else {
+      alert("Invalid admin credentials!");
+    }
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setIsAdmin(false);
+    Cookies.remove('isLoggedIn');
+    Cookies.remove('isAdmin');
+    alert("Logged out due to inactivity!");
   };
 
   return (
     <Router>
       <div>
-        {/* User-facing routes with shared Navbar and Footer */}
         <Routes>
+          <Route path="/" element={<Login onLogin={handleLogin} />} />
+          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/admin/login" element={<AdminLogin onAdminLogin={handleAdminLogin} />} />
+
           {/* User-facing routes */}
-          <Route path="/" element={
-            <>
-              <Navbar />
-              <Banner />
-              <Poster />
-              <Offer />
-              <CropSolution />
-              <BestSeller />
-              <Footer />
-            </>
+          <Route path="/home" element={
+            isLoggedIn ? (
+              <>
+                <Navbar />
+                <Banner />
+                <Poster />
+                <Offer />
+                <CropSolution />
+                <BestSeller />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
           } />
           <Route path="/products" element={
-            <>
-              <Navbar />
-              <Products />
-              <Footer />
-            </>
+            isLoggedIn ? (
+              <>
+                <Navbar />
+                <Products />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
           } />
           <Route path="/seeds" element={
-            <>
-              <Navbar />
-              <Seeds />
-              <Footer />
-            </>
+            isLoggedIn ? (
+              <>
+                <Navbar />
+                <Seeds />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
+          } />
+          <Route path="/growthPromoters" element={
+            isLoggedIn ? (
+              <>
+                <Navbar />
+                <GrowthPromoters />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
+          } />
+          <Route path="/remedies" element={
+            isLoggedIn ? (
+              <>
+                <Navbar />
+                <Remedies />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
+          } />
+          <Route path="/organicFarming" element={
+            isLoggedIn ? (
+              <>
+                <Navbar />
+                <OrganicFarming />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
+          } />
+          <Route path="/equipments" element={
+            isLoggedIn ? (
+              <>
+                <Navbar />
+                <Equipments />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
+          } />
+          <Route path="/fertilizers" element={
+            isLoggedIn ? (
+              <>
+                <Navbar />
+                <Fertilizers />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
+          } />
+          <Route path="/irrigation" element={
+            isLoggedIn ? (
+              <>
+                <Navbar />
+                <Irrigation />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
+          } />
+          <Route path="/gardening" element={
+            isLoggedIn ? (
+              <>
+                <Navbar />
+                <Gardening />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
           } />
           <Route path="/description/:id" element={
-            <>
-              <Navbar />
-              <Description />
-              <Footer />
-            </>
+            isLoggedIn ? (
+              <>
+                <Navbar />
+                <Description />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
           } />
           <Route path="/cart" element={
-            <>
-              <Navbar />
-              <Card />
-              <Footer />
-            </>
+            isLoggedIn ? (
+              <>
+                <Navbar />
+                <Card />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
           } />
           <Route path="/order-summary" element={
-            <>
-              <Navbar />
-              <OrderSummary />
-              <Footer />
-            </>
+            isLoggedIn ? (
+              <>
+                <Navbar />
+                <OrderSummary />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
           } />
           <Route path="/confirmation/:orderId" element={
-            <>
-              <Navbar />
-              <OrderConfirmation />
-              <Footer />
-            </>
+            isLoggedIn ? (
+              <>
+                <Navbar />
+                <OrderConfirmation />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
           } />
-        </Routes>
 
-        {/* Admin-facing routes */}
-        <Routes>
-          {/* Inventory routes */}
+          {/* Admin-facing routes */}
           <Route path="/admin/inventory" element={
-            <>
-              <NavbarA />
-              <div className="main-content">
-                <SidebarA />
-                <div className="content">
-                  <InventoryDashboard />
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarA />
+                  <div className="content">
+                    <InventoryDashboard />
+                  </div>
                 </div>
-              </div>
-            </>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
           } />
           <Route path="/admin/inventory/supply-form" element={
-            <>
-              <NavbarA />
-              <div className="main-content">
-                <SidebarA />
-                <div className="content">
-                  <InventorySupplyForm />
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarA />
+                  <div className="content">
+                    <InventorySupplyForm />
+                  </div>
                 </div>
-              </div>
-            </>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
           } />
           <Route path="/admin/inventory/all" element={
-            <>
-              <NavbarA />
-              <div className="main-content">
-                <SidebarA />
-                <div className="content">
-                  <AllInventory />
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarA />
+                  <div className="content">
+                    <AllInventory />
+                  </div>
                 </div>
-              </div>
-            </>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
           } />
-          
-          {/* Cart routes */}
           <Route path="/admin/cart" element={
-            <>
-              <NavbarA />
-              <div className="main-content">
-                <CartSidebar />
-                <div className="content">
-                  <CardDashboard />
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <CartSidebar />
+                  <div className="content">
+                    <CardDashboard />
+                  </div>
                 </div>
-              </div>
-            </>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
           } />
-
-          {/* Order routes */}
           <Route path="/admin/orders" element={
-            <>
-              <NavbarA />
-              <div className="main-content">
-                <OrderSide />
-                <div className="content">
-                  <OrderDashboard />
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <OrderSide />
+                  <div className="content">
+                    <OrderDashboard />
+                  </div>
                 </div>
-              </div>
-            </>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
           } />
-
-          {/* Delivery routes */}
           <Route path="/admin/delivery" element={
-            <>
-              <NavbarA />
-              <div className="main-content">
-                <DileverySidebar />
-                <div className="content">
-                  <DeliveryDashboard />
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <DileverySidebar />
+                  <div className="content">
+                    <DeliveryDashboard />
+                  </div>
                 </div>
-              </div>
-            </>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
           } />
-          <Route path="/admin/driver" element={
-            <>
-              <NavbarA />
-              <div className="main-content">
-                <DileverySidebar />
-                <div className="content">
-                  <DriverList />
-                </div>
-              </div>
-            </>
-          } />
-
-          {/* Customer management routes */}
-          <Route path="/admin/customers" element={
-            <>
-              <NavbarA />
-              <div className="main-content">
-                <UserSide />
-                <div className="content">
-                  <UserDashboard />
-                </div>
-              </div>
-            </>
-          } />
-
-          {/* Finance routes */}
           <Route path="/admin/finance" element={
-            <>
-              <NavbarA />
-              <div className="main-content">
-                <FinanceSidebar />
-                <div className="content">
-                  <FinanceDashboard />
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <FinanceSidebar />
+                  <div className="content">
+                    <FinanceDashboard />
+                  </div>
                 </div>
-              </div>
-            </>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
           } />
-
-          {/* Showcase routes */}
-          <Route path="/admin/showcase" element={
-            <>
-              <NavbarA />
-              <div className="main-content">
-                <SidebarA />
-                <div className="content">
-                  <ShowcaseDashboard />
+          <Route path="/admin/users" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <UserSide />
+                  <div className="content">
+                    <UserDashboard />
+                  </div>
                 </div>
-              </div>
-            </>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
           } />
-
-          {/* ShowcaseForm route with sidebar toggle */}
-          <Route path="/admin/showcase/ShowcaseForm" element={
-            <>
-              <NavbarA />
-              <div className="main-content">
-                {sidebarVisible && <SidebarA />}
-                <button onClick={toggleSidebar} className="sidebar-toggle-btn">
-                  {sidebarVisible ? 'Hide Sidebar' : 'Show Sidebar'}
-                </button>
-                <div className={`content ${sidebarVisible ? 'with-sidebar' : 'without-sidebar'}`}>
-                  <ShowcaseForm />
-                </div>
-              </div>
-            </>
-          } />
-
-          {/* Employee routes */}
           <Route path="/admin/employee" element={
-            <>
-              <NavbarA />
-              <div className="main-content">
-                <SidebarE />
-                <div className="content">
-                  <EmployeeList />
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarE />
+                  <div className="content">
+                    <EmployeeList />
+                  </div>
                 </div>
-              </div>
-            </>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
           } />
           <Route path="/admin/employee/form" element={
-            <>
-              <NavbarA />
-              <div className="main-content">
-                <SidebarE />
-                <div className="content">
-                  <EmployeeForm />
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarE />
+                  <div className="content">
+                    <EmployeeForm />
+                  </div>
                 </div>
-              </div>
-            </>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
           } />
-          <Route path="/admin/employee/salary-form" element={
-            <>
-              <NavbarA />
-              <div className="main-content">
-                <SidebarE />
-                <div className="content">
-                  <EmployeeSalaryForm />
+          <Route path="/admin/salary" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarE />
+                  <div className="content">
+                    <SalaryDashboard />
+                  </div>
                 </div>
-              </div>
-            </>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
           } />
-          <Route path="/admin/employee/salary-dashboard" element={
-            <>
-              <NavbarA />
-              <div className="main-content">
-                <SidebarE />
-                <div className="content">
-                  <SalaryDashboard />
+          <Route path="/admin/employee/salary" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarE />
+                  <div className="content">
+                    <EmployeeSalaryForm />
+                  </div>
                 </div>
-              </div>
-            </>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+          <Route path="/admin/driver" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <DileverySidebar />
+                  <div className="content">
+                    <DriverList />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+          <Route path="/admin/showcase" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarA />
+                  <div className="content">
+                    <ShowcaseDashboard />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+          <Route path="/admin/showcase/form" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarA />
+                  <div className="content">
+                    <ShowcaseForm />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
           } />
         </Routes>
       </div>
