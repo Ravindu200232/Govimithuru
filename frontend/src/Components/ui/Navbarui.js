@@ -22,8 +22,8 @@ function Navbar() {
         <li><a href="/products">Products</a></li>
         <li><a href="/cart">Cart</a></li>
         <li><a href="/login">Login</a></li>
-        <li><a href="/login">About</a></li>
-        <li><a href="/login">Contact</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
         <li><a href="/profile">Profile</a></li>
         <li><button onClick={handleLogout} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'blue' }}>Logout</button></li>
       </ul>

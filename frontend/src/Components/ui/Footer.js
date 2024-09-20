@@ -4,31 +4,31 @@ import logo from './img/logo.png'; // Import the logo image
 
 function Footer() {
   return (
-    <footer className="footer">
-      <div className="footer-container">
-        <div className="footer-logo">
-          <img src={logo} alt="Organic Food Store Logo" className="footer-logo-img" />
-        </div>
-        <div className="footer-nav">
-          <h3>Quick Links</h3>
-          <ul>
-            <li><a href="#about">About Us</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li><a href="#terms">Terms & Conditions</a></li>
-            <li><a href="#privacy">Privacy Policy</a></li>
-          </ul>
-        </div>
-        <div className="footer-social">
-          <h3>Follow Us</h3>
-          <div className="social-icons">
-            <a href="https://facebook.com" className="social-icon" target="_blank" rel="noopener noreferrer">FB</a>
-            <a href="https://twitter.com" className="social-icon" target="_blank" rel="noopener noreferrer">TW</a>
-            <a href="https://instagram.com" className="social-icon" target="_blank" rel="noopener noreferrer">IG</a>
-          </div>
-        </div>
+    <footer className="footer-section">
+      <div className="footer-left">
+        <img src={logo} alt="Govimithuru Logo" className="logo" />
+        <p>There are many variations of passages of lorem ipsum available, but the majority suffered alteration.</p>
       </div>
-      <div className="footer-copy">
-        <p>© 2024 Organic Food Store</p>
+      <div className="footer-links">
+        <ul>
+          <li>Services</li>
+          <li>Our Projects</li>
+          <li>Meet the Farmers</li>
+          <li>Latest News</li>
+          <li>Contact</li>
+        </ul>
+      </div>
+      <div className="footer-news">
+        <h3>News</h3>
+        <p>Bringing Food Production Back to Cities</p>
+        <p>July 5, 2023</p>
+      </div>
+      <div className="footer-contact">
+        <h3>Contact</h3>
+        <p>+666 888 0000</p>
+        <p>info@agriculturecompany.com</p>
+        <p>120 Gotham Golden Street, New York, USA</p>
+        <input type="email" placeholder="Your Email Address" />
       </div>
     </footer>
   );

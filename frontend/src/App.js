@@ -24,9 +24,12 @@ import Gardening from './Components/ui/Gardening';
 import Card from './Components/ui/Card';
 import OrderSummary from './Components/ui/OrderSummary';
 import OrderConfirmation from './Components/ui/OrderConfirmation';
+import Contact from './Components/ui/contact';
+import About from './Components/ui/About';
 import Signup from './Signup';
 import Login from './Login';
 import AdminLogin from './AdminLogin';
+
 
 // Admin-facing components
 import NavbarA from './Components/inventry/NavbarA';
@@ -54,6 +57,9 @@ import SalaryDashboard from './Components/Employee/SalaryDashboard';
 import DriverList from './Components/Deliver/DriverList';
 import PaymentDashboard from './Components/payment/PaymentDashboard';
 import PaymentSidebar from './Components/payment/PaymentSidebar';
+import OfferForm from './Components/inventry/OfferForm';
+import CropSolutionForm from './Components/inventry/CropSolutionForm';
+import BestSellingForm from './Components/inventry/BestSellingForm';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -236,6 +242,20 @@ function App() {
               <Navigate to="/cart" />
             )
           } />
+
+            <Route path="/contact" element={
+            isLoggedIn ? (
+              <>
+                <Navbar />
+                <Contact />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/contact" />
+            )
+          } />
+
+
           <Route path="/order-summary" element={
             isLoggedIn ? (
               <>
@@ -256,6 +276,17 @@ function App() {
               </>
             ) : (
               <Navigate to="/confirmation/:orderId" />
+            )
+          } />
+          <Route path="/about" element={
+            isLoggedIn ? (
+              <>
+                <Navbar />
+                <About />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/about" />
             )
           } />
 
@@ -494,6 +525,53 @@ function App() {
                   <PaymentSidebar />
                   <div className="content">
                     <PaymentDashboard />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+            <Route path="/admin/offer" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarA />
+                  <div className="content">
+                    <OfferForm />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+           <Route path="/admin/cropsolution" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarA />
+                  <div className="content">
+                    <CropSolutionForm />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+          <Route path="/admin/bestseller" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarA />
+                  <div className="content">
+                    <BestSellingForm />
                   </div>
                 </div>
               </>

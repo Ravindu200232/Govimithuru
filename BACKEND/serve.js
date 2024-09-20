@@ -38,6 +38,15 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const authRouter = require("./routes/auth");
 app.use("/auth", authRouter);
 
+const OfferRouter = require("./routes/Offer");
+app.use("/offers", OfferRouter);
+
+const cropSolution = require("./routes/cropSolutions.js");
+app.use("/cropSolutions",cropSolution);
+const bestSellingRouter = require('./routes/bestSelling');
+
+app.use('/bestSelling', bestSellingRouter);
+
 
 app.use("/inventoryitem",InventoryItemRouter)
 app.use("/showcase", ShowcaseRouter);
