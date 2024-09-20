@@ -29,4 +29,15 @@ router.post('/add', async (req, res) => {
   }
 });
 
+// Get all payments
+router.get('/', async (req, res) => {
+  try {
+    const payments = await Payment.find();
+    res.status(200).json(payments);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to retrieve payments.' });
+  }
+});
+
 module.exports = router;

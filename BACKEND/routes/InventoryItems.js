@@ -12,7 +12,7 @@ router.route("/add").post((req, res) => {
         category,
         unit,
         quantityAvailable,
-        supplyDate: new Date(supplyDate)  // Store only the date part
+        supplyDate: new Date(supplyDate) // Store only the date part
     });
 
     newInventoryItem.save()
@@ -28,7 +28,6 @@ router.route("/").get((req, res) => {
 });
 
 // Update Inventory Item
-//http//Localhost:7070/inventoryitem/update/
 router.route("/update/:id").put(async (req, res) => {
     let itemId = req.params.id;
     const { name, supName, description, category, unit, quantityAvailable, supplyDate } = req.body;
@@ -40,7 +39,7 @@ router.route("/update/:id").put(async (req, res) => {
         category,
         unit,
         quantityAvailable,
-        supplyDate: new Date(supplyDate)  // Store only the date part
+        supplyDate: new Date(supplyDate) // Store only the date part
     };
 
     await InventoryItem.findByIdAndUpdate(itemId, updateInventoryItem)
@@ -49,7 +48,6 @@ router.route("/update/:id").put(async (req, res) => {
 });
 
 // Delete Inventory Item
-// http//Localhost:7070/inventoryitem/delete
 router.route("/delete/:id").delete(async (req, res) => {
     let itemId = req.params.id;
 

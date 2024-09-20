@@ -52,6 +52,8 @@ import SidebarE from './Components/Employee/SidebarE';
 import EmployeeSalaryForm from './Components/Employee/EmployeeSalaryForm';
 import SalaryDashboard from './Components/Employee/SalaryDashboard';
 import DriverList from './Components/Deliver/DriverList';
+import PaymentDashboard from './Components/payment/PaymentDashboard';
+import PaymentSidebar from './Components/payment/PaymentSidebar';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -121,7 +123,7 @@ function App() {
                 <Footer />
               </>
             ) : (
-              <Navigate to="/login" />
+              <Navigate to="/products" />
             )
           } />
           <Route path="/seeds" element={
@@ -132,7 +134,7 @@ function App() {
                 <Footer />
               </>
             ) : (
-              <Navigate to="/login" />
+              <Navigate to="/seeds" />
             )
           } />
           <Route path="/growthPromoters" element={
@@ -143,7 +145,7 @@ function App() {
                 <Footer />
               </>
             ) : (
-              <Navigate to="/login" />
+              <Navigate to="/growthPromoters" />
             )
           } />
           <Route path="/remedies" element={
@@ -154,7 +156,7 @@ function App() {
                 <Footer />
               </>
             ) : (
-              <Navigate to="/login" />
+              <Navigate to="/remedies" />
             )
           } />
           <Route path="/organicFarming" element={
@@ -165,7 +167,7 @@ function App() {
                 <Footer />
               </>
             ) : (
-              <Navigate to="/login" />
+              <Navigate to="/organicFarming" />
             )
           } />
           <Route path="/equipments" element={
@@ -176,7 +178,7 @@ function App() {
                 <Footer />
               </>
             ) : (
-              <Navigate to="/login" />
+              <Navigate to="/equipments" />
             )
           } />
           <Route path="/fertilizers" element={
@@ -187,7 +189,7 @@ function App() {
                 <Footer />
               </>
             ) : (
-              <Navigate to="/login" />
+              <Navigate to="/fertilizers" />
             )
           } />
           <Route path="/irrigation" element={
@@ -198,7 +200,7 @@ function App() {
                 <Footer />
               </>
             ) : (
-              <Navigate to="/login" />
+              <Navigate to="/irrigation" />
             )
           } />
           <Route path="/gardening" element={
@@ -209,7 +211,7 @@ function App() {
                 <Footer />
               </>
             ) : (
-              <Navigate to="/login" />
+              <Navigate to="/gardening" />
             )
           } />
           <Route path="/description/:id" element={
@@ -220,7 +222,7 @@ function App() {
                 <Footer />
               </>
             ) : (
-              <Navigate to="/login" />
+              <Navigate to="/description" />
             )
           } />
           <Route path="/cart" element={
@@ -231,7 +233,7 @@ function App() {
                 <Footer />
               </>
             ) : (
-              <Navigate to="/login" />
+              <Navigate to="/cart" />
             )
           } />
           <Route path="/order-summary" element={
@@ -242,7 +244,7 @@ function App() {
                 <Footer />
               </>
             ) : (
-              <Navigate to="/login" />
+              <Navigate to="/order-summary" />
             )
           } />
           <Route path="/confirmation/:orderId" element={
@@ -253,7 +255,7 @@ function App() {
                 <Footer />
               </>
             ) : (
-              <Navigate to="/login" />
+              <Navigate to="/confirmation/:orderId" />
             )
           } />
 
@@ -363,7 +365,7 @@ function App() {
               <Navigate to="/admin/login" />
             )
           } />
-          <Route path="/admin/users" element={
+          <Route path="/admin/customers" element={
             isAdmin ? (
               <>
                 <NavbarA />
@@ -408,7 +410,7 @@ function App() {
               <Navigate to="/admin/login" />
             )
           } />
-          <Route path="/admin/salary" element={
+          <Route path="/admin/employee/salary-dashboard" element={
             isAdmin ? (
               <>
                 <NavbarA />
@@ -423,7 +425,7 @@ function App() {
               <Navigate to="/admin/login" />
             )
           } />
-          <Route path="/admin/employee/salary" element={
+          <Route path="/admin/employee/salary-form" element={
             isAdmin ? (
               <>
                 <NavbarA />
@@ -476,6 +478,22 @@ function App() {
                   <SidebarA />
                   <div className="content">
                     <ShowcaseForm />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+            <Route path="/admin/payment" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <PaymentSidebar />
+                  <div className="content">
+                    <PaymentDashboard />
                   </div>
                 </div>
               </>

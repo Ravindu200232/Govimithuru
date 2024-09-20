@@ -30,10 +30,6 @@ function OrderDashboard() {
         order.productDetails.some(detail => detail.itemName.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
-    const handleView = (id) => {
-        navigate(`/order/${id}`);
-    };
-
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this order?')) {
             try {
@@ -59,6 +55,37 @@ function OrderDashboard() {
             alert('Error confirming order: ' + err.message);
         }
     };
+
+    const handleUpdate = async (id) => {
+        const newStatus = prompt("Enter new status:", "Pending");
+        if (newStatus) {
+            try {
+                // Find the order in the current state
+                const orderToUpdate = orders.find(order => order._id === id);
+                if (orderToUpdate) {
+                    const updatedOrder = {
+                        ...orderToUpdate, // Spread existing order fields
+                        status: newStatus // Update only the status
+                    };
+    
+                    const res = await axios.put(`http://localhost:8000/orders/update/${id}`, updatedOrder);
+                    if (res.status === 200) {
+                        alert('Order updated successfully');
+                        setOrders(prevOrders =>
+                            prevOrders.map(order =>
+                                order._id === id ? { ...order, status: newStatus } : order
+                            )
+                        );
+                    } else {
+                        alert('Failed to update order');
+                    }
+                }
+            } catch (err) {
+                alert('Error updating order: ' + err.message);
+            }
+        }
+    };
+    
 
     return (
         <div>
@@ -118,7 +145,7 @@ function OrderDashboard() {
                             <td>{order.phoneNumber}</td>
                             <td>{order.paymentType}</td>
                             <td>
-                                <button className="view-btn" onClick={() => handleView(order._id)}>View</button>
+                                <button className="update-btn" onClick={() => handleUpdate(order._id)}>Update</button>
                                 <button className="delete-btn" onClick={() => handleDelete(order._id)}>Delete</button>
                                 {order.status !== 'Confirmed' && (
                                     <button className="confirm-btn" onClick={() => handleConfirm(order._id)}>Confirm</button>
