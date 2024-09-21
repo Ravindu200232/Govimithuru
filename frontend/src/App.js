@@ -60,6 +60,9 @@ import PaymentSidebar from './Components/payment/PaymentSidebar';
 import OfferForm from './Components/inventry/OfferForm';
 import CropSolutionForm from './Components/inventry/CropSolutionForm';
 import BestSellingForm from './Components/inventry/BestSellingForm';
+import OrderSummaryChart from './Components/Order/OrderSummaryChart';
+import InventorySummary from './Components/inventry/InventorySummary';
+import AvailableItemSummary from './Components/inventry/AvailableItemSummary.';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -579,7 +582,46 @@ function App() {
               <Navigate to="/admin/login" />
             )
           } />
+
+          <Route path="/admin/salesSummery" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <OrderSide />
+                  <div className="content">
+                    <OrderSummaryChart />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+        <Route path="/admin/SummeryInventory" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarA />
+                  <div className="content">
+                    <InventorySummary />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+
+        
+
+
         </Routes>
+
+        
       </div>
     </Router>
   );

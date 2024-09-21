@@ -46,6 +46,11 @@ function SidebarA() {
             Best Seller
           </NavLink>
         </li>
+        <li>
+          <NavLink to="/admin/SummeryInventory" activeClassName="active-link">
+            Category Summary
+          </NavLink>
+        </li>
       </ul>
     </aside>
   );
