@@ -82,14 +82,14 @@ function App() {
 
   const handleLogin = () => {
     setIsLoggedIn(true);
-    Cookies.set('isLoggedIn', 'true', { expires: 1 / 288 });
+    Cookies.set('isLoggedIn', 'true', { expires: 20 / 288 });
     alert("Logged in successfully!");
   };
 
   const handleAdminLogin = (email, password) => {
     if (email === 'admin2232@gmail.com' && password === 'R2232r#') {
       setIsAdmin(true);
-      Cookies.set('isAdmin', 'true', { expires: 1 / 288 });
+      Cookies.set('isAdmin', 'true', { expires: 20 / 288 });
       alert("Admin logged in successfully!");
     } else {
       alert("Invalid admin credentials!");
@@ -509,7 +509,7 @@ function App() {
               <Navigate to="/admin/login" />
             )
           } />
-          <Route path="/admin/showcase/form" element={
+          <Route path="/admin/showcase/ShowcaseForm" element={
             isAdmin ? (
               <>
                 <NavbarA />

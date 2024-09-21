@@ -18,8 +18,8 @@ const EmployeeSummary = () => {
     useEffect(() => {
         const fetchEmployeeData = async () => {
             try {
-                const employeeResponse = await axios.get('http://localhost:8000/employee');
-                const salaryResponse = await axios.get('http://localhost:8000/salary'); // Adjust API URL as needed
+                const employeeResponse = await axios.get('http://localhost:8000/employees');
+                const salaryResponse = await axios.get('http://localhost:8000/salaries'); // Adjust API URL as needed
 
                 setEmployeeData(employeeResponse.data);
                 setSalaryData(salaryResponse.data);

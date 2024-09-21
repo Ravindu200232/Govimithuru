@@ -9,7 +9,7 @@ function GrowthPromoters() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('http://localhost:8000/showcase/growth-promoters')
+    axios.get('http://localhost:8000/showcase/Growthpromoters')
       .then((res) => {
         setPromoterItems(res.data);
       })
