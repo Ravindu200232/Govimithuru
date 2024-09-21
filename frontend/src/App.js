@@ -63,6 +63,11 @@ import BestSellingForm from './Components/inventry/BestSellingForm';
 import OrderSummaryChart from './Components/Order/OrderSummaryChart';
 import InventorySummary from './Components/inventry/InventorySummary';
 import AvailableItemSummary from './Components/inventry/AvailableItemSummary.';
+import CartSummery from './Components/Card/CartSummery';
+import DeliverySummary from './Components/Deliver/DeliverySummary';
+import EmployeeSummary from './Components/Employee/EmployeeSummary';
+import UserSummary from './Components/User/UserSummary';
+import PaymentSummary from './Components/payment/PaymentSummary';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -607,6 +612,93 @@ function App() {
                   <SidebarA />
                   <div className="content">
                     <InventorySummary />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+
+
+
+          <Route path="/admin/cartSummery" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <CartSidebar />
+                  <div className="content">
+                    <CartSummery />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+
+           <Route path="/admin/deliverySumery" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <DileverySidebar />
+                  <div className="content">
+                    <DeliverySummary />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+
+
+         <Route path="/admin/employee/Summery" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarE />
+                  <div className="content">
+                    <EmployeeSummary />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+
+         <Route path="/admin/USerSummery" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <UserSide />
+                  <div className="content">
+                    <UserSummary />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+           <Route path="/admin/payments/summery" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <PaymentSidebar />
+                  <div className="content">
+                    <PaymentSummary />
                   </div>
                 </div>
               </>

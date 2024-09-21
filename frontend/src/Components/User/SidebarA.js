@@ -12,28 +12,28 @@ function SidebarA() {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/admin/sales" activeClassName="active-link">
-            Sales
+          <NavLink to="/admin/USerSummery" activeClassName="active-link">
+            Summery
           </NavLink>
         </li>
         <li>
           <NavLink to="/admin/inventory/supply-form" activeClassName="active-link">
-            Supply Item
+           
           </NavLink>
         </li>
         <li>
           <NavLink to="/admin/inventory/all" activeClassName="active-link">
-            Supply Dashboard
+           
           </NavLink>
         </li>
         <li>
           <NavLink to="/admin/showcase" activeClassName="active-link">
-            Showcase
+           
           </NavLink>
         </li>
         <li>
           <NavLink to="/admin/alerts" activeClassName="active-link">
-            Alerts
+            
           </NavLink>
         </li>
       </ul>

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Pie, Bar } from 'react-chartjs-2';
 import { Chart, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
 import axios from 'axios';
-import { Card, Row, Col } from 'react-bootstrap';
+import { Card, Row, Col, Table } from 'react-bootstrap';
 
 // Register components
 Chart.register(ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
@@ -12,6 +12,7 @@ Chart.register(ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearSca
 const OrderSummaryChart = () => {
     const [orderData, setOrderData] = useState([]);
     const [chartData, setChartData] = useState({});
+    const [summaryTableData, setSummaryTableData] = useState([]);
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -19,6 +20,7 @@ const OrderSummaryChart = () => {
                 const response = await axios.get('http://localhost:8000/orders'); // Adjust API URL as needed
                 setOrderData(response.data);
                 prepareChartData(response.data);
+                prepareSummaryTableData(response.data);
             } catch (error) {
                 console.error("Error fetching order data:", error);
             }
@@ -60,6 +62,29 @@ const OrderSummaryChart = () => {
         });
     };
 
+    const prepareSummaryTableData = (data) => {
+        const summary = data.reduce((acc, order) => {
+            const dateKey = new Date(order.date).toLocaleDateString(); // Format date
+            const customerKey = order.customerName;
+
+            if (!acc[dateKey]) {
+                acc[dateKey] = {};
+            }
+            acc[dateKey][customerKey] = (acc[dateKey][customerKey] || 0) + 1; // Count orders
+            return acc;
+        }, {});
+
+        const formattedSummary = Object.entries(summary).flatMap(([date, customers]) => {
+            return Object.entries(customers).map(([customerName, count]) => ({
+                date,
+                customerName,
+                orderCount: count,
+            }));
+        });
+
+        setSummaryTableData(formattedSummary);
+    };
+
     return (
         <Card className="my-4">
             <Card.Body>
@@ -86,6 +111,25 @@ const OrderSummaryChart = () => {
                         </div>
                     </Col>
                 </Row>
+                <h5>Order Count by Customer and Date</h5>
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                           
+                            <th>Customer Name</th>
+                            <th>Order Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {summaryTableData.map((item, index) => (
+                            <tr key={index}>
+                                
+                                <td>{item.customerName}</td>
+                                <td>{item.orderCount}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
             </Card.Body>
         </Card>
     );

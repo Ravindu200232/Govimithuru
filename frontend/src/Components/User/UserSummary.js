@@ -1,4 +1,4 @@
-// src/components/InventorySummary.js
+// src/components/UserSummary.js
 
 import React, { useEffect, useState } from 'react';
 import { Pie, Bar } from 'react-chartjs-2';
@@ -9,43 +9,43 @@ import { Card, Row, Col, Table } from 'react-bootstrap';
 // Register components
 Chart.register(ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
-const InventorySummary = () => {
-    const [inventoryData, setInventoryData] = useState([]);
-    const [chartData, setChartData] = useState([]);
-    const [summarizedData, setSummarizedData] = useState([]);
+const UserSummary = () => {
+    const [userData, setUserData] = useState([]);
+    const [chartData, setChartData] = useState({});
+    const [tableData, setTableData] = useState([]);
 
     useEffect(() => {
-        const fetchInventoryItems = async () => {
+        const fetchUserData = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/inventoryitem'); // Adjust API URL as needed
-                setInventoryData(response.data);
+                const response = await axios.get('http://localhost:8000/user'); // Adjust API URL as needed
+                setUserData(response.data);
                 prepareChartData(response.data);
-                summarizeData(response.data);
+                prepareTableData(response.data);
             } catch (error) {
-                console.error("Error fetching inventory data:", error);
+                console.error("Error fetching user data:", error);
             }
         };
 
-        fetchInventoryItems();
+        fetchUserData();
     }, []);
 
     const prepareChartData = (data) => {
-        const summary = data.reduce((acc, item) => {
-            acc[item.category] = (acc[item.category] || 0) + item.quantityAvailable;
+        const roleSummary = data.reduce((acc, user) => {
+            acc[user.role] = (acc[user.role] || 0) + 1; // Assuming each user has a role property
             return acc;
         }, {});
 
-        const labels = Object.keys(summary);
-        const values = Object.values(summary);
+        const labels = Object.keys(roleSummary);
+        const values = Object.values(roleSummary);
 
         setChartData({
             pie: {
                 labels: labels,
                 datasets: [
                     {
-                        label: 'Inventory Status Summary (Pie)',
+                        label: 'User Distribution by Role',
                         data: values,
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#FF9F40', '#4BC0C0'],
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#FF9F40'],
                     },
                 ],
             },
@@ -53,7 +53,7 @@ const InventorySummary = () => {
                 labels: labels,
                 datasets: [
                     {
-                        label: 'Inventory Status Summary (Bar)',
+                        label: 'User Count by Role',
                         data: values,
                         backgroundColor: '#36A2EB',
                     },
@@ -62,26 +62,24 @@ const InventorySummary = () => {
         });
     };
 
-    const summarizeData = (data) => {
-        const summary = data.reduce((acc, item) => {
-            const key = `${item.supName}-${item.name}`; // Unique key for each supplier-item combination
-            if (!acc[key]) {
-                acc[key] = { supName: item.supName, itemName: item.name, totalQuantity: 0 };
-            }
-            acc[key].totalQuantity += item.quantityAvailable; // Sum the quantities
-            return acc;
-        }, {});
+    const prepareTableData = (data) => {
+        const formattedTableData = data.map((user) => ({
+            id: user._id,
+            name: `${user.firstname} ${user.lastname}`,
+            username: user.username,
+            email: user.email,
+        }));
 
-        setSummarizedData(Object.values(summary)); // Convert back to array
+        setTableData(formattedTableData);
     };
 
     return (
         <Card className="my-4">
             <Card.Body>
-                <Card.Title>Inventory Summary</Card.Title>
+                <Card.Title>User Summary</Card.Title>
                 <Row>
                     <Col md={6}>
-                        <h5>Pie Chart</h5>
+                        <h5>Role Distribution (Pie Chart)</h5>
                         <div style={{ width: '100%', height: '300px' }}>
                             {chartData.pie && chartData.pie.labels && chartData.pie.labels.length > 0 ? (
                                 <Pie data={chartData.pie} />
@@ -91,7 +89,7 @@ const InventorySummary = () => {
                         </div>
                     </Col>
                     <Col md={6}>
-                        <h5>Bar Chart</h5>
+                        <h5>User Count by Role (Bar Chart)</h5>
                         <div style={{ width: '100%', height: '300px' }}>
                             {chartData.bar && chartData.bar.labels && chartData.bar.labels.length > 0 ? (
                                 <Bar data={chartData.bar} />
@@ -101,23 +99,31 @@ const InventorySummary = () => {
                         </div>
                     </Col>
                 </Row>
-                <h5>Supplier and Item Summary</h5>
+                <h5 className="mt-4">User Summary Table</h5>
                 <Table striped bordered hover>
                     <thead>
                         <tr>
-                            <th>Supplier Name</th>
-                            <th>Item Name</th>
-                            <th>Total Quantity</th>
+                            <th>User ID</th>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {summarizedData.map((item, index) => (
-                            <tr key={index}>
-                                <td>{item.supName}</td>
-                                <td>{item.itemName}</td>
-                                <td>{item.totalQuantity}</td>
+                        {tableData.length > 0 ? (
+                            tableData.map((row) => (
+                                <tr key={row.id}>
+                                    <td>{row.id}</td>
+                                    <td>{row.name}</td>
+                                    <td>{row.username}</td>
+                                    <td>{row.email}</td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="4" className="text-center">No data available</td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </Table>
             </Card.Body>
@@ -125,4 +131,4 @@ const InventorySummary = () => {
     );
 };
 
-export default InventorySummary;
+export default UserSummary;

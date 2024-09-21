@@ -22,8 +22,8 @@ function SidebarA() {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/admin/inventory/all" activeClassName="active-link">
-            
+          <NavLink to="/admin/deliverySumery" activeClassName="active-link">
+            Deliver Summary
           </NavLink>
         </li>
         <li>

@@ -25,6 +25,12 @@ function PaymentSidebar() {
             Payment Alerts
           </NavLink>
         </li>
+
+        <li>
+          <NavLink to="/admin/payments/summery" activeClassName="active-link" style={styles.link}>
+            Payment Summery
+          </NavLink>
+        </li>
       </ul>
     </aside>
   );

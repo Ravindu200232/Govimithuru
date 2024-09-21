@@ -1,4 +1,4 @@
-// src/components/InventorySummary.js
+// src/components/DeliverySummary.js
 
 import React, { useEffect, useState } from 'react';
 import { Pie, Bar } from 'react-chartjs-2';
@@ -9,29 +9,29 @@ import { Card, Row, Col, Table } from 'react-bootstrap';
 // Register components
 Chart.register(ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
-const InventorySummary = () => {
-    const [inventoryData, setInventoryData] = useState([]);
-    const [chartData, setChartData] = useState([]);
-    const [summarizedData, setSummarizedData] = useState([]);
+const DeliverySummary = () => {
+    const [deliveryData, setDeliveryData] = useState([]);
+    const [chartData, setChartData] = useState({});
+    const [tableData, setTableData] = useState([]);
 
     useEffect(() => {
-        const fetchInventoryItems = async () => {
+        const fetchDeliveries = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/inventoryitem'); // Adjust API URL as needed
-                setInventoryData(response.data);
+                const response = await axios.get('http://localhost:8000/delivery'); // Adjust API URL as needed
+                setDeliveryData(response.data);
                 prepareChartData(response.data);
-                summarizeData(response.data);
+                prepareTableData(response.data);
             } catch (error) {
-                console.error("Error fetching inventory data:", error);
+                console.error("Error fetching delivery data:", error);
             }
         };
 
-        fetchInventoryItems();
+        fetchDeliveries();
     }, []);
 
     const prepareChartData = (data) => {
-        const summary = data.reduce((acc, item) => {
-            acc[item.category] = (acc[item.category] || 0) + item.quantityAvailable;
+        const summary = data.reduce((acc, delivery) => {
+            acc[delivery.status] = (acc[delivery.status] || 0) + 1;
             return acc;
         }, {});
 
@@ -43,9 +43,9 @@ const InventorySummary = () => {
                 labels: labels,
                 datasets: [
                     {
-                        label: 'Inventory Status Summary (Pie)',
+                        label: 'Delivery Status Summary (Pie)',
                         data: values,
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#FF9F40', '#4BC0C0'],
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
                     },
                 ],
             },
@@ -53,7 +53,7 @@ const InventorySummary = () => {
                 labels: labels,
                 datasets: [
                     {
-                        label: 'Inventory Status Summary (Bar)',
+                        label: 'Delivery Status Summary (Bar)',
                         data: values,
                         backgroundColor: '#36A2EB',
                     },
@@ -62,23 +62,25 @@ const InventorySummary = () => {
         });
     };
 
-    const summarizeData = (data) => {
-        const summary = data.reduce((acc, item) => {
-            const key = `${item.supName}-${item.name}`; // Unique key for each supplier-item combination
-            if (!acc[key]) {
-                acc[key] = { supName: item.supName, itemName: item.name, totalQuantity: 0 };
-            }
-            acc[key].totalQuantity += item.quantityAvailable; // Sum the quantities
+    const prepareTableData = (data) => {
+        const summary = data.reduce((acc, delivery) => {
+            const key = `${delivery.deliveryPersonName} - ${delivery.status}`;
+            acc[key] = (acc[key] || 0) + 1;
             return acc;
         }, {});
 
-        setSummarizedData(Object.values(summary)); // Convert back to array
+        const formattedTableData = Object.entries(summary).map(([key, value]) => {
+            const [deliveryPersonName, status] = key.split(" - ");
+            return { deliveryPersonName, status, count: value };
+        });
+
+        setTableData(formattedTableData);
     };
 
     return (
         <Card className="my-4">
             <Card.Body>
-                <Card.Title>Inventory Summary</Card.Title>
+                <Card.Title>Delivery Summary</Card.Title>
                 <Row>
                     <Col md={6}>
                         <h5>Pie Chart</h5>
@@ -101,23 +103,29 @@ const InventorySummary = () => {
                         </div>
                     </Col>
                 </Row>
-                <h5>Supplier and Item Summary</h5>
+                <h5 className="mt-4">Delivery Summary Table</h5>
                 <Table striped bordered hover>
                     <thead>
                         <tr>
-                            <th>Supplier Name</th>
-                            <th>Item Name</th>
-                            <th>Total Quantity</th>
+                            <th>Delivery Person</th>
+                            <th>Status</th>
+                            <th>Count</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {summarizedData.map((item, index) => (
-                            <tr key={index}>
-                                <td>{item.supName}</td>
-                                <td>{item.itemName}</td>
-                                <td>{item.totalQuantity}</td>
+                        {tableData.length > 0 ? (
+                            tableData.map((row, index) => (
+                                <tr key={index}>
+                                    <td>{row.deliveryPersonName}</td>
+                                    <td>{row.status}</td>
+                                    <td>{row.count}</td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="3" className="text-center">No data available</td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </Table>
             </Card.Body>
@@ -125,4 +133,4 @@ const InventorySummary = () => {
     );
 };
 
-export default InventorySummary;
+export default DeliverySummary;
