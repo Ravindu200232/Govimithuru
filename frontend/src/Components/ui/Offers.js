@@ -1,29 +1,29 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import axios from 'axios';
 import './css/Offers.css';
-import offer1 from './img/offer1.jpg';
-import offer2 from './img/off2.webp';
-import offer3 from './img/off2.webp';
-
-const offers = [
-  { img: offer1, title: "Product 1", description: "Description of product 1" },
-  { img: offer2, title: "Product 2", description: "Description of product 2" },
-  { img: offer3, title: "Product 3", description: "Description of product 3" },
-  { img: offer1, title: "Product 4", description: "Description of product 4" },
-  { img: offer2, title: "Product 5", description: "Description of product 5" },
-  { img: offer3, title: "Product 6", description: "Description of product 6" },
-  { img: offer1, title: "Product 7", description: "Description of product 7" },
-  { img: offer2, title: "Product 8", description: "Description of product 8" },
-  { img: offer3, title: "Product 9", description: "Description of product 9" },
-  { img: offer1, title: "Product 10", description: "Description of product 10" },
-];
 
 function Offers() {
+  const [offers, setOffers] = useState([]); // State to hold offers data
   const scrollContainerRef = useRef(null);
+
+  useEffect(() => {
+    const fetchOffers = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/offers'); // Adjust the URL as needed
+        console.log(response.data); // Log the offers data
+        setOffers(response.data);
+      } catch (error) {
+        console.error('Error fetching offers:', error);
+      }
+    };
+
+    fetchOffers();
+  }, []);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({
-        left: -300, // Adjust the scroll amount as needed
+        left: -300,
         behavior: 'smooth',
       });
     }
@@ -32,7 +32,7 @@ function Offers() {
   const scrollRight = () => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({
-        left: 300, // Adjust the scroll amount as needed
+        left: 300,
         behavior: 'smooth',
       });
     }
@@ -47,13 +47,13 @@ function Offers() {
         container.scrollLeft = 0;
       } else {
         container.scrollBy({
-          left: 300, // Adjust the scroll amount as needed
+          left: 300,
           behavior: 'smooth',
         });
       }
-    }, 3000); // Adjust the interval time (in milliseconds) as needed
+    }, 3000);
 
-    return () => clearInterval(scrollInterval); // Cleanup interval on unmount
+    return () => clearInterval(scrollInterval);
   }, []);
 
   return (
@@ -64,14 +64,22 @@ function Offers() {
         <button className="scroll-btn right" onClick={scrollRight}>›</button>
       </div>
       <div className="offers-list" ref={scrollContainerRef}>
-        {offers.map((offer, index) => (
-          <div className="offer-item" key={index}>
-            <img src={offer.img} alt={offer.title} />
-            <h3>{offer.title}</h3>
-            <p>{offer.description}</p>
-            <button>Shop Now</button>
-          </div>
-        ))}
+        {offers.length > 0 ? (
+          offers.map((offer) => (
+            <div className="offer-item" key={offer._id}>
+              <img
+                src={offer.img || 'path/to/placeholder-image.jpg'} // Use a placeholder image if needed
+                alt={offer.title}
+              />
+              <h3>{offer.title}</h3>
+              <a href={offer.link} target="_blank" rel="noopener noreferrer">
+                <button>Shop Now</button>
+              </a>
+            </div>
+          ))
+        ) : (
+          <p>No offers available</p>
+        )}
       </div>
     </div>
   );

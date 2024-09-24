@@ -1,64 +1,67 @@
-const router = require("express").Router();
-const Deliver = require("../models/Deliver");  // Use const and correct import
+const express = require('express');
+const router = express.Router();
+const Delivery = require('../models/Deliver');
 
-// Add Deliver
-router.route("/add").post((req, res) => {
-    const { deliverID, orderID, deliverDate, address, status } = req.body;
+// Middleware for validating request body
+const validateDelivery = (req, res, next) => {
+    const { deliveryPersonName, deliveryDate, status, address, postalCode, email, phoneNumber, deliveryType, deliveryDetails } = req.body;
+    if (!deliveryPersonName || !deliveryDate || !status || !address || !postalCode || !email || !phoneNumber || !deliveryType || !deliveryDetails) {
+        return res.status(400).json({ status: "Error", error: "Missing required fields" });
+    }
+    next();
+};
 
-    const newDeliver = new Deliver({
-        deliverID,
-        orderID,
-        deliverDate: new Date(deliverDate),  // Store only the date part
-        address,
-        status,
-    });
-
-    newDeliver.save()
-        .then(() => res.json("Deliver Added"))
-        .catch((err) => res.status(500).json("Error: " + err));
+// Get all deliveries
+router.get('/', async (req, res) => {
+    try {
+        const deliveries = await Delivery.find({});
+        res.status(200).json(deliveries);
+    } catch (err) {
+        res.status(500).json({ status: "Error with fetching deliveries", error: err.message });
+    }
 });
 
-// Get All Delivers
-router.route("/").get((req, res) => {
-    Deliver.find()
-        .then((delivers) => res.json(delivers))
-        .catch((err) => res.status(500).json("Error: " + err));
+// Add a new delivery
+router.post('/add', validateDelivery, async (req, res) => {
+    const newDelivery = new Delivery(req.body);
+
+    try {
+        await newDelivery.save();
+        res.status(201).json({ status: "Success", message: "Delivery Added" });
+    } catch (err) {
+        res.status(500).json({ status: "Error with adding delivery", error: err.message });
+    }
 });
 
-// Update Deliver
-router.route("/update/:id").put(async (req, res) => {
-    let deliverId = req.params.id;
-    const { deliverID, orderID, deliverDate, address, status } = req.body;
+// Update a delivery
+router.put('/update/:id', async (req, res) => {
+    const { id } = req.params;
+    const { driverName, status } = req.body; 
 
-    const updateDeliver = {
-        deliverID,
-        orderID,
-        deliverDate: new Date(deliverDate),  // Store only the date part
-        address,
-        status,
-    };
-
-    await Deliver.findByIdAndUpdate(deliverId, updateDeliver)
-        .then(() => res.status(200).send({ status: "Deliver updated" }))
-        .catch((err) => res.status(500).send({ status: "Error with updating data", error: err.message }));
+    try {
+        const delivery = await Delivery.findByIdAndUpdate(id, { driverName, status }, { new: true });
+        if (!delivery) {
+            return res.status(404).json({ status: "Error", error: "Delivery not found" });
+        }
+        res.status(200).json({ status: "Success", message: "Delivery Updated" });
+    } catch (err) {
+        res.status(500).json({ status: "Error with updating delivery", error: err.message });
+    }
 });
 
-// Delete Deliver
-router.route("/delete/:id").delete(async (req, res) => {
-    let deliverId = req.params.id;
+// Delete a delivery
+router.delete('/delete/:id', async (req, res) => {
+    const { id } = req.params;
 
-    await Deliver.findByIdAndDelete(deliverId)
-        .then(() => res.status(200).send({ status: "Deliver deleted" }))
-        .catch((err) => res.status(500).send({ status: "Error with deleting deliver", error: err.message }));
-});
-
-// Get One Deliver by ID
-router.route("/get/:id").get(async (req, res) => {
-    let deliverId = req.params.id;
-
-    await Deliver.findById(deliverId)
-        .then((deliver) => res.status(200).send({ status: "Deliver fetched", deliver }))
-        .catch((err) => res.status(500).send({ status: "Error with getting deliver", error: err.message }));
+    try {
+        const delivery = await Delivery.findByIdAndDelete(id);
+        if (!delivery) {
+            return res.status(404).json({ status: "Error", error: "Delivery not found" });
+        }
+        res.status(200).json({ status: "Success", message: "Delivery Deleted" });
+    } catch (err) {
+        res.status(500).json({ status: "Error with deleting delivery", error: err.message });
+    }
 });
 
 module.exports = router;

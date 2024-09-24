@@ -1,52 +1,74 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import './css/Dashboard.css';
 
 function Carts() {
     const [cardItems, setCardItems] = useState([]);
-    const navigate = useNavigate();
+    const [expandedItemId, setExpandedItemId] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        // Fetch all card items from the backend
-        axios.get('http://localhost:8000/card')
-            .then((res) => {
-                // Set the card items in state
-                setCardItems(res.data);
-            })
-            .catch((err) => {
-                console.error('Error fetching card items:', err);
-            });
+        fetchCardItems();
     }, []);
 
-    // Handle delete operation
-    const handleDelete = (id) => {
-        axios.delete(`http://localhost:8000/card/delete/${id}`)
-            .then((res) => {
-                // Refresh the card items
-                setCardItems(cardItems.filter(item => item._id !== id));
-            })
-            .catch((err) => {
-                console.error('Error deleting card item:', err);
-            });
+    const fetchCardItems = async () => {
+        try {
+            const res = await axios.get('http://localhost:8000/card');
+            setCardItems(res.data);
+        } catch (err) {
+            console.error('Error fetching card items:', err);
+            setError('Error fetching items. Please try again later.');
+        } finally {
+            setLoading(false);
+        }
     };
 
-    // Handle view operation
-    const handleView = (id) => {
-        navigate(`/card/${id}`); // Navigate to a detailed view page (you'll need to set up this route separately)
+    const handleDelete = async (id) => {
+        try {
+            await axios.delete(`http://localhost:8000/card/delete/${id}`);
+            setCardItems(cardItems.filter(item => item._id !== id));
+        } catch (err) {
+            console.error('Error deleting card item:', err);
+            setError('Error deleting item. Please try again.');
+        }
     };
+
+    const handleView = (id) => {
+        setExpandedItemId(expandedItemId === id ? null : id);
+    };
+
+    const handleSearch = () => {
+        // Logic for searching can be implemented here
+        // Currently, it doesn't filter the items; implement filtering logic as needed
+    };
+
+    const filteredItems = cardItems.filter(item =>
+        item.itemNamec.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.categoryc.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.pricec.toString().includes(searchTerm)
+    );
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div className="error-message">{error}</div>;
 
     return (
         <div className="dashboard">
             <h1 className="dashboard-title">Cart Dashboard</h1>
             <div className="search-bar">
-                <input type="text" placeholder="Search by Name, Category, or Price" />
-                <button className="search-btn">Search</button>
+                <input
+                    type="text"
+                    placeholder="Search by Name, Category, or Price"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <button className="search-btn" onClick={handleSearch}>Search</button>
             </div>
             <table className="dashboard-table">
                 <thead>
                     <tr>
-                        <th>ID</th> {/* Sequential ID */}
+                        <th>ID</th>
                         <th>Image</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -57,31 +79,46 @@ function Carts() {
                     </tr>
                 </thead>
                 <tbody>
-                    {cardItems.length > 0 ? (
-                        cardItems.map((item, index) => ( // Add index here
-                            <tr key={item._id}>
-                                <td>{index + 1}</td> {/* Display sequential ID */}
-                                <td>
-                                    <img 
-                                        src={`data:image/jpeg;base64,${item.imagec}`} 
-                                        alt={item.itemNamec} 
-                                        className="cart-item-image" // You can define CSS to style this
-                                    />
-                                </td>
-                                <td>{item.itemNamec}</td>
-                                <td>{item.categoryc}</td>
-                                <td>₹{item.pricec.toFixed(2)}</td>
-                                <td>{item.available}</td>
-                                <td>{item.quantityc}</td>
-                                <td>
-                                    <button onClick={() => handleView(item._id)}>View</button>
-                                    <button onClick={() => handleDelete(item._id)}>Delete</button>
-                                </td>
-                            </tr>
+                    {filteredItems.length > 0 ? (
+                        filteredItems.map((item, index) => (
+                            <React.Fragment key={item._id}>
+                                <tr>
+                                    <td>{index + 1}</td>
+                                    <td>
+                                        <img
+                                            src={`data:image/jpeg;base64,${item.imagec}`}
+                                            alt={item.itemNamec}
+                                            className="cart-item-image"
+                                        />
+                                    </td>
+                                    <td>{item.itemNamec}</td>
+                                    <td>{item.categoryc}</td>
+                                    <td>₹{item.pricec.toFixed(2)}</td>
+                                    <td>{item.available}</td>
+                                    <td>{item.quantityc}</td>
+                                    <td>
+                                        <button onClick={() => handleView(item._id)}>View</button><p></p>
+                                        <button onClick={() => handleDelete(item._id)}>Delete</button>
+                                    </td>
+                                </tr>
+                                {expandedItemId === item._id && (
+                                    <tr>
+                                        <td colSpan="8" className="expanded-row">
+                                            <div>
+                                                <h3>Item Details</h3>
+                                                <p><strong>Item Name:</strong> {item.itemNamec || "No description available."}</p>
+                                                <p><strong>Category:</strong> {item.categoryc || "N/A"}</p>
+                                                <p><strong>Total Price </strong>{item.quantityc * item.pricec}</p>
+                                                <p><strong>Remaindder Quantity:</strong> {item.available-item.quantityc}</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )}
+                            </React.Fragment>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="8">No items in the cart.</td> {/* Adjusted colspan for the extra column */}
+                            <td colSpan="8">No items in the cart.</td>
                         </tr>
                     )}
                 </tbody>

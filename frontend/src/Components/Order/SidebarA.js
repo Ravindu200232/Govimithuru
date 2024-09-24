@@ -22,17 +22,17 @@ function SidebarA() {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/admin/inventory/all" activeClassName="active-link">
+          <NavLink to="/admin/salesSummery" activeClassName="active-link">
             Sale Summery
           </NavLink>
         </li>
         <li>
-          <NavLink to="/admin/showcase" activeClassName="active-link">
+          <NavLink to="" activeClassName="active-link">
             Alerts
           </NavLink>
         </li>
         <li>
-          <NavLink to="/admin/alerts" activeClassName="active-link">
+          <NavLink to="" activeClassName="active-link">
            
           </NavLink>
         </li>

@@ -1,14 +1,17 @@
-const router = require("express").Router();
+const express = require("express");
+const router = express.Router();
 const User = require("../models/User");  // Ensure the correct import
 
 // Add User
-router.route("/add").post((req, res) => {
-    const { name, email, phone } = req.body;
+router.post("/add", (req, res) => {
+    const { firstname, lastname, username, email, password } = req.body;
 
     const newUser = new User({
-        name,
+        firstname,
+        lastname,
+        username,
         email,
-        phone,
+        password,
     });
 
     newUser.save()
@@ -17,21 +20,23 @@ router.route("/add").post((req, res) => {
 });
 
 // Get All Users
-router.route("/").get((req, res) => {
+router.get("/", (req, res) => {
     User.find()
         .then((users) => res.json(users))
         .catch((err) => res.status(500).send({ status: "Error with getting users", error: err.message }));
 });
 
 // Update User
-router.route("/update/:id").put(async (req, res) => {
-    let userId = req.params.id;
-    const { name, email, phone } = req.body;
+router.put("/update/:id", async (req, res) => {
+    const userId = req.params.id;
+    const { firstname, lastname, username, email, password } = req.body;
 
     const updateUser = {
-        name,
+        firstname,
+        lastname,
+        username,
         email,
-        phone,
+        password, // Note: Password should be hashed if being updated
     };
 
     await User.findByIdAndUpdate(userId, updateUser)
@@ -40,8 +45,8 @@ router.route("/update/:id").put(async (req, res) => {
 });
 
 // Delete User
-router.route("/delete/:id").delete(async (req, res) => {
-    let userId = req.params.id;
+router.delete("/delete/:id", async (req, res) => {
+    const userId = req.params.id;
 
     await User.findByIdAndDelete(userId)
         .then(() => res.status(200).send({ status: "User deleted" }))
@@ -49,8 +54,8 @@ router.route("/delete/:id").delete(async (req, res) => {
 });
 
 // Get One User by ID
-router.route("/get/:id").get(async (req, res) => {
-    let userId = req.params.id;
+router.get("/get/:id", async (req, res) => {
+    const userId = req.params.id;
 
     await User.findById(userId)
         .then((user) => res.status(200).send({ status: "User fetched", user }))

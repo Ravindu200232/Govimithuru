@@ -74,3 +74,13 @@
     opacity: 0.8;
     color: #000;
 }
+
+/* Styles for product details in table rows */
+.order-table td .product-detail {
+    padding: 10px;
+    border-bottom: 1px solid #ddd; /* Adds a line under each detail */
+}
+
+.order-table td .product-detail:last-child {
+    border-bottom: none; /* Removes the line for the last detail */
+}

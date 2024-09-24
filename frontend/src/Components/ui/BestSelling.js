@@ -1,25 +1,21 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import axios from 'axios';
 import './css/BestSelling.css';
-import bs1 from './img/bs1.webp';
-import bs2 from './img/bs2.webp';
-import bs3 from './img/bs3.webp';
-
-const products = [
-  { img: bs1, title: "Product 1" },
-  { img: bs2, title: "Product 2" },
-  { img: bs3, title: "Product 3" },
-  { img: bs1, title: "Product 4" },
-  { img: bs2, title: "Product 5" },
-  { img: bs3, title: "Product 6" },
-  { img: bs1, title: "Product 7" },
-  { img: bs2, title: "Product 8" },
-  { img: bs3, title: "Product 9" },
-  { img: bs1, title: "Product 10" },
-];
 
 function BestSelling() {
+  const [products, setProducts] = useState([]);
   const scrollContainerRef = useRef(null);
   const scrollAmount = 300; // Amount to scroll on each interval
+
+  // Function to fetch best-selling products from the API
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/bestSelling'); // Adjust the URL as necessary
+      setProducts(response.data); // Set the fetched products
+    } catch (error) {
+      console.error('Error fetching best selling products:', error);
+    }
+  };
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -40,6 +36,8 @@ function BestSelling() {
   };
 
   useEffect(() => {
+    fetchProducts(); // Fetch products on component mount
+
     const container = scrollContainerRef.current;
 
     if (!container) return;
@@ -71,7 +69,9 @@ function BestSelling() {
           <div className="product-item" key={index}>
             <img src={product.img} alt={product.title} />
             <h3>{product.title}</h3>
-            <button>Shop Now</button>
+            <a href={product.link} target="_blank" rel="noopener noreferrer">
+              <button>Shop Now</button>
+            </a>
           </div>
         ))}
       </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import './css/Cart.css';
 
 function Cart() {
@@ -9,7 +9,7 @@ function Cart() {
   const [checkedItems, setCheckedItems] = useState({});
   const [availability, setAvailability] = useState({});
 
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get('http://localhost:8000/card/')
@@ -44,21 +44,29 @@ function Cart() {
   };
 
   const handleCheckout = () => {
-    cartItems.forEach(item => {
-      if (checkedItems[item._id]) {
-        const updatedQuantity = quantities[item._id];
-        axios.put(`http://localhost:8000/card/update/${item._id}`, { quantityc: updatedQuantity })
-          .then(() => {
-            console.log(`Quantity for item ${item._id} updated successfully`);
-          })
-          .catch(err => {
-            console.error(`Error updating quantity for item ${item._id}:`, err);
-          });
-      }
+    const orderSummary = cartItems
+      .filter(item => checkedItems[item._id])
+      .map(item => ({
+        itemName: item.itemNamec,
+        quantity: quantities[item._id],
+        price: item.pricec,
+        totalPrice: (item.pricec * quantities[item._id]), // Ensure this is a number
+      }));
+
+    sessionStorage.setItem('orderSummary', JSON.stringify(orderSummary));
+
+    // Update quantities for selected items
+    orderSummary.forEach(item => {
+      axios.put(`http://localhost:8000/card/update/${item._id}`, { quantityc: item.quantity })
+        .then(() => {
+          console.log(`Quantity for item ${item._id} updated successfully`);
+        })
+        .catch(err => {
+          console.error(`Error updating quantity for item ${item._id}:`, err);
+        });
     });
-    
-    // Navigate to the order form after updating quantities
-    navigate('/admin/orders/add');
+
+    navigate('/order-summary');
     alert('Checkout successful! Quantities updated for selected items.');
   };
 

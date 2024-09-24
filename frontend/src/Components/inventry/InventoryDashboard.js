@@ -3,7 +3,8 @@ import axios from "axios";
 import './css/InventoryDashboard.css';
 
 function InventoryDashboard() {
-    const [items, setItems] = useState([]);
+    const [items, setItems] = useState([]); // Original item list
+    const [filteredItems, setFilteredItems] = useState([]); // Filtered item list
     const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
@@ -14,6 +15,7 @@ function InventoryDashboard() {
         axios.get("http://localhost:8000/availableitem/")
             .then((res) => {
                 setItems(res.data);
+                setFilteredItems(res.data); // Initialize filtered items
             })
             .catch((err) => {
                 alert("Error fetching data: " + err.message);
@@ -22,14 +24,28 @@ function InventoryDashboard() {
 
     const handleSearch = () => {
         if (searchQuery.trim() === "") {
-            fetchItems();
+            setFilteredItems(items); // Reset to original items if search query is empty
         } else {
-            const filteredItems = items.filter(
+            const lowerCaseQuery = searchQuery.toLowerCase();
+            const filtered = items.filter(
                 (item) =>
-                    item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    item.category.toLowerCase().includes(searchQuery.toLowerCase())
+                    item.name.toLowerCase().includes(lowerCaseQuery) ||
+                    item.category.toLowerCase().includes(lowerCaseQuery)
             );
-            setItems(filteredItems);
+            setFilteredItems(filtered);
+        }
+    };
+
+    const handleDelete = (id) => {
+        if (window.confirm("Are you sure you want to delete this item?")) {
+            axios.delete(`http://localhost:8000/availableitem/${id}`)
+                .then(() => {
+                    alert("Item deleted successfully");
+                    fetchItems(); // Refresh the item list
+                })
+                .catch((err) => {
+                    alert("Error deleting item: " + err.message);
+                });
         }
     };
 
@@ -54,11 +70,12 @@ function InventoryDashboard() {
                         <th>Category</th>
                         <th>Unit</th>
                         <th>Available Item</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {items.length > 0 ? (
-                        items.map((item) => (
+                    {filteredItems.length > 0 ? (
+                        filteredItems.map((item) => (
                             <tr key={item._id}>
                                 <td>{item.name}</td>
                                 <td>{item.supName}</td>
@@ -66,11 +83,14 @@ function InventoryDashboard() {
                                 <td>{item.category}</td>
                                 <td>{item.unit}</td>
                                 <td>{item.availableItem}</td>
+                                <td>
+                                    <button className="delete-btn" onClick={() => handleDelete(item._id)}>Delete</button>
+                                </td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="6" style={{ textAlign: "center" }}>
+                            <td colSpan="7" style={{ textAlign: "center" }}>
                                 No items found
                             </td>
                         </tr>

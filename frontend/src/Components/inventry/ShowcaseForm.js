@@ -95,9 +95,9 @@ function ShowcaseForm() {
           >
             <option value="">Select a category</option>
             <option>Seeds</option>
-            <option>Growth Promoters</option>
+            <option>Growthpromoters</option>
             <option>Remedies</option>
-            <option>Organic Farming</option>
+            <option>Organicfarming</option>
             <option>Equipments</option>
             <option>Fertilizers</option>
             <option>Irrigation</option>

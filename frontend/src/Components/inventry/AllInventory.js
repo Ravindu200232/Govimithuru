@@ -22,7 +22,14 @@ function AllInventory() {
     };
 
     const handleDelete = (id) => {
-        navigate(`/supplydelete/${id}`);
+        axios.delete(`http://localhost:8000/inventoryitem/delete/${id}`)
+            .then((res) => {
+                alert(res.data.status);
+                setItems((prevItems) => prevItems.filter(item => item._id !== id));
+            })
+            .catch((err) => {
+                alert(err.message);
+            });
     };
 
     const handleAggregate = () => {

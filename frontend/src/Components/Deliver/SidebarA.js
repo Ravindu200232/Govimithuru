@@ -7,7 +7,7 @@ function SidebarA() {
     <aside className="sidebar">
       <ul className="sidebar-menu">
         <li>
-          <NavLink to="/admin/inventory" activeClassName="active-link">
+          <NavLink to="/admin/delivery" activeClassName="active-link">
             Dashboard
           </NavLink>
         </li>
@@ -17,13 +17,13 @@ function SidebarA() {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/admin/inventory/supply-form" activeClassName="active-link">
+          <NavLink to="/admin/driver" activeClassName="active-link">
             Confirm Msg
           </NavLink>
         </li>
         <li>
-          <NavLink to="/admin/inventory/all" activeClassName="active-link">
-            
+          <NavLink to="/admin/deliverySumery" activeClassName="active-link">
+            Deliver Summary
           </NavLink>
         </li>
         <li>
