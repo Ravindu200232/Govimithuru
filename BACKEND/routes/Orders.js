@@ -1,67 +1,109 @@
-const router = require("express").Router();
-let Order = require("../models/Order");
+const express = require('express');
+const mongoose = require('mongoose');
+const router = express.Router();
+const Order = require('../models/order');
+const AvailableItem = require('../models/AvailableItem');
 
-// Add Order
-router.route("/add").post((req, res) => {
-    const { orderId, customerName, product, quantitySold, totalPrice, saleDate, status } = req.body;
+// Middleware for validating request body
+const validateOrder = (req, res, next) => {
+    const { customerName, address, postalCode, email, phoneNumber, paymentType, productDetails } = req.body;
 
-    const newOrder = new Order({
-        orderId,
-        customerName,
-        product,
-        quantitySold,
-        totalPrice,
-        saleDate: new Date(saleDate),  // Store only the date part
-        status
-    });
+    if (!customerName || !address || !postalCode || !email || !phoneNumber || !paymentType || !productDetails || !Array.isArray(productDetails)) {
+        return res.status(400).json({ status: "Error", error: "Missing required fields" });
+    }
 
-    newOrder.save()
-        .then(() => res.json("Order Added"))
-        .catch((err) => res.status(500).json({ message: err.message }));
+    for (const product of productDetails) {
+        const { itemName, quantitySold, itemPrice, totalPrice } = product;
+        if (!itemName || quantitySold == null || itemPrice == null || totalPrice == null) {
+            return res.status(400).json({ status: "Error", error: "Missing product details" });
+        }
+    }
+
+    next();
+};
+
+// Function to create an order and update available items
+async function createOrder(orderData) {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        // Create the order
+        const order = new Order(orderData);
+        await order.save({ session });
+
+        // Update available items
+        for (const product of orderData.productDetails) {
+            const availableItem = await AvailableItem.findOne({ name: product.itemName }).session(session);
+            if (!availableItem) {
+                throw new Error(`Item ${product.itemName} not found.`);
+            }
+            if (availableItem.availableItem < product.quantitySold) {
+                throw new Error(`Insufficient stock for ${product.itemName}.`);
+            }
+
+            availableItem.availableItem -= product.quantitySold;
+            await availableItem.save({ session });
+        }
+
+        await session.commitTransaction();
+        session.endSession();
+        return order;
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        throw error;
+    }
+}
+
+// Get all orders
+router.get('/', async (req, res) => {
+    try {
+        const orders = await Order.find({});
+        res.status(200).json(orders);
+    } catch (err) {
+        res.status(500).json({ status: "Error", message: "Error fetching orders", error: err.message });
+    }
 });
 
-// Get All Orders
-router.route("/").get((req, res) => {
-    Order.find()
-        .then((orders) => res.json(orders))
-        .catch((err) => res.status(500).json({ message: err.message }));
+// Add a new order
+router.post('/add', validateOrder, async (req, res) => {
+    try {
+        const order = await createOrder(req.body);
+        res.status(201).json({ status: "Success", message: "Order Added", order });
+    } catch (error) {
+        res.status(400).json({ status: "Error", message: error.message });
+    }
 });
 
-// Update Order
-router.route("/update/:id").put(async (req, res) => {
-    let orderId = req.params.id;
-    const { customerName, product, quantitySold, totalPrice, saleDate, status } = req.body;
+// Update an order
+router.put('/update/:id', validateOrder, async (req, res) => {
+    const { id } = req.params;
 
-    const updateOrder = {
-        customerName,
-        product,
-        quantitySold,
-        totalPrice,
-        saleDate: new Date(saleDate),  // Store only the date part
-        status
-    };
-
-    await Order.findByIdAndUpdate(orderId, updateOrder)
-        .then(() => res.status(200).send({ status: "Order updated" }))
-        .catch((err) => res.status(500).send({ status: "Error with updating data", error: err.message }));
+    try {
+        const order = await Order.findByIdAndUpdate(id, req.body, { new: true });
+        if (!order) {
+            return res.status(404).json({ status: "Error", message: "Order not found" });
+        }
+        res.status(200).json({ status: "Success", message: "Order Updated", order });
+    } catch (err) {
+        res.status(500).json({ status: "Error", message: "Error updating order", error: err.message });
+    }
 });
 
-// Delete Order
-router.route("/delete/:id").delete(async (req, res) => {
-    let orderId = req.params.id;
+// Delete an order
+router.delete('/delete/:id', async (req, res) => {
+    const { id } = req.params;
 
-    await Order.findByIdAndDelete(orderId)
-        .then(() => res.status(200).send({ status: "Order deleted" }))
-        .catch((err) => res.status(500).send({ status: "Error with deleting order", error: err.message }));
-});
-
-// Get One Order by ID
-router.route("/get/:id").get(async (req, res) => {
-    let orderId = req.params.id;
-
-    await Order.findById(orderId)
-        .then((order) => res.status(200).send({ status: "Order fetched", order }))
-        .catch((err) => res.status(500).send({ status: "Error with getting order", error: err.message }));
+    try {
+        const order = await Order.findByIdAndDelete(id);
+        if (!order) {
+            return res.status(404).json({ status: "Error", message: "Order not found" });
+        }
+        res.status(200).json({ status: "Success", message: "Order Deleted" });
+    } catch (err) {
+        res.status(500).json({ status: "Error", message: "Error deleting order", error: err.message });
+    }
 });
 
 module.exports = router;

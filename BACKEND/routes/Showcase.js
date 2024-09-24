@@ -90,4 +90,17 @@ router.get("/seeds", async (req, res) => {
     }
 });
 
+// Get all Showcase items with category 'Growth Promoters'Growthpromoters
+router.get("/Growthpromoters", async (req, res) => {
+    try {
+        const showcaseItems = await Showcase.find({ category: 'Growth Promoters' });
+        res.json(showcaseItems);
+    } catch (err) {
+        res.status(500).send({ status: "Error with getting items", error: err.message });
+    }
+});
+
+
+
+
 module.exports = router;

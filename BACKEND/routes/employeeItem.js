@@ -102,4 +102,41 @@ router.post('/validate', async (req, res) => {
     }
 });
 
+
+
+// routes/employeeRoutes.js
+router.get('/position/driver', async (req, res) => {
+    try {
+        const drivers = await Employee.find({ position: 'Driver' });
+        res.json(drivers);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+
+
+// Get Employee Summary
+router.get('/summary', async (req, res) => {
+    try {
+        const positions = ['Driver', 'Employee Manager', 'Supply Manager', 'Staff'];
+        const summary = {};
+
+        for (const position of positions) {
+            const count = await Employee.countDocuments({ position });
+            summary[position] = count;
+        }
+
+        res.status(200).json(summary);
+    } catch (err) {
+        res.status(500).send({ status: 'Error fetching summary', error: err.message });
+    }
+});
+
+module.exports = router;
+
+
+
+
+
 module.exports = router;

@@ -33,6 +33,19 @@ const UserRoute = require("./routes/userDashboard.js");
 const EmployeeRoute = require("./routes/employeeItem");
 const ReviewRouter = require("./routes/reviews.js");
 const salaryRoutes = require('./routes/salary');
+const driverRoutes = require('./routes/driverRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
+const authRouter = require("./routes/auth");
+app.use("/auth", authRouter);
+
+const OfferRouter = require("./routes/Offer");
+app.use("/offers", OfferRouter);
+
+const cropSolution = require("./routes/cropSolutions.js");
+app.use("/cropSolutions",cropSolution);
+const bestSellingRouter = require('./routes/bestSelling');
+
+app.use('/bestSelling', bestSellingRouter);
 
 
 app.use("/inventoryitem",InventoryItemRouter)
@@ -47,7 +60,8 @@ app.use("/user",UserRoute);
 app.use("/reviews", ReviewRouter);
 app.use("/employee",EmployeeRoute);
 app.use('/salary', salaryRoutes);
-
+app.use('/drivers', driverRoutes);
+app.use('/payments', paymentRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is up and running on port no ${PORT}`);

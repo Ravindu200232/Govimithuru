@@ -25,6 +25,10 @@ function SidebarE() {
           <NavLink to="/admin/employee/salary-dashboard" className={({ isActive }) => (isActive ? 'active-link' : '')}>
             Salary Dashboard
           </NavLink>
+
+          <NavLink to="/admin/employee/Summery" className={({ isActive }) => (isActive ? 'active-link' : '')}>
+            Employee Summary
+          </NavLink>
         </li>
       </ul>
     </aside>

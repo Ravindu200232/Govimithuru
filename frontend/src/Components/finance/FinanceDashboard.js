@@ -73,9 +73,9 @@ function FinanceDashboard() {
                 </thead>
                 <tbody>
                     {finances.length > 0 ? (
-                        finances.map((finance) => (
+                        finances.map((finance, index) => (
                             <tr key={finance._id}>
-                                <td>{finance._id}</td>
+                                <td>{index + 1}</td> {/* Static incrementing IDs: 1, 2, 3, ... */}
                                 <td>{finance.customerName}</td>
                                 <td>{finance.itemName}</td>
                                 <td>{finance.itemPrice}</td>

@@ -2,7 +2,7 @@ import React from 'react';
 import './css/Navbar.css';
 import logo from './img/logo.png';
 
-function Navbar() {
+function Navbar({ username }) {
   return (
     <nav className="navbar">
       <div className="logo">
@@ -12,10 +12,17 @@ function Navbar() {
         <li><a href="/">Home</a></li>
         <li><a href="/products">Products</a></li>
         <li><a href="/cart">Cart</a></li>
-        <li><a href="/login">Login</a></li>
-        <li><a href="/login">About</a></li>
-        <li><a href="/login">Contact</a></li>
-        <li><a href="/login">Other</a></li>
+        {username ? (
+          <>
+            <li><span>Welcome, {username}!</span></li>
+            <li><a href="/logout">Logout</a></li>
+          </>
+        ) : (
+          <li><a href="/login">Login</a></li>
+        )}
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+        <li><a href="/other">Other</a></li>
       </ul>
     </nav>
   );

@@ -1,26 +1,24 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import axios from 'axios';
 import './css/CropSolution.css';
-import cr1 from './img/cr1.jpg';
-import cr2 from './img/cr2.jpg';
-import cr3 from './img/cr3.jpg';
-
-const crops = [
-  { img: cr1, name: "Potato" },
-  { img: cr2, name: "Pumpkin" },
-  { img: cr3, name: "Radish" },
-  { img: cr1, name: "Carrot" },
-  { img: cr2, name: "Onion" },
-  { img: cr3, name: "Tomato" },
-  { img: cr1, name: "Cucumber" },
-  { img: cr2, name: "Pepper" },
-  { img: cr3, name: "Garlic" },
-  { img: cr1, name: "Beetroot" },
-];
 
 function CropSolution() {
+  const [crops, setCrops] = useState([]);
   const scrollContainerRef = useRef(null);
 
   useEffect(() => {
+    // Fetch crop solutions from the API
+    const fetchCrops = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/cropSolutions'); // Adjust URL as needed
+        setCrops(response.data);
+      } catch (error) {
+        console.error('Error fetching crop solutions:', error);
+      }
+    };
+
+    fetchCrops();
+
     const container = scrollContainerRef.current;
     if (!container) return;
 
@@ -40,12 +38,12 @@ function CropSolution() {
 
   return (
     <div className="crop-solution">
-      <h2>Crop Solution</h2>
+      <h2>Crop Solutions</h2>
       <div className="crops" ref={scrollContainerRef}>
         {crops.map((crop, index) => (
           <div className="crop-item" key={index}>
-            <img src={crop.img} alt={crop.name} />
-            <p>{crop.name}</p>
+            <img src={crop.img} alt={crop.title} />
+            <p>{crop.title}</p>
           </div>
         ))}
       </div>

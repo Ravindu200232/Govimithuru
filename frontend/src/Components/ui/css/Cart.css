@@ -6,6 +6,8 @@
     background-color: #f9fafb; /* Slightly lighter background */
     min-height: 100vh;
     font-family: 'Arial', sans-serif; /* Use a clean, readable font */
+    border-radius: 15px; /* Rounded corners */
+    overflow: hidden; /* To contain child elements */
 }
 
 /* Cart Items Section */
@@ -28,7 +30,7 @@
     background-color: #f9f9f9; /* Slightly off-white for subtle contrast */
     border: 1px solid #e0e0e0; /* Lighter border */
     border-radius: 10px; /* Softer corners */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Smooth transition */
 }
 
 .cart-item:hover {
@@ -55,6 +57,7 @@
     margin: 0;
     font-size: 20px; /* Slightly larger font size */
     color: #333; /* Darker text for better readability */
+    font-weight: bold; /* Bold for emphasis */
 }
 
 .cart-item-info p {
@@ -77,12 +80,13 @@
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* Added box-shadow */
 }
 
 .quantity-control button:hover {
     background-color: #2980b9;
     transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Added shadow on hover */
 }
 
 .quantity-control span {
@@ -107,16 +111,16 @@
 /* Buy Button */
 .buy-btn {
     padding: 8px 16px;
-    background-color: #e67e22;
+    background: linear-gradient(45deg, #e67e22, #d35400); /* Gradient background */
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* Added box-shadow */
 }
 
 .buy-btn:hover {
-    background-color: #d35400;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Added shadow on hover */
     transform: scale(1.05);
 }
 
@@ -170,7 +174,7 @@
     border-radius: 8px;
     font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Added smooth transition */
 }
 
 .checkout-btn:hover {
@@ -188,10 +192,10 @@
 }
 
 .cart-items::-webkit-scrollbar-thumb {
-    background-color: #ccc;
+    background-color: #3498db; /* Change to your accent color */
     border-radius: 8px;
 }
 
 .cart-items::-webkit-scrollbar-thumb:hover {
-    background-color: #999;
+    background-color: #2980b9; /* Darker shade for hover */
 }
