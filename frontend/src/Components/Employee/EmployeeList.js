@@ -58,7 +58,7 @@ function EmployeeList() {
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Email</th>
-                        <th>Position</th>
+                        <th>Designation</th>
                         <th>Department</th>
                         <th>Phone Number</th>
                         <th>NIC</th>
