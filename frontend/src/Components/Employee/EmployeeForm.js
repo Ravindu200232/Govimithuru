@@ -147,7 +147,7 @@ function EmployeeForm() {
                     />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="position">Position</label>
+                    <label htmlFor="position">Designation</label>
                     <input
                         type="text"
                         id="position"

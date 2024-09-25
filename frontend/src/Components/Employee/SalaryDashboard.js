@@ -33,7 +33,7 @@ function SalaryDashboard() {
           <thead>
             <tr>
               <th>Name</th>
-              <th>Position</th>
+              <th>Designation</th>
               <th>Basic Salary</th>
               <th>Bonus</th>
               <th>ETF</th>
