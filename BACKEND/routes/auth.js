@@ -22,10 +22,12 @@ router.post("/login", async (req, res) => {
         if (!user || !(await user.comparePassword(password))) {
             return res.status(401).send("Invalid credentials");
         }
-        res.send("Login successful!");
+        // Include username in the response
+        res.json({ message: "Login successful!", username: user.username });
     } catch (error) {
         res.status(500).send(error.message);
     }
 });
+
 
 module.exports = router;

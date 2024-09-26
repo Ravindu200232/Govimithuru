@@ -29,6 +29,7 @@ import About from './Components/ui/About';
 import Signup from './Signup';
 import Login from './Login';
 import AdminLogin from './AdminLogin';
+import Profile from './Components/ui/Profile';
 
 
 // Admin-facing components
@@ -129,6 +130,21 @@ function App() {
               <Navigate to="/login" />
             )
           } />
+
+
+          <Route path="/profile" element={
+            isLoggedIn ? (
+              <>
+                <Navbar />
+                <Profile />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/profile" />
+            )
+          } />
+
+
           <Route path="/products" element={
             isLoggedIn ? (
               <>

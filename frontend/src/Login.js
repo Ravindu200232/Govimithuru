@@ -16,13 +16,16 @@ const Login = ({ onLogin }) => {
         try {
             const response = await axios.post('http://localhost:8000/auth/login', credentials);
             alert(response.data);
-
+    
             // Save user data and token in cookies with a 10-minute expiration
             Cookies.set('user', JSON.stringify(response.data), { expires: 10 / (24 * 60) }); // 10 minutes
-
+    
+            // Store the first name and username in local storage
+            localStorage.setItem('username', response.data.username); // Save username
+            Cookies.set('firstName', response.data.firstName, { expires: 10 / (24 * 60) }); // Store first name
+    
             // Check for admin credentials
             if (credentials.email === 'admin2232@gmail.com' && credentials.password === 'R2232r#') {
-                // Save the role in cookies
                 Cookies.set('role', 'admin', { expires: 10 / (24 * 60) });
                 navigate('/admin/inventory'); // Redirect to admin inventory
             } else {
@@ -33,6 +36,7 @@ const Login = ({ onLogin }) => {
             alert("Error logging in!");
         }
     };
+    
 
     // Inline styles
     const formStyle = {
