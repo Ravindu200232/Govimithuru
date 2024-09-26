@@ -68,8 +68,9 @@ import CartSummery from './Components/Card/CartSummery';
 import DeliverySummary from './Components/Deliver/DeliverySummary';
 import EmployeeSummary from './Components/Employee/EmployeeSummary';
 import UserSummary from './Components/User/UserSummary';
+import PaymentReceiptForm from './Components/finance/PaymentReceiptForm';
 import PaymentSummary from './Components/payment/PaymentSummary';
-
+import FinancePaycheckDashboard from './Components/finance/FinancePaycheckDashboard';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -715,6 +716,39 @@ function App() {
                   <PaymentSidebar />
                   <div className="content">
                     <PaymentSummary />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+
+          <Route path="/admin/finance/paybil" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <FinanceSidebar />
+                  <div className="content">
+                    <PaymentReceiptForm />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+    <Route path="/admin/finance/paybildash" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <FinanceSidebar />
+                  <div className="content">
+                    <FinancePaycheckDashboard />
                   </div>
                 </div>
               </>

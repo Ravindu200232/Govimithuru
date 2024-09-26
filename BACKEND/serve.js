@@ -36,11 +36,12 @@ const salaryRoutes = require('./routes/salary');
 const driverRoutes = require('./routes/driverRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const authRouter = require("./routes/auth");
+const giveChecksRoutes = require("./routes/giveChecksRoutes");
 app.use("/auth", authRouter);
 
 const OfferRouter = require("./routes/Offer");
 app.use("/offers", OfferRouter);
-
+app.use("/api/givechecks", giveChecksRoutes);
 const cropSolution = require("./routes/cropSolutions.js");
 app.use("/cropSolutions",cropSolution);
 const bestSellingRouter = require('./routes/bestSelling');

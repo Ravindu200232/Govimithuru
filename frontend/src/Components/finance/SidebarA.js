@@ -17,13 +17,13 @@ function SidebarA() {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/admin/inventory/supply-form" activeClassName="active-link">
-            Bill
+          <NavLink to="/admin/finance/paybil" activeClassName="active-link">
+            Add PayBill
           </NavLink>
         </li>
         <li>
-          <NavLink to="/admin/inventory/all" activeClassName="active-link">
-            Expenses
+          <NavLink to="/admin/finance/paybildash" activeClassName="active-link">
+            PayBill
           </NavLink>
         </li>
         <li>
