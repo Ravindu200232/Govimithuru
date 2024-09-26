@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { jsPDF } from 'jspdf';
 import './css/Dashboard.css';
 
 function Carts() {
@@ -41,7 +42,6 @@ function Carts() {
 
     const handleSearch = () => {
         // Logic for searching can be implemented here
-        // Currently, it doesn't filter the items; implement filtering logic as needed
     };
 
     const filteredItems = cardItems.filter(item =>
@@ -49,6 +49,34 @@ function Carts() {
         item.categoryc.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.pricec.toString().includes(searchTerm)
     );
+
+    const generatePDF = () => {
+        const doc = new jsPDF();
+
+        doc.setFontSize(20);
+        doc.text('Cart Items', 14, 22);
+
+        // Column headings
+        doc.setFontSize(12);
+        doc.text('ID', 14, 32);
+        doc.text('Name', 40, 32);
+        doc.text('Category', 80, 32);
+        doc.text('Price', 120, 32);
+        doc.text('Available', 150, 32);
+        doc.text('Quantity', 180, 32);
+        
+        // Adding the items to the PDF
+        filteredItems.forEach((item, index) => {
+            doc.text(`${index + 1}`, 14, 42 + (index * 10));
+            doc.text(item.itemNamec, 40, 42 + (index * 10));
+            doc.text(item.categoryc, 80, 42 + (index * 10));
+            doc.text(`₹${item.pricec.toFixed(2)}`, 120, 42 + (index * 10));
+            doc.text(`${item.available}`, 150, 42 + (index * 10));
+            doc.text(`${item.quantityc}`, 180, 42 + (index * 10));
+        });
+
+        doc.save('cart_items.pdf');
+    };
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div className="error-message">{error}</div>;
@@ -65,6 +93,7 @@ function Carts() {
                 />
                 <button className="search-btn" onClick={handleSearch}>Search</button>
             </div>
+            <button className="pdf-btn" onClick={generatePDF}>Download PDF</button>
             <table className="dashboard-table">
                 <thead>
                     <tr>
@@ -109,7 +138,7 @@ function Carts() {
                                                 <p><strong>Item Name:</strong> {item.itemNamec || "No description available."}</p>
                                                 <p><strong>Category:</strong> {item.categoryc || "N/A"}</p>
                                                 <p><strong>Total Price </strong>{item.quantityc * item.pricec}</p>
-                                                <p><strong>Remaindder Quantity:</strong> {item.available-item.quantityc}</p>
+                                                <p><strong>Remainder Quantity:</strong> {item.available - item.quantityc}</p>
                                             </div>
                                         </td>
                                     </tr>

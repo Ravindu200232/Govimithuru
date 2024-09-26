@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 import './css/inventryAll.css';
 
 function AllInventory() {
@@ -42,6 +44,46 @@ function AllInventory() {
             });
     };
 
+    const downloadPDF = () => {
+        const doc = new jsPDF();
+        doc.setFontSize(12);
+        doc.text('Inventory List', 20, 20);
+        
+        // Define the columns for the table
+        const columns = [
+            { header: "ID", dataKey: "id" },
+            { header: "Name", dataKey: "name" },
+            { header: "Supplier Name", dataKey: "supName" },
+            { header: "Description", dataKey: "description" },
+            { header: "Category", dataKey: "category" },
+            { header: "Unit", dataKey: "unit" },
+            { header: "Quantity Available", dataKey: "quantityAvailable" },
+            { header: "Supply Date", dataKey: "supplyDate" }
+        ];
+        
+        // Prepare the data for the table
+        const rows = items.map((item, index) => ({
+            id: index + 1,
+            name: item.name,
+            supName: item.supName,
+            description: item.description,
+            category: item.category,
+            unit: item.unit,
+            quantityAvailable: item.quantityAvailable,
+            supplyDate: item.supplyDate
+        }));
+
+        // Generate the table
+        autoTable(doc, {
+            head: [columns.map(col => col.header)],
+            body: rows.map(row => columns.map(col => row[col.dataKey])),
+            startY: 30,
+            theme: 'striped' // Optional: you can set a theme for the table
+        });
+
+        doc.save('inventory_list.pdf');
+    };
+
     return (
         <div>
             <h2 className="inventory-list-title">Inventory List</h2>
@@ -50,6 +92,7 @@ function AllInventory() {
                 <button className="search-btn">Search</button>
             </div>
             <button className="aggregate-btn" onClick={handleAggregate}>Aggregate Items</button>
+            <button className="download-btn" onClick={downloadPDF}>Download Full Inventory PDF</button>
             <table className="inventory-table">
                 <thead>
                     <tr>

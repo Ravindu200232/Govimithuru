@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { jsPDF } from "jspdf";
 import './Employeecss/emplist.css';
 
 function EmployeeList() {
@@ -42,6 +43,34 @@ function EmployeeList() {
         navigate('/admin/employee/EmployeeForm');
     };
 
+    // New function to generate PDF
+    const generatePDF = (employee) => {
+        const doc = new jsPDF();
+        
+        doc.setFontSize(20);
+        doc.text("Employee Details", 20, 20);
+
+        doc.setFontSize(12);
+        doc.text(`Employee ID: ${employee._id}`, 20, 40);
+        doc.text(`First Name: ${employee.firstName}`, 20, 50);
+        doc.text(`Last Name: ${employee.lastName}`, 20, 60);
+        doc.text(`Email: ${employee.email}`, 20, 70);
+        doc.text(`Position: ${employee.position}`, 20, 80);
+        doc.text(`Department: ${employee.department}`, 20, 90);
+        doc.text(`Phone Number: ${employee.phoneNumber}`, 20, 100);
+        doc.text(`NIC: ${employee.nic}`, 20, 110);
+        doc.text(`Driving NIC: ${employee.drivingNic}`, 20, 120);
+        doc.text(`Birthday: ${employee.birthday ? new Date(employee.birthday).toLocaleDateString() : 'No Birthday'}`, 20, 130);
+
+        if (employee.profileImageBase64) {
+            // Adding image if available
+            const imgData = `data:image/jpeg;base64,${employee.profileImageBase64}`;
+            doc.addImage(imgData, 'JPEG', 20, 140, 50, 50); // Adjust position and size as needed
+        }
+
+        doc.save(`Employee_${employee._id}.pdf`);
+    };
+
     if (loading) {
         return <div className="loading">Loading...</div>;
     }
@@ -63,7 +92,7 @@ function EmployeeList() {
                         <th>Phone Number</th>
                         <th>NIC</th>
                         <th>Driving NIC</th>
-                        <th>Birthday</th> {/* Added column for Birthday */}
+                        <th>Birthday</th>
                         <th>Profile Image</th>
                         <th>Action</th>
                     </tr>
@@ -83,7 +112,7 @@ function EmployeeList() {
                                 <td>{employee.drivingNic}</td>
                                 <td>
                                     {employee.birthday ? (
-                                        new Date(employee.birthday).toLocaleDateString() // Format the date
+                                        new Date(employee.birthday).toLocaleDateString()
                                     ) : (
                                         'No Birthday'
                                     )}
@@ -91,7 +120,7 @@ function EmployeeList() {
                                 <td>
                                     {employee.profileImageBase64 ? (
                                         <img
-                                            src={`data:image/jpeg;base64,${employee.profileImageBase64}`} // Image handling logic
+                                            src={`data:image/jpeg;base64,${employee.profileImageBase64}`}
                                             alt={`${employee.firstName} ${employee.lastName}`}
                                             className="employee-image"
                                         />
@@ -102,12 +131,13 @@ function EmployeeList() {
                                 <td>
                                     <button className="view-btn" onClick={() => handleView(employee._id)}>View</button>
                                     <button className="delete-btn" onClick={() => handleDelete(employee._id)}>Delete</button>
+                                    <button className="pdf-btn" onClick={() => generatePDF(employee)}>Download PDF</button> {/* PDF Download Button */}
                                 </td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="12">No employees available</td> {/* Updated colspan to 12 */}
+                            <td colSpan="12">No employees available</td>
                         </tr>
                     )}
                 </tbody>

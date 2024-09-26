@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { jsPDF } from 'jspdf'; // Import jsPDF
+import 'jspdf-autotable'; // Import autoTable
 
 const OtherExpensesDashboard = () => {
     const [expenses, setExpenses] = useState([]);
@@ -33,12 +35,42 @@ const OtherExpensesDashboard = () => {
         }
     };
 
+    // Function to generate PDF of all expenses
+    const generatePDF = () => {
+        const doc = new jsPDF();
+        doc.setFontSize(20);
+        doc.text("Other Expenses Report", 20, 20);
+        doc.setFontSize(12);
+
+        // Prepare table data
+        const headers = [["Expense Name", "Description", "Amount", "Date", "Category", "Payment Method"]];
+        const data = expenses.map(expense => [
+            expense.expenseName,
+            expense.expenseDescription,
+            `$${expense.amount.toFixed(2)}`,
+            new Date(expense.date).toLocaleDateString(),
+            expense.category,
+            expense.paymentMethod
+        ]);
+
+        // Create the table
+        doc.autoTable({
+            head: headers,
+            body: data,
+            startY: 30, // Start below the title
+        });
+
+        // Save the PDF
+        doc.save("OtherExpensesReport.pdf");
+    };
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
 
     return (
         <div>
             <h2>Other Expenses</h2>
+            <button onClick={generatePDF} className="download-pdf-btn">Download PDF</button> {/* Download PDF Button */}
             {expenses.length === 0 ? (
                 <p>No expenses available.</p>
             ) : (

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import jsPDF from 'jspdf';
 import './css/dashboard.css';
 
 function OrderDashboard() {
@@ -60,12 +61,11 @@ function OrderDashboard() {
         const newStatus = prompt("Enter new status:", "Pending");
         if (newStatus) {
             try {
-                // Find the order in the current state
                 const orderToUpdate = orders.find(order => order._id === id);
                 if (orderToUpdate) {
                     const updatedOrder = {
-                        ...orderToUpdate, // Spread existing order fields
-                        status: newStatus // Update only the status
+                        ...orderToUpdate,
+                        status: newStatus
                     };
     
                     const res = await axios.put(`http://localhost:8000/orders/update/${id}`, updatedOrder);
@@ -85,7 +85,27 @@ function OrderDashboard() {
             }
         }
     };
-    
+
+    const handleDownloadPDF = (order) => {
+        const doc = new jsPDF();
+        doc.setFontSize(12);
+        doc.text(`Order ID: ${order._id}`, 10, 10);
+        doc.text(`Customer Name: ${order.customerName}`, 10, 20);
+        doc.text(`Sale Date: ${new Date(order.saleDate).toLocaleDateString()}`, 10, 30);
+        doc.text(`Status: ${order.status}`, 10, 40);
+        doc.text(`Address: ${order.address}`, 10, 50);
+        doc.text(`Postal Code: ${order.postalCode}`, 10, 60);
+        doc.text(`Email: ${order.email}`, 10, 70);
+        doc.text(`Phone Number: ${order.phoneNumber}`, 10, 80);
+        doc.text(`Payment Type: ${order.paymentType}`, 10, 90);
+        doc.text("Product Details:", 10, 100);
+
+        order.productDetails.forEach((detail, index) => {
+            doc.text(`${index + 1}. ${detail.itemName} - Qty: ${detail.quantitySold}, Price: ₹${detail.itemPrice}, Total: ₹${detail.totalPrice}`, 10, 110 + (index * 10));
+        });
+
+        doc.save(`Order_${order._id}.pdf`);
+    };
 
     return (
         <div>
@@ -116,9 +136,9 @@ function OrderDashboard() {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredOrders.map((order) => (
+                    {filteredOrders.map((order, index) => (
                         <tr key={order._id}>
-                            <td>{order._id}</td>
+                            <td>{index + 1}</td> {/* Fake ID Display */}
                             <td>{order.customerName}</td>
                             <td>
                                 <button 
@@ -150,6 +170,7 @@ function OrderDashboard() {
                                 {order.status !== 'Confirmed' && (
                                     <button className="confirm-btn" onClick={() => handleConfirm(order._id)}>Confirm</button>
                                 )}
+                                <button className="download-btn" onClick={() => handleDownloadPDF(order)}>Download PDF</button>
                             </td>
                         </tr>
                     ))}

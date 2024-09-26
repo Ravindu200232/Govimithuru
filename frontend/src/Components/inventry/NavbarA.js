@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import './css/NavbarA.css';
-
+import img2 from "../ui/img/WhatsApp Image 2024-09-21 at 01.51.31_83da0e81.jpg"
 function NavbarA() {
   return (
     <nav className="navbar">
@@ -35,8 +35,11 @@ function NavbarA() {
         </li>
       </ul>
       <div className="navbar-user">
-        <img src="user-avatar.png" alt="User Avatar" className="user-avatar" />
+        <img src={img2} alt="User Avatar" className="user-avatar" />
         {/* Optionally, add a dropdown for user settings */}
+
+
+      
       </div>
     </nav>
   );

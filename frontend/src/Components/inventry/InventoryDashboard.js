@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 import './css/InventoryDashboard.css';
 
 function InventoryDashboard() {
@@ -49,6 +51,55 @@ function InventoryDashboard() {
         }
     };
 
+    const downloadPDF = () => {
+        const doc = new jsPDF();
+        doc.setFontSize(12);
+        doc.text('Available Inventory Items', 20, 20);
+        
+        // Define the columns for the table
+        const columns = [
+            { header: "Name", dataKey: "name" },
+            { header: "Supplier Name", dataKey: "supName" },
+            { header: "Description", dataKey: "description" },
+            { header: "Category", dataKey: "category" },
+            { header: "Unit", dataKey: "unit" },
+            { header: "Available Item", dataKey: "availableItem" }
+        ];
+        
+        // Prepare the data for the table
+        const rows = filteredItems.map(item => ({
+            name: item.name,
+            supName: item.supName,
+            description: item.description,
+            category: item.category,
+            unit: item.unit,
+            availableItem: item.availableItem
+        }));
+
+        // Generate the table
+        autoTable(doc, {
+            head: [columns.map(col => col.header)],
+            body: rows.map(row => columns.map(col => row[col.dataKey])),
+            startY: 30,
+        });
+
+        doc.save('inventory_items.pdf');
+    };
+
+    const downloadItemPDF = (item) => {
+        const doc = new jsPDF();
+        doc.setFontSize(12);
+        doc.text('Item Details', 20, 20);
+        doc.text(`Name: ${item.name}`, 20, 30);
+        doc.text(`Supplier Name: ${item.supName}`, 20, 40);
+        doc.text(`Description: ${item.description}`, 20, 50);
+        doc.text(`Category: ${item.category}`, 20, 60);
+        doc.text(`Unit: ${item.unit}`, 20, 70);
+        doc.text(`Available Item: ${item.availableItem}`, 20, 80);
+        
+        doc.save(`${item.name}.pdf`); // Save with item name as file name
+    };
+
     return (
         <div>
             <h2 className="inventory-list-title">Available Inventory Dashboard</h2>
@@ -61,6 +112,7 @@ function InventoryDashboard() {
                 />
                 <button className="search-btn" onClick={handleSearch}>Search</button>
             </div>
+            <button className="download-btn" onClick={downloadPDF}>Download All Items as PDF</button>
             <table className="inventory-table">
                 <thead>
                     <tr>
@@ -85,6 +137,7 @@ function InventoryDashboard() {
                                 <td>{item.availableItem}</td>
                                 <td>
                                     <button className="delete-btn" onClick={() => handleDelete(item._id)}>Delete</button>
+                                    <button className="download-btn" onClick={() => downloadItemPDF(item)}>Download PDF</button>
                                 </td>
                             </tr>
                         ))

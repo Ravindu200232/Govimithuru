@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { jsPDF } from "jspdf";
 import './css/deliverAll.css';
 
 function DeliveryDashboard() {
@@ -94,6 +95,33 @@ function DeliveryDashboard() {
         }
     };
 
+    // New function to generate PDF
+    const generatePDF = (delivery) => {
+        const doc = new jsPDF();
+
+        doc.setFontSize(20);
+        doc.text("Delivery Receipt", 20, 20);
+
+        doc.setFontSize(12);
+        doc.text(`Delivery ID: ${delivery._id}`, 20, 40);
+        doc.text(`Delivery Person: ${delivery.deliveryPersonName}`, 20, 50);
+        doc.text(`Delivery Date: ${new Date(delivery.deliveryDate).toLocaleDateString()}`, 20, 60);
+        doc.text(`Status: ${delivery.status}`, 20, 70);
+        doc.text(`Address: ${delivery.address}`, 20, 80);
+        doc.text(`Postal Code: ${delivery.postalCode}`, 20, 90);
+        doc.text(`Email: ${delivery.email}`, 20, 100);
+        doc.text(`Phone Number: ${delivery.phoneNumber}`, 20, 110);
+        doc.text(`Delivery Type: ${delivery.deliveryType}`, 20, 120);
+
+        doc.text("Delivery Details:", 20, 140);
+        delivery.deliveryDetails.forEach((detail, index) => {
+            const y = 150 + (index * 10);
+            doc.text(`${detail.itemName} - Qty: ${detail.quantity}, Price: ₹${detail.itemPrice}, Total: ₹${detail.totalPrice}`, 20, y);
+        });
+
+        doc.save(`Delivery_${delivery._id}.pdf`);
+    };
+
     return (
         <div>
             <h2 className="delivery-list-title">Delivery Dashboard</h2>
@@ -171,6 +199,7 @@ function DeliveryDashboard() {
                                 {delivery.status !== 'Delivered' && (
                                     <button className="confirm-btn" onClick={() => handleConfirm(delivery._id)}>Confirm</button>
                                 )}
+                                <button className="pdf-btn" onClick={() => generatePDF(delivery)}>Download PDF</button>
                             </td>
                         </tr>
                     ))}
