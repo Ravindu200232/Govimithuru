@@ -71,6 +71,9 @@ import UserSummary from './Components/User/UserSummary';
 import PaymentReceiptForm from './Components/finance/PaymentReceiptForm';
 import PaymentSummary from './Components/payment/PaymentSummary';
 import FinancePaycheckDashboard from './Components/finance/FinancePaycheckDashboard';
+import OtherExpensesForm from './Components/finance/OtherExpensesForm';
+import OtherExpensesDashboard from './Components/finance/OtherExpensesDashboard';
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -741,7 +744,7 @@ function App() {
             )
           } />
 
-    <Route path="/admin/finance/paybildash" element={
+       <Route path="/admin/finance/paybildash" element={
             isAdmin ? (
               <>
                 <NavbarA />
@@ -749,6 +752,41 @@ function App() {
                   <FinanceSidebar />
                   <div className="content">
                     <FinancePaycheckDashboard />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+
+        <Route path="/finance/otherExpenciveForm" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <FinanceSidebar />
+                  <div className="content">
+                    <OtherExpensesForm />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+
+
+          <Route path="/finance/otherExpencive" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <FinanceSidebar />
+                  <div className="content">
+                    <OtherExpensesDashboard />
                   </div>
                 </div>
               </>

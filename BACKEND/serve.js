@@ -47,6 +47,8 @@ app.use("/cropSolutions",cropSolution);
 const bestSellingRouter = require('./routes/bestSelling');
 
 app.use('/bestSelling', bestSellingRouter);
+const otherExpensesRoutes = require("./routes/otherExpensesRoutes");
+app.use("/api/otherexpenses", otherExpensesRoutes);
 
 
 app.use("/inventoryitem",InventoryItemRouter)

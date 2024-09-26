@@ -19,7 +19,7 @@ const PaymentReceiptForm = () => {
         taxes: 0,
         shippingCost: 0,
         totalAmount: 0,
-        paymentMethod: '',
+        paymentMethod: '', // Changed this to be a select
         paymentStatus: 'Confirmed',
         companyName: '',
         companyAddress: '',
@@ -213,10 +213,17 @@ const PaymentReceiptForm = () => {
                 Total Amount:
                 <input type="number" name="totalAmount" placeholder="Total Amount" onChange={handleChange} required />
             </label>
+
+            {/* Updated Payment Method to be a Select Dropdown */}
             <label>
                 Payment Method:
-                <input type="text" name="paymentMethod" placeholder="Payment Method" onChange={handleChange} required />
+                <select name="paymentMethod" onChange={handleChange} required>
+                    <option value="" disabled>Select Payment Method</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Check">Check</option>
+                </select>
             </label>
+            
             <label>
                 Payment Status:
                 <select name="paymentStatus" onChange={handleChange}>

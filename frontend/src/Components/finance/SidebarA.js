@@ -27,13 +27,13 @@ function SidebarA() {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/admin/showcase" activeClassName="active-link">
-            Goals
+          <NavLink to="/finance/otherExpenciveForm" activeClassName="active-link">
+            Expense Form
           </NavLink>
         </li>
         <li>
-          <NavLink to="/admin/alerts" activeClassName="active-link">
-            Alerts
+          <NavLink to="/finance/otherExpencive" activeClassName="active-link">
+           Expense
           </NavLink>
         </li>
       </ul>
