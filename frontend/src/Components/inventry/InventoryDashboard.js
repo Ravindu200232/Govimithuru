@@ -18,6 +18,7 @@ function InventoryDashboard() {
             .then((res) => {
                 setItems(res.data);
                 setFilteredItems(res.data); // Initialize filtered items
+                checkForLowStock(res.data); // Check for low stock items
             })
             .catch((err) => {
                 alert("Error fetching data: " + err.message);
@@ -56,7 +57,6 @@ function InventoryDashboard() {
         doc.setFontSize(12);
         doc.text('Available Inventory Items', 20, 20);
         
-        // Define the columns for the table
         const columns = [
             { header: "Name", dataKey: "name" },
             { header: "Supplier Name", dataKey: "supName" },
@@ -66,7 +66,6 @@ function InventoryDashboard() {
             { header: "Available Item", dataKey: "availableItem" }
         ];
         
-        // Prepare the data for the table
         const rows = filteredItems.map(item => ({
             name: item.name,
             supName: item.supName,
@@ -76,7 +75,6 @@ function InventoryDashboard() {
             availableItem: item.availableItem
         }));
 
-        // Generate the table
         autoTable(doc, {
             head: [columns.map(col => col.header)],
             body: rows.map(row => columns.map(col => row[col.dataKey])),
@@ -98,6 +96,25 @@ function InventoryDashboard() {
         doc.text(`Available Item: ${item.availableItem}`, 20, 80);
         
         doc.save(`${item.name}.pdf`); // Save with item name as file name
+    };
+
+    const checkForLowStock = (items) => {
+        items.forEach(item => {
+            if (item.availableItem <= 3) {
+                createInventoryAlert(item._id, item.name);
+            }
+        });
+    };
+
+    const createInventoryAlert = (itemId, itemName) => {
+        const message = `Low stock alert: ${itemName} is running low with only ${itemId} items left.`;
+        axios.post("http://localhost:8000/inventoryalert", { itemId, message })
+            .then((res) => {
+                console.log("Alert created for:", itemName);
+            })
+            .catch((err) => {
+                console.error("Error creating alert:", err.message);
+            });
     };
 
     return (

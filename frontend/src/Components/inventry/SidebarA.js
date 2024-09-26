@@ -11,6 +11,13 @@ function SidebarA() {
             Dashboard
           </NavLink>
         </li>
+
+        <li>
+          <NavLink to="/admin/Alert" activeClassName="active-link">
+            Alert
+          </NavLink>
+        </li>
+
         <li>
           <NavLink to="/admin/sales" activeClassName="active-link">
             Sales

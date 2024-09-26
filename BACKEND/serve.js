@@ -37,7 +37,12 @@ const driverRoutes = require('./routes/driverRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const authRouter = require("./routes/auth");
 const giveChecksRoutes = require("./routes/giveChecksRoutes");
+const inventoryAlertRoutes = require("./routes/InventoryAlertRoutes.js");
+app.use("/inventoryalert", inventoryAlertRoutes);
+
 app.use("/auth", authRouter);
+
+
 
 const OfferRouter = require("./routes/Offer");
 app.use("/offers", OfferRouter);

@@ -73,6 +73,7 @@ import PaymentSummary from './Components/payment/PaymentSummary';
 import FinancePaycheckDashboard from './Components/finance/FinancePaycheckDashboard';
 import OtherExpensesForm from './Components/finance/OtherExpensesForm';
 import OtherExpensesDashboard from './Components/finance/OtherExpensesDashboard';
+import AlertDashboard from './Components/inventry/AlertDashboard';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -787,6 +788,22 @@ function App() {
                   <FinanceSidebar />
                   <div className="content">
                     <OtherExpensesDashboard />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+          <Route path="/admin/Alert" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarA />
+                  <div className="content">
+                    <AlertDashboard />
                   </div>
                 </div>
               </>
