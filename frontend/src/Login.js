@@ -33,7 +33,7 @@ const Login = ({ onLogin }) => {
                 navigate('/home'); // Redirect to home for regular users
             }
         } catch (error) {
-            alert("Error logging in!");
+            alert("Email or Password Are Incorrect Please Try Again");
         }
     };
     
