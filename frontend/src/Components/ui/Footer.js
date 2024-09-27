@@ -6,10 +6,11 @@ function Footer() {
     <footer style={styles.footerSection}>
       <div style={styles.footerLeft}>
         <img src={logo} alt="Govimithuru Logo" style={styles.logo} />
-        <p style={styles.footerLeftP}>There are many variations of passages of lorem ipsum available, but the majority suffered alteration.</p>
+        <p style={styles.footerLeftP}>To offer our ultimate gratitude towards this amazing nature
+           by providing the best agricultural plants and products in order sustain a greener future.</p>
       </div>
       <div style={styles.footerLinks}>
-        <ul style={styles.footerLinksUl}>
+        <ul style={styles.footerLinksUl}> 
           <li style={styles.footerLinksLi}>Services</li>
           <li style={styles.footerLinksLi}>Our Projects</li>
           <li style={styles.footerLinksLi}>Meet the Farmers</li>
@@ -24,9 +25,9 @@ function Footer() {
       </div>
       <div style={styles.footerContact}>
         <h3 style={styles.h3}>Contact</h3>
-        <p>+666 888 0000</p>
+        <p>+94 0112449014 </p>
         <p>info@agriculturecompany.com</p>
-        <p>120 Gotham Golden Street, New York, USA</p>
+        <p>76 Dockyard Road, Trincomalee, SriLanka</p>
         <input type="email" placeholder="Your Email Address" style={styles.inputEmail} />
       </div>
     </footer>
