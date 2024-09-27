@@ -62,10 +62,10 @@ function Irrigation() {
                     />
                     <h4>{item.name}</h4>
                     <p>
-                      Price: ${item.price.toFixed(2)}
+                      Price: Rs{item.price.toFixed(2)}
                       {item.discount > 0 && (
                         <>
-                          <span className="discount"> (${(item.price - (item.price * (item.discount / 100))).toFixed(2)})</span>
+                          <span className="discount"> (Rs{(item.price - (item.price * (item.discount / 100))).toFixed(2)})</span>
                           <span className="discount-percentage"> {item.discount}% off</span>
                         </>
                       )}

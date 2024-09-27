@@ -73,6 +73,22 @@ const EmployeeSummary = () => {
         return <div className="loading">Loading...</div>;
     }
 
+    const tableStyle = {
+        width: '100%',
+        borderCollapse: 'collapse',
+    };
+
+    const headerStyle = {
+        backgroundColor: '#f8f9fa',
+        fontWeight: 'bold',
+    };
+
+    const cellStyle = {
+        padding: '8px',
+        textAlign: 'left',
+        borderBottom: '1px solid #ddd',
+    };
+
     return (
         <Card className="my-4">
             <Card.Body>
@@ -101,9 +117,9 @@ const EmployeeSummary = () => {
                     </Col>
                 </Row>
                 <h5 className="mt-4">Employee Details Table</h5>
-                <Table striped bordered hover>
+                <Table style={tableStyle} striped bordered hover>
                     <thead>
-                        <tr>
+                        <tr style={headerStyle}>
                             <th>ID</th>
                             <th>Name</th>
                             <th>Email</th>
@@ -120,18 +136,18 @@ const EmployeeSummary = () => {
                         {tableData.length > 0 ? (
                             tableData.map((row, index) => (
                                 <tr key={row.id}>
-                                    <td>{index + 1}</td>
-                                    <td>{row.name}</td>
-                                    <td>{row.email}</td>
-                                    <td>{row.position}</td>
-                                    <td>{row.department}</td>
-                                    <td>{row.phone}</td>
-                                    <td>{row.nic}</td>
-                                    <td>{row.drivingNic}</td>
-                                    <td>{row.birthday}</td>
-                                    <td>
+                                    <td style={cellStyle}>{index + 1}</td>
+                                    <td style={cellStyle}>{row.name}</td>
+                                    <td style={cellStyle}>{row.email}</td>
+                                    <td style={cellStyle}>{row.position}</td>
+                                    <td style={cellStyle}>{row.department}</td>
+                                    <td style={cellStyle}>{row.phone}</td>
+                                    <td style={cellStyle}>{row.nic}</td>
+                                    <td style={cellStyle}>{row.drivingNic}</td>
+                                    <td style={cellStyle}>{row.birthday}</td>
+                                    <td style={cellStyle}>
                                         {row.profileImage !== 'No Image' ? (
-                                            <img src={row.profileImage} alt="Profile" className="employee-image" />
+                                            <img src={row.profileImage} alt="Profile" className="employee-image" style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
                                         ) : (
                                             row.profileImage
                                         )}

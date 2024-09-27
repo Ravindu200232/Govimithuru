@@ -70,7 +70,7 @@ function Carts() {
             doc.text(`${index + 1}`, 14, 42 + (index * 10));
             doc.text(item.itemNamec, 40, 42 + (index * 10));
             doc.text(item.categoryc, 80, 42 + (index * 10));
-            doc.text(`₹${item.pricec.toFixed(2)}`, 120, 42 + (index * 10));
+            doc.text(`RS:${item.pricec.toFixed(2)}`, 120, 42 + (index * 10));
             doc.text(`${item.available}`, 150, 42 + (index * 10));
             doc.text(`${item.quantityc}`, 180, 42 + (index * 10));
         });
@@ -122,7 +122,7 @@ function Carts() {
                                     </td>
                                     <td>{item.itemNamec}</td>
                                     <td>{item.categoryc}</td>
-                                    <td>₹{item.pricec.toFixed(2)}</td>
+                                    <td>Rs{item.pricec.toFixed(2)}</td>
                                     <td>{item.available}</td>
                                     <td>{item.quantityc}</td>
                                     <td>

@@ -16,11 +16,7 @@ function SidebarA() {
             Sales 
           </NavLink>
         </li>
-        <li>
-          <NavLink to="/admin/inventory/supply-form" activeClassName="active-link">
-            Sales Metrix
-          </NavLink>
-        </li>
+        
         <li>
           <NavLink to="/admin/salesSummery" activeClassName="active-link">
             Sale Summery

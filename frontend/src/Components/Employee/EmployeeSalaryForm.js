@@ -91,7 +91,7 @@ function EmployeeSalaryForm() {
           />
         </div>
         <div>
-          <label>ETF</label>
+          <label>ETF(%)</label>
           <input
             type="number"
             value={ETF}

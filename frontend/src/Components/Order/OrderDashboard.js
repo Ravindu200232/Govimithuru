@@ -167,9 +167,7 @@ function OrderDashboard() {
                             <td>
                                 <button className="update-btn" onClick={() => handleUpdate(order._id)}>Update</button>
                                 <button className="delete-btn" onClick={() => handleDelete(order._id)}>Delete</button>
-                                {order.status !== 'Confirmed' && (
-                                    <button className="confirm-btn" onClick={() => handleConfirm(order._id)}>Confirm</button>
-                                )}
+                               
                                 <button className="download-btn" onClick={() => handleDownloadPDF(order)}>Download PDF</button>
                             </td>
                         </tr>

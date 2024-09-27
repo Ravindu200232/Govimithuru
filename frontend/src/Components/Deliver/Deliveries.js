@@ -194,7 +194,7 @@ function DeliveryDashboard() {
                                 </select>
                             </td>
                             <td>
-                                <button className="view-btn" onClick={() => handleView(delivery._id)}>View</button>
+                                
                                 <button className="delete-btn" onClick={() => handleDelete(delivery._id)}>Delete</button>
                                 {delivery.status !== 'Delivered' && (
                                     <button className="confirm-btn" onClick={() => handleConfirm(delivery._id)}>Confirm</button>

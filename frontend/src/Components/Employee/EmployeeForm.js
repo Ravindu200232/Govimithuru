@@ -147,14 +147,14 @@ function EmployeeForm() {
                     />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="position">Position</label>
+                    <label htmlFor="position">Designation</label>
                     <select
                         id="position"
                         value={position}
                         onChange={(e) => setPosition(e.target.value)}
                         required
                     >
-                        <option value="">Select Position</option>
+                        <option value="">Select Designation</option>
                         <option value="Driver">Driver</option>
                         <option value="Order Staff">Order Staff</option>
                         <option value="Order Manager">Order Manager</option>

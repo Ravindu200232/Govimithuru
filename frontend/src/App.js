@@ -79,6 +79,7 @@ import SellSummaryFinance from './Components/finance/SalesSummeryFinance';
 import SalesOrder from './Components/Order/SalesOrder';
 
 
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -866,6 +867,9 @@ function App() {
               <Navigate to="/admin/login" />
             )
           } />
+
+
+      
 
 
 
