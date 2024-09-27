@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaFacebook, FaInstagram, FaWhatsapp } from 'react-icons/fa'; // Import social media icons
 import logo from './img/logo.png'; // Import the logo image
 
 function Footer() {
@@ -6,7 +7,9 @@ function Footer() {
     <footer style={styles.footerSection}>
       <div style={styles.footerLeft}>
         <img src={logo} alt="Govimithuru Logo" style={styles.logo} />
-        <p style={styles.footerLeftP}>There are many variations of passages of lorem ipsum available, but the majority suffered alteration.</p>
+        <p style={styles.footerLeftP}>
+        To offer our ultimate gratitude towards this amazing nature by providing the best agricultural plants and products in order sustain a greener future.
+        </p>
       </div>
       <div style={styles.footerLinks}>
         <ul style={styles.footerLinksUl}>
@@ -20,14 +23,28 @@ function Footer() {
       <div style={styles.footerNews}>
         <h3 style={styles.h3}>News</h3>
         <p>Bringing Food Production Back to Cities</p>
-        <p>July 5, 2023</p>
+        <p>September 5, 2024</p>
       </div>
       <div style={styles.footerContact}>
         <h3 style={styles.h3}>Contact</h3>
-        <p>+666 888 0000</p>
-        <p>info@agriculturecompany.com</p>
-        <p>120 Gotham Golden Street, New York, USA</p>
+        <p>+789840996</p>
+        <p>info@Govimithuru.com</p>
+        <p>Kahatagasdigiliya,Anuradhaoura</p>
         <input type="email" placeholder="Your Email Address" style={styles.inputEmail} />
+      </div>
+      <div style={styles.footerSocial}>
+        <h3 style={styles.h3}>Follow Us</h3>
+        <div style={styles.socialIcons}>
+          <a href="https://facebook.com" style={styles.iconLink}>
+            <FaFacebook size={24} />
+          </a>
+          <a href="https://instagram.com" style={styles.iconLink}>
+            <FaInstagram size={24} />
+          </a>
+          <a href="https://whatsapp.com" style={styles.iconLink}>
+            <FaWhatsapp size={24} />
+          </a>
+        </div>
       </div>
     </footer>
   );
@@ -39,7 +56,7 @@ const styles = {
     justifyContent: 'space-between',
     padding: '20px',
     fontFamily: 'Cambria, Cochin, Georgia, Times, "Times New Roman", serif',
-    backgroundColor: '#fafafa',
+    backgroundColor: '#B0EACD',
   },
   footerLeft: {
     flex: 1,
@@ -73,6 +90,18 @@ const styles = {
   footerContact: {
     flex: 1,
     padding: '10px',
+  },
+  footerSocial: {
+    flex: 1,
+    padding: '10px',
+  },
+  socialIcons: {
+    display: 'flex',
+    gap: '15px',
+  },
+  iconLink: {
+    color: '#000', // Change to desired color
+    textDecoration: 'none',
   },
   h3: {
     marginBottom: '15px',

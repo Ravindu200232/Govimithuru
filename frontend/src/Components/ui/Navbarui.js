@@ -27,27 +27,12 @@ function Navbar() {
         <li><a href="/contact">Contact</a></li>
         <li>
           {username && (
-            <a onClick={() => navigate('/profile')} style={{ cursor: 'pointer' }}>
+            <b><a onClick={() => navigate('/profile')} style={{ cursor: 'pointer' }}>
               {username}
-            </a>
+            </a></b>
           )}
         </li>
-        <li>
-          <button
-            onClick={handleLogout}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: 'black',
-              fontFamily: '"Alegreya Sans SC", sans-serif',
-              fontWeight: 'bold',
-              fontSize: '26px',
-              padding: '0px'
-            }}>
-            Logout
-          </button>
-        </li>
+        
       </ul>
     </nav>
   );

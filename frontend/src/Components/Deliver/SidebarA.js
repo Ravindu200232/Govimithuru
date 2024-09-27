@@ -12,13 +12,13 @@ function SidebarA() {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/admin/sales" activeClassName="active-link">
+          <NavLink to="" activeClassName="active-link">
             Alert
           </NavLink>
         </li>
         <li>
           <NavLink to="/admin/driver" activeClassName="active-link">
-            Confirm Msg
+            Drivers List
           </NavLink>
         </li>
         <li>

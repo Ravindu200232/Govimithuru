@@ -137,7 +137,7 @@ function Cart() {
                   </button>
                 </div>
                 <p>Available: {availability[item._id]}</p>
-                <button className="buy-btn">Buy</button>
+               
               </div>
               <div className="remove-item" onClick={() => removeItem(item._id)}>X</div>
             </div>

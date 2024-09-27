@@ -127,7 +127,7 @@ function EmployeeList() {
     return (
         <div className="employee-list-container">
             <h2 className="employee-list-title">Employee List</h2>
-            <button className="add-new-btn" onClick={handleAddNew}>Add New Employee</button>
+           
             {error && <p className="error-message">{error}</p>}
             <table className="employee-table">
                 <thead>
