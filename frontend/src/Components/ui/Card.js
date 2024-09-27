@@ -117,7 +117,7 @@ function Cart() {
                 />
                 <h3>{item.itemNamec}</h3>
                 <p>Category: {item.categoryc}</p>
-                <p>Price: ₹{item.pricec.toFixed(2)}</p>
+                <p>Price: Rs:{item.pricec.toFixed(2)}</p>
                 <div className="quantity-control">
                   <button 
                     onClick={() => handleQuantityChange(item._id, -1)}
@@ -148,7 +148,7 @@ function Cart() {
       </div>
       <div className="cart-summary">
         <h3>TOTAL</h3>
-        <p>Subtotal: ₹{calculateTotal()}</p>
+        <p>Subtotal: Rs:{calculateTotal()}</p>
         <p>Delivery: Free</p>
         <button className="checkout-btn" onClick={handleCheckout}>Check Out</button>
       </div>

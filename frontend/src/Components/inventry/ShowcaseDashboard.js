@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 import './css/ShowcaseDashboard.css';
 
 function ShowcaseDashboard() {
@@ -42,6 +44,30 @@ function ShowcaseDashboard() {
         navigate('/admin/showcase/ShowcaseForm');
     };
 
+    const generatePDF = () => {
+        const doc = new jsPDF();
+        doc.setFontSize(12);
+        doc.text('Showcase Items', 20, 20);
+        
+        const data = items.map((item) => ({
+            Name: item.name,
+            Category: item.category,
+            Description: item.description,
+            Unit: item.unit,
+            Price: item.price,
+            Discount: item.discount ? `${item.discount} %` : 'No Discount',
+        }));
+
+        autoTable(doc, {
+            head: [['Name', 'Category', 'Description', 'Unit', 'Price', 'Discount']],
+            body: data.map(item => [item.Name, item.Category, item.Description, item.Unit, item.Price, item.Discount]),
+            startY: 30,
+            theme: 'striped'
+        });
+
+        doc.save('showcase_items.pdf');
+    };
+
     if (loading) {
         return <div className="loading">Loading...</div>;
     }
@@ -50,6 +76,7 @@ function ShowcaseDashboard() {
         <div className="showcase-dashboard-container">
             <h2 className="showcase-dashboard-title">Showcase Dashboard</h2>
             <button className="add-new-btn" onClick={handleAddNew}>Add New Showcase Item</button>
+            <button className="download-pdf-btn" onClick={generatePDF}>Download PDF</button>
             {error && <p className="error-message">{error}</p>}
             <table className="showcase-table">
                 <thead>
@@ -73,9 +100,9 @@ function ShowcaseDashboard() {
                                 <td>{item.name}</td>
                                 <td>{item.category}</td>
                                 <td>{item.description}</td>
-                                <td>{item.unit}</td> {/* Concatenated Unit */}
+                                <td>{item.unit}</td>
                                 <td>{item.price}</td>
-                                <td>{item.discount ? `${item.discount} %` : 'No Discount'}</td> {/* Display Discount */}
+                                <td>{item.discount ? `${item.discount} %` : 'No Discount'}</td>
                                 <td>
                                     <img
                                         src={`data:image/jpeg;base64,${item.imageBase64}`} // Image handling logic

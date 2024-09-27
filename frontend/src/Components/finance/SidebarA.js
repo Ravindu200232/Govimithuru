@@ -7,8 +7,8 @@ function SidebarA() {
     <aside className="sidebar">
       <ul className="sidebar-menu">
         <li>
-          <NavLink to="/admin/inventory" activeClassName="active-link">
-            Dashboard
+          <NavLink to="/admin/sells" activeClassName="active-link">
+            Sells
           </NavLink>
         </li>
         <li>
@@ -17,23 +17,23 @@ function SidebarA() {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/admin/inventory/supply-form" activeClassName="active-link">
-            Bill
+          <NavLink to="/admin/finance/paybil" activeClassName="active-link">
+            Add PayBill
           </NavLink>
         </li>
         <li>
-          <NavLink to="/admin/inventory/all" activeClassName="active-link">
-            Expenses
+          <NavLink to="/admin/finance/paybildash" activeClassName="active-link">
+            PayBill
           </NavLink>
         </li>
         <li>
-          <NavLink to="/admin/showcase" activeClassName="active-link">
-            Goals
+          <NavLink to="/finance/otherExpenciveForm" activeClassName="active-link">
+            Expense Form
           </NavLink>
         </li>
         <li>
-          <NavLink to="/admin/alerts" activeClassName="active-link">
-            Alerts
+          <NavLink to="/finance/otherExpencive" activeClassName="active-link">
+           Expense
           </NavLink>
         </li>
       </ul>

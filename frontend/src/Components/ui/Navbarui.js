@@ -1,14 +1,15 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import './css/Navbar.css';
 import logo from './img/logo.png';
 
 function Navbar() {
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
+  const username = localStorage.getItem('username'); // Get username from localStorage
 
   const handleLogout = () => {
-    // Clear user data (this could be a token in localStorage or any state management you use)
-    localStorage.removeItem('user'); // Example: removing user data
+    localStorage.removeItem('user'); // Remove user data
+    localStorage.removeItem('username'); // Remove username on logout
     navigate('/login'); // Redirect to login page
   };
 
@@ -24,8 +25,29 @@ function Navbar() {
         <li><a href="/login">Login</a></li>
         <li><a href="/about">About</a></li>
         <li><a href="/contact">Contact</a></li>
-        <li><a href="/profile">Profile</a></li>
-        <li><button onClick={handleLogout} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'blue' }}>Logout</button></li>
+        <li>
+          {username && (
+            <a onClick={() => navigate('/profile')} style={{ cursor: 'pointer' }}>
+              {username}
+            </a>
+          )}
+        </li>
+        <li>
+          <button
+            onClick={handleLogout}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: 'black',
+              fontFamily: '"Alegreya Sans SC", sans-serif',
+              fontWeight: 'bold',
+              fontSize: '26px',
+              padding: '0px'
+            }}>
+            Logout
+          </button>
+        </li>
       </ul>
     </nav>
   );

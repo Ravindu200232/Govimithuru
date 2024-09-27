@@ -36,16 +36,24 @@ const salaryRoutes = require('./routes/salary');
 const driverRoutes = require('./routes/driverRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const authRouter = require("./routes/auth");
+const giveChecksRoutes = require("./routes/giveChecksRoutes");
+const inventoryAlertRoutes = require("./routes/InventoryAlertRoutes.js");
+app.use("/inventoryalert", inventoryAlertRoutes);
+
 app.use("/auth", authRouter);
+
+
 
 const OfferRouter = require("./routes/Offer");
 app.use("/offers", OfferRouter);
-
+app.use("/api/givechecks", giveChecksRoutes);
 const cropSolution = require("./routes/cropSolutions.js");
 app.use("/cropSolutions",cropSolution);
 const bestSellingRouter = require('./routes/bestSelling');
 
 app.use('/bestSelling', bestSellingRouter);
+const otherExpensesRoutes = require("./routes/otherExpensesRoutes");
+app.use("/api/otherexpenses", otherExpensesRoutes);
 
 
 app.use("/inventoryitem",InventoryItemRouter)

@@ -6,20 +6,11 @@ function PaymentSidebar() {
     <aside style={styles.sidebar}>
       <ul style={styles.menu}>
         <li>
-          <NavLink to="/admin/payments" activeClassName="active-link" style={styles.link}>
+          <NavLink to="/admin/payment" activeClassName="active-link" style={styles.link}>
             Payment Dashboard
           </NavLink>
         </li>
-        <li>
-          <NavLink to="/admin/payments/add" activeClassName="active-link" style={styles.link}>
-            Add Payment
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/admin/payments/history" activeClassName="active-link" style={styles.link}>
-            Payment History
-          </NavLink>
-        </li>
+        
         <li>
           <NavLink to="/admin/payments/alerts" activeClassName="active-link" style={styles.link}>
             Payment Alerts

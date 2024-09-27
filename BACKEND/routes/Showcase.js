@@ -100,7 +100,69 @@ router.get("/Growthpromoters", async (req, res) => {
     }
 });
 
+// Get all Showcase items with category 'Remadies'
+router.get("/remedies", async (req, res) => {
+    try {
+        const showcaseItems = await Showcase.find({ category: 'Remedies' });
+        res.json(showcaseItems);
+    } catch (err) {
+        res.status(500).send({ status: "Error with getting items", error: err.message });
+    }
+});
 
+// Get all Showcase items with category 'Orgenic Farm'
+router.get("/organic-farming", async (req, res) => {
+    try {
+        const showcaseItems = await Showcase.find({ category: 'Organicfarming' });
+        res.json(showcaseItems);
+    } catch (err) {
+        res.status(500).send({ status: "Error with getting items", error: err.message });
+    }
+});
+
+
+// Get all Showcase items with category 'Equpments'
+router.get("/equipments", async (req, res) => {
+    try {
+        const showcaseItems = await Showcase.find({ category: 'Equipments' });
+        res.json(showcaseItems);
+    } catch (err) {
+        res.status(500).send({ status: "Error with getting items", error: err.message });
+    }
+});
+
+
+// Get all Showcase items with category 'Fertilizer'
+router.get("/fertilizers", async (req, res) => {
+    try {
+        const showcaseItems = await Showcase.find({ category: 'Fertilizers' });
+        res.json(showcaseItems);
+    } catch (err) {
+        res.status(500).send({ status: "Error with getting items", error: err.message });
+    }
+});
+
+
+// Get all Showcase items with category 'Irrigation'
+router.get("/irrigation", async (req, res) => {
+    try {
+        const showcaseItems = await Showcase.find({ category: 'Irrigation' });
+        res.json(showcaseItems);
+    } catch (err) {
+        res.status(500).send({ status: "Error with getting items", error: err.message });
+    }
+});
+
+
+// Get all Showcase items with category 'Gardening'
+router.get("/gardening", async (req, res) => {
+    try {
+        const showcaseItems = await Showcase.find({ category: 'Gardening' });
+        res.json(showcaseItems);
+    } catch (err) {
+        res.status(500).send({ status: "Error with getting items", error: err.message });
+    }
+});
 
 
 module.exports = router;

@@ -29,6 +29,7 @@ import About from './Components/ui/About';
 import Signup from './Signup';
 import Login from './Login';
 import AdminLogin from './AdminLogin';
+import Profile from './Components/ui/Profile';
 
 
 // Admin-facing components
@@ -67,7 +68,17 @@ import CartSummery from './Components/Card/CartSummery';
 import DeliverySummary from './Components/Deliver/DeliverySummary';
 import EmployeeSummary from './Components/Employee/EmployeeSummary';
 import UserSummary from './Components/User/UserSummary';
+import PaymentReceiptForm from './Components/finance/PaymentReceiptForm';
 import PaymentSummary from './Components/payment/PaymentSummary';
+import FinancePaycheckDashboard from './Components/finance/FinancePaycheckDashboard';
+import OtherExpensesForm from './Components/finance/OtherExpensesForm';
+import OtherExpensesDashboard from './Components/finance/OtherExpensesDashboard';
+import AlertDashboard from './Components/inventry/AlertDashboard';
+import SellSummary from './Components/inventry/SellSummary';
+import SellSummaryFinance from './Components/finance/SalesSummeryFinance';
+import SalesOrder from './Components/Order/SalesOrder';
+
+
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -129,6 +140,21 @@ function App() {
               <Navigate to="/login" />
             )
           } />
+
+
+          <Route path="/profile" element={
+            isLoggedIn ? (
+              <>
+                <Navbar />
+                <Profile />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/profile" />
+            )
+          } />
+
+
           <Route path="/products" element={
             isLoggedIn ? (
               <>
@@ -706,6 +732,145 @@ function App() {
               <Navigate to="/admin/login" />
             )
           } />
+
+
+          <Route path="/admin/finance/paybil" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <FinanceSidebar />
+                  <div className="content">
+                    <PaymentReceiptForm />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+       <Route path="/admin/finance/paybildash" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <FinanceSidebar />
+                  <div className="content">
+                    <FinancePaycheckDashboard />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+
+        <Route path="/finance/otherExpenciveForm" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <FinanceSidebar />
+                  <div className="content">
+                    <OtherExpensesForm />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+
+
+          <Route path="/finance/otherExpencive" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <FinanceSidebar />
+                  <div className="content">
+                    <OtherExpensesDashboard />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+          <Route path="/admin/Alert" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarA />
+                  <div className="content">
+                    <AlertDashboard />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+
+          
+          <Route path="/admin/sales" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarA />
+                  <div className="content">
+                    <SellSummary />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+          
+          <Route path="/admin/sells" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <FinanceSidebar />
+                  <div className="content">
+                    <SellSummaryFinance />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+          <Route path="/admin/salesOrder" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <OrderSide />
+                  <div className="content">
+                    <SalesOrder />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+
+      
+
 
 
         

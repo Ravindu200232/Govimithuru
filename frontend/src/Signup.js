@@ -29,7 +29,7 @@ const Signup = () => {
             alert(response.data);
             navigate('/login');
         } catch (error) {
-            alert("Error signing up!");
+            alert("Email or Username Allready Exiting");
         }
     };
 

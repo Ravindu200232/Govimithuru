@@ -13,6 +13,8 @@ const PaymentSummary = () => {
     const [paymentData, setPaymentData] = useState([]);
     const [chartData, setChartData] = useState({});
     const [tableData, setTableData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchPaymentData = async () => {
@@ -23,6 +25,9 @@ const PaymentSummary = () => {
                 prepareTableData(response.data);
             } catch (error) {
                 console.error("Error fetching payment data:", error);
+                setError("Failed to fetch payment data.");
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -76,53 +81,61 @@ const PaymentSummary = () => {
         <Card className="my-4">
             <Card.Body>
                 <Card.Title>Payment Summary</Card.Title>
-                <Row>
-                    <Col md={6}>
-                        <h5>Customer Payment Distribution (Pie Chart)</h5>
-                        <div style={{ width: '100%', height: '300px' }}>
-                            {chartData.pie && chartData.pie.labels && chartData.pie.labels.length > 0 ? (
-                                <Pie data={chartData.pie} />
-                            ) : (
-                                <p>No data available.</p>
-                            )}
-                        </div>
-                    </Col>
-                    <Col md={6}>
-                        <h5>Total Payments by Customer (Bar Chart)</h5>
-                        <div style={{ width: '100%', height: '300px' }}>
-                            {chartData.bar && chartData.bar.labels && chartData.bar.labels.length > 0 ? (
-                                <Bar data={chartData.bar} />
-                            ) : (
-                                <p>No data available.</p>
-                            )}
-                        </div>
-                    </Col>
-                </Row>
-                <h5 className="mt-4">Payment Summary Table</h5>
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>Payment ID</th>
-                            <th>Customer Name</th>
-                            <th>Total Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tableData.length > 0 ? (
-                            tableData.map((row) => (
-                                <tr key={row.id}>
-                                    <td>{row.id}</td>
-                                    <td>{row.customerName}</td>
-                                    <td>${row.totalPrice.toFixed(2)}</td>
+                {loading ? (
+                    <p>Loading...</p>
+                ) : error ? (
+                    <p className="text-danger">{error}</p>
+                ) : (
+                    <>
+                        <Row>
+                            <Col md={6}>
+                                <h5>Customer Payment Distribution (Pie Chart)</h5>
+                                <div style={{ width: '100%', height: '300px' }}>
+                                    {chartData.pie && chartData.pie.labels.length > 0 ? (
+                                        <Pie data={chartData.pie} />
+                                    ) : (
+                                        <p>No data available.</p>
+                                    )}
+                                </div>
+                            </Col>
+                            <Col md={6}>
+                                <h5>Total Payments by Customer (Bar Chart)</h5>
+                                <div style={{ width: '100%', height: '300px' }}>
+                                    {chartData.bar && chartData.bar.labels.length > 0 ? (
+                                        <Bar data={chartData.bar} />
+                                    ) : (
+                                        <p>No data available.</p>
+                                    )}
+                                </div>
+                            </Col>
+                        </Row>
+                        <h5 className="mt-4">Payment Summary Table</h5>
+                        <Table striped bordered hover>
+                            <thead>
+                                <tr>
+                                    <th>Payment ID</th>
+                                    <th>Customer Name</th>
+                                    <th>Total Price</th>
                                 </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="3" className="text-center">No data available</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </Table>
+                            </thead>
+                            <tbody>
+                                {tableData.length > 0 ? (
+                                    tableData.map((row) => (
+                                        <tr key={row.id}>
+                                            <td>{row.id}</td>
+                                            <td>{row.customerName}</td>
+                                            <td>${row.totalPrice.toFixed(2)}</td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="3" className="text-center">No data available</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </Table>
+                    </>
+                )}
             </Card.Body>
         </Card>
     );

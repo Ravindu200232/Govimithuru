@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { jsPDF } from "jspdf"; // Import jsPDF
 import './css/UserDashboard.css';
 
 function UserDashboard() {
@@ -53,9 +54,31 @@ function UserDashboard() {
         }
     };
 
+    // Function to generate PDF of all users
+    const generatePDF = () => {
+        const doc = new jsPDF();
+        doc.setFontSize(20);
+        doc.text("User List", 20, 20);
+        doc.setFontSize(12);
+
+        // Table headers
+        const headers = [["Name", "Email"]];
+        const data = users.map(user => [user.firstname + ' ' + user.lastname, user.email]);
+
+        // Create the table
+        doc.autoTable({
+            head: headers,
+            body: data,
+            startY: 30, // Start below the title
+        });
+
+        doc.save("UserList.pdf");
+    };
+
     return (
         <div>
             <h2 className="user-dashboard-title">User Dashboard</h2>
+            <button onClick={generatePDF} className="download-pdf-btn">Download PDF</button> {/* Download PDF Button */}
             <table className="user-table">
                 <thead>
                     <tr>

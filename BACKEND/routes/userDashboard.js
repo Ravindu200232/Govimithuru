@@ -62,4 +62,20 @@ router.get("/get/:id", async (req, res) => {
         .catch((err) => res.status(500).send({ status: "Error with getting user", error: err.message }));
 });
 
+// Get One User by Username
+router.get("/getByUsername/:username", async (req, res) => {
+    const username = req.params.username;
+
+    await User.findOne({ username })
+        .then((user) => {
+            if (user) {
+                res.status(200).send({ status: "User fetched", user });
+            } else {
+                res.status(404).send({ status: "User not found" });
+            }
+        })
+        .catch((err) => res.status(500).send({ status: "Error with getting user", error: err.message }));
+});
+
+
 module.exports = router;

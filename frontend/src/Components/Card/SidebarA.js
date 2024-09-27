@@ -7,20 +7,11 @@ function SidebarA() {
     <aside className="sidebar">
       <ul className="sidebar-menu">
         <li>
-          <NavLink to="/admin/inventory" activeClassName="active-link">
+          <NavLink to="/admin/cart" activeClassName="active-link">
             Dashboard
           </NavLink>
         </li>
-        <li>
-          <NavLink to="" activeClassName="active-link">
-            Alert
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="" activeClassName="active-link">
-            Calculation
-          </NavLink>
-        </li>
+        
         <li>
           <NavLink to="/admin/cartSummery" activeClassName="active-link">
            Cart Summery

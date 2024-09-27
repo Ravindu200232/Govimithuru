@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { jsPDF } from "jspdf"; // Import jsPDF
+import "jspdf-autotable"; // Import autoTable
 import '../User/css/UserDashboard.css';
 
 function PaymentDashboard() {
@@ -26,9 +28,44 @@ function PaymentDashboard() {
             });
     };
 
+    // Function to generate PDF of payments
+    const generatePDF = () => {
+        const doc = new jsPDF();
+        doc.setFontSize(20);
+        doc.text("Payment Records", 20, 20);
+        doc.setFontSize(12);
+
+        // Prepare table headers
+        const headers = [
+            ["ID", "Customer Name", "Card Name", "Card Type", "Card Number", "Expiration Date", "Total Price"]
+        ];
+
+        // Prepare table data
+        const data = payments.map(payment => [
+            payment._id, // Add ID to the table
+            payment.customerName,
+            payment.cardName,
+            payment.cardType,
+            payment.cardNumber,
+            payment.expirationDate,
+            `$${payment.totalPrice.toFixed(2)}`
+        ]);
+
+        // Create the table
+        doc.autoTable({
+            head: headers,
+            body: data,
+            startY: 30, // Start below the title
+        });
+
+        // Save the PDF
+        doc.save("PaymentRecords.pdf");
+    };
+
     return (
         <div>
             <h2 className="payment-dashboard-title">Payment Dashboard</h2>
+            <button onClick={generatePDF} className="download-pdf-btn">Download PDF</button> {/* Download PDF Button */}
             <table className="payment-table">
                 <thead>
                     <tr>

@@ -103,7 +103,7 @@ const UserSummary = () => {
                 <Table striped bordered hover>
                     <thead>
                         <tr>
-                            <th>User ID</th>
+                            
                             <th>Name</th>
                             <th>Username</th>
                             <th>Email</th>
@@ -113,7 +113,7 @@ const UserSummary = () => {
                         {tableData.length > 0 ? (
                             tableData.map((row) => (
                                 <tr key={row.id}>
-                                    <td>{row.id}</td>
+                                    
                                     <td>{row.name}</td>
                                     <td>{row.username}</td>
                                     <td>{row.email}</td>
