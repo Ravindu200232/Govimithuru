@@ -7,8 +7,8 @@ function SidebarA() {
     <aside className="sidebar">
       <ul className="sidebar-menu">
         <li>
-          <NavLink to="/admin/inventory" activeClassName="active-link">
-            Dashboard
+          <NavLink to="/admin/sells" activeClassName="active-link">
+            Sells
           </NavLink>
         </li>
         <li>

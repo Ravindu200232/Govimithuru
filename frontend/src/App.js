@@ -74,6 +74,10 @@ import FinancePaycheckDashboard from './Components/finance/FinancePaycheckDashbo
 import OtherExpensesForm from './Components/finance/OtherExpensesForm';
 import OtherExpensesDashboard from './Components/finance/OtherExpensesDashboard';
 import AlertDashboard from './Components/inventry/AlertDashboard';
+import SellSummary from './Components/inventry/SellSummary';
+import SellSummaryFinance from './Components/finance/SalesSummeryFinance';
+import SalesOrder from './Components/Order/SalesOrder';
+
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -811,6 +815,58 @@ function App() {
               <Navigate to="/admin/login" />
             )
           } />
+
+
+          
+          <Route path="/admin/sales" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarA />
+                  <div className="content">
+                    <SellSummary />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+          
+          <Route path="/admin/sells" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <FinanceSidebar />
+                  <div className="content">
+                    <SellSummaryFinance />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+          <Route path="/admin/salesOrder" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <OrderSide />
+                  <div className="content">
+                    <SalesOrder />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
 
 
         
