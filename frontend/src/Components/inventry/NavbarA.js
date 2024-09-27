@@ -40,7 +40,7 @@ function NavbarA() {
           <NavLink to="/admin/customers" activeClassName="active-link">Customer</NavLink>
         </li>
         <li>
-          <NavLink to="/admin/finance" activeClassName="active-link">Finance</NavLink>
+          <NavLink to="/admin/sells" activeClassName="active-link">Finance</NavLink>
         </li>
         <li>
           <NavLink to="/admin/payment" activeClassName="active-link">Payment</NavLink>
