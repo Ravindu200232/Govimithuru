@@ -31,6 +31,7 @@ function EmployeeForm() {
         setDrivingNic('');
         setBirthday('');
         setProfileImage(null);
+        setError('');
     }
 
     function calculateAge(dateOfBirth) {
@@ -47,6 +48,21 @@ function EmployeeForm() {
     function isValidAge(birthday) {
         const age = calculateAge(birthday);
         return age >= 18 && age <= 45;
+    }
+
+    function isValidNic(nic) {
+        const nicRegex = /^(V)?\d{1,12}$/; // NIC must start with 'V' (optional) followed by up to 12 digits
+        return nicRegex.test(nic);
+    }
+
+    function isValidDrivingNic(drivingNic) {
+        const drivingNicRegex = /^(V)?\d{1,12}$/; // Driving NIC follows the same format
+        return drivingNicRegex.test(drivingNic);
+    }
+
+    function isValidPhoneNumber(phone) {
+        const phoneRegex = /^\d{10}$/; // Phone number must be exactly 10 digits
+        return phoneRegex.test(phone);
     }
 
     async function validateUniqueFields() {
@@ -71,6 +87,24 @@ function EmployeeForm() {
 
         if (!isValidAge(birthday)) {
             setError('Age must be between 18 and 45 years.');
+            setLoading(false);
+            return;
+        }
+
+        if (!isValidNic(nic)) {
+            setError('NIC must be up to 12 digits and can optionally start with "V".');
+            setLoading(false);
+            return;
+        }
+
+        if (!isValidDrivingNic(drivingNic)) {
+            setError('Driving NIC must be up to 12 digits and can optionally start with "V".');
+            setLoading(false);
+            return;
+        }
+
+        if (!isValidPhoneNumber(phoneNumber)) {
+            setError('Phone number must be exactly 10 digits.');
             setLoading(false);
             return;
         }
@@ -107,6 +141,12 @@ function EmployeeForm() {
             setLoading(false);
         }
     }
+
+    const handlePhoneKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Prevent form submission
+        }
+    };
 
     return (
         <div className="employee-form-container">
@@ -184,7 +224,15 @@ function EmployeeForm() {
                         id="phoneNumber"
                         placeholder="Enter Phone Number"
                         value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            // Allow only digits
+                            if (/^\d*$/.test(value)) {
+                                setPhoneNumber(value);
+                            }
+                        }}
+                        maxLength="10" // Limit input to 10 characters
+                        onKeyDown={handlePhoneKeyDown} // Prevent Enter key submission
                         required
                     />
                 </div>

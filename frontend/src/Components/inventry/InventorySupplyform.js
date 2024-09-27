@@ -4,27 +4,29 @@ import axios from "axios";
 
 function InventorySupplyform() {
   const [name, setName] = useState("");
-  const [companyName, setCompanyName] = useState(""); // Renamed
+  const [companyName, setCompanyName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
-  const [packetSize, setPacketSize] = useState(1); // Added packet size
-  const [unit, setUnit] = useState("kg"); // Default unit
+  const [packetSize, setPacketSize] = useState(1);
+  const [unit, setUnit] = useState("kg");
   const [quantityAvailable, setQuantityAvailable] = useState("");
   const [supplyDate, setSupplyDate] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(""); // New state for phone number
 
   function sendDate(e) {
     e.preventDefault();
-    const finalUnit = `${packetSize}${unit}`; // Concatenate packet size and unit
-    const formattedName = `${name} (${finalUnit})`; // Format item name
+    const finalUnit = `${packetSize}${unit}`;
+    const formattedName = `${name} (${finalUnit})`;
 
     const newSupItem = {
-      name: formattedName, // Use formatted name
-      supName: companyName, // Renamed in the payload
+      name: formattedName,
+      supName: companyName,
       description,
       category,
-      unit: finalUnit, // Store the concatenated unit
+      unit: finalUnit,
       quantityAvailable: Number(quantityAvailable),
       supplyDate
+      // No phoneNumber included in the payload
     };
 
     axios.post("http://localhost:8000/inventoryitem/add", newSupItem)
@@ -35,10 +37,11 @@ function InventorySupplyform() {
         setCompanyName("");
         setDescription("");
         setCategory("");
-        setPacketSize(1); // Reset packet size
-        setUnit("kg"); // Reset unit
+        setPacketSize(1);
+        setUnit("kg");
         setQuantityAvailable("");
         setSupplyDate("");
+        setPhoneNumber(""); // Reset phone number
       })
       .catch((err) => {
         alert("Error adding item: " + err.message);
@@ -60,7 +63,7 @@ function InventorySupplyform() {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="companyName">Company Name</label> {/* Renamed */}
+          <label htmlFor="companyName">Company Name</label>
           <input
             type="text"
             id="companyName"
@@ -99,7 +102,7 @@ function InventorySupplyform() {
           </select>
         </div>
         <div className="form-group">
-          <label htmlFor="packetSize">Packet Size</label> {/* Added packet size */}
+          <label htmlFor="packetSize">Packet Size</label>
           <input
             type="number"
             id="packetSize"
@@ -110,7 +113,7 @@ function InventorySupplyform() {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="unit">Unit</label> {/* Added unit dropdown */}
+          <label htmlFor="unit">Unit</label>
           <select
             id="unit"
             value={unit}
@@ -137,6 +140,21 @@ function InventorySupplyform() {
             id="supplyDate"
             value={supplyDate}
             onChange={(e) => setSupplyDate(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="phoneNumber">Phone Number</label>
+          <input
+            type="text"
+            id="phoneNumber"
+            placeholder="Enter Phone Number (Max 10 digits)"
+            value={phoneNumber}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d{0,10}$/.test(value)) { // Allow only up to 10 digits
+                setPhoneNumber(value);
+              }
+            }}
           />
         </div>
         <div className="form-buttons">
