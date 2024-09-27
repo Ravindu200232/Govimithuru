@@ -134,7 +134,7 @@ function Carts() {
                                     <td>{item.available}</td>
                                     <td>{item.quantityc}</td>
                                     <td>
-                                        <button onClick={() => handleView(item._id)}>View</button>
+                                        <button onClick={() => handleView(item._id)}>View</button><p></p>
                                         <button onClick={() => handleDelete(item._id)}>Delete</button>
                                     </td>
                                 </tr>

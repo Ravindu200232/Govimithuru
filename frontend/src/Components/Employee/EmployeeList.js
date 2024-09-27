@@ -175,7 +175,7 @@ function EmployeeList() {
                                 <td>{employee.profileImageBase64 ? <img src={`data:image/jpeg;base64,${employee.profileImageBase64}`} alt={`${employee.firstName} ${employee.lastName}`} className="employee-image" /> : 'No Image'}</td>
                                 <td>
                                     <button className="delete-btn" onClick={() => handleDelete(employee._id)}>Delete</button>
-                                    <button className="pdf-btn" onClick={() => generatePDF(employee)}>Download PDF</button>
+                                    <button className="pdf-btn" onClick={() => generatePDF(employee)}>PDF</button><p></p>
                                     <button className="edit-btn" onClick={() => handleEdit(employee)}>Edit</button>
                                 </td>
                             </tr>

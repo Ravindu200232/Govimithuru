@@ -77,6 +77,9 @@ import AlertDashboard from './Components/inventry/AlertDashboard';
 import SellSummary from './Components/inventry/SellSummary';
 import SellSummaryFinance from './Components/finance/SalesSummeryFinance';
 import SalesOrder from './Components/Order/SalesOrder';
+import CropSolutionDashboard from './Components/inventry/CropSolutionDashboard';
+import OfferDashboard from './Components/inventry/OfferDashboard';
+import BestSellerDashboard from './Components/inventry/BestSellerDashboard';
 
 
 
@@ -125,6 +128,7 @@ function App() {
           <Route path="/admin/login" element={<AdminLogin onAdminLogin={handleAdminLogin} />} />
 
           {/* User-facing routes */}
+          
           <Route path="/home" element={
             isLoggedIn ? (
               <>
@@ -574,7 +578,7 @@ function App() {
                 <div className="main-content">
                   <SidebarA />
                   <div className="content">
-                    <OfferForm />
+                    <OfferDashboard />
                   </div>
                 </div>
               </>
@@ -583,7 +587,43 @@ function App() {
             )
           } />
 
+
+
+        <Route path="/admin/offers/add" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarA />
+                  <div className="content">
+                    <OfferForm />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/offers/add" />
+            )
+          } />
+
+
+
            <Route path="/admin/cropsolution" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarA />
+                  <div className="content">
+                    <CropSolutionDashboard />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+          <Route path="/admin/cropsolutionsadd" element={
             isAdmin ? (
               <>
                 <NavbarA />
@@ -595,10 +635,31 @@ function App() {
                 </div>
               </>
             ) : (
+              <Navigate to="/admin/cropsolutionsadd" />
+            )
+          } />
+
+
+          
+
+          <Route path="/admin/bestseller" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarA />
+                  <div className="content">
+                    <BestSellerDashboard />
+                  </div>
+                </div>
+              </>
+            ) : (
               <Navigate to="/admin/login" />
             )
           } />
-          <Route path="/admin/bestseller" element={
+
+
+         <Route path="/admin/bestselling/add" element={
             isAdmin ? (
               <>
                 <NavbarA />
@@ -610,9 +671,11 @@ function App() {
                 </div>
               </>
             ) : (
-              <Navigate to="/admin/login" />
+              <Navigate to="/admin/bestselling/add" />
             )
           } />
+
+          
 
           <Route path="/admin/salesSummery" element={
             isAdmin ? (

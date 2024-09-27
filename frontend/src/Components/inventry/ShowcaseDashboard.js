@@ -10,6 +10,9 @@ function ShowcaseDashboard() {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [editId, setEditId] = useState(null);
+    const [updatedImage, setUpdatedImage] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -26,6 +29,40 @@ function ShowcaseDashboard() {
 
     const handleView = (id) => {
         navigate(`/showcase/view/${id}`);
+    };
+
+    const handleEditToggle = (id) => {
+        setEditId(editId === id ? null : id);
+        setUpdatedImage(null); // Reset image on edit toggle
+    };
+
+    const handleUpdate = (id) => {
+        const itemToUpdate = items.find(item => item._id === id);
+        const formData = new FormData();
+
+        formData.append('description', itemToUpdate.description);
+        formData.append('unit', itemToUpdate.unit);
+        formData.append('price', itemToUpdate.price);
+        formData.append('discount', itemToUpdate.discount);
+        if (updatedImage) {
+            formData.append('image', updatedImage); // Include updated image
+        }
+
+        axios.put(`http://localhost:8000/showcase/update/${id}`, formData)
+            .then(() => {
+                alert("Item updated successfully");
+                setEditId(null);
+                setUpdatedImage(null);
+                // Optionally update state to reflect changes immediately
+                setItems(prevItems => 
+                    prevItems.map(item => 
+                        item._id === id ? { ...item, ...formData } : item
+                    )
+                );
+            })
+            .catch((err) => {
+                alert('Failed to update item.');
+            });
     };
 
     const handleDelete = (id) => {
@@ -48,17 +85,12 @@ function ShowcaseDashboard() {
     const generatePDF = () => {
         const doc = new jsPDF();
         doc.setFontSize(12);
-
-        // Add logo
-        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Adjust size and position as needed
-
-        // Add company details
+        doc.addImage(logo, 'PNG', 10, 10, 50, 20);
         doc.text("Govimithu Pvt Limited", 20, 35);
         doc.text("Anuradhapura Kahatagasdigiliya", 20, 40);
         doc.text("Phone Number: 0789840996", 20, 45);
-
         doc.text('Showcase Items', 20, 60);
-        
+
         const data = items.map((item) => ({
             Name: item.name,
             Category: item.category,
@@ -71,7 +103,7 @@ function ShowcaseDashboard() {
         autoTable(doc, {
             head: [['Name', 'Category', 'Description', 'Unit', 'Price', 'Discount']],
             body: data.map(item => [item.Name, item.Category, item.Description, item.Unit, item.Price, item.Discount]),
-            startY: 70, // Adjust the starting Y position
+            startY: 70,
             theme: 'striped'
         });
 
@@ -82,9 +114,22 @@ function ShowcaseDashboard() {
         return <div className="loading">Loading...</div>;
     }
 
+    const filteredItems = items.filter(item =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <div className="showcase-dashboard-container">
             <h2 className="showcase-dashboard-title">Showcase Dashboard</h2>
+            <input
+                type="text"
+                placeholder="Search items..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+            />
             <button className="add-new-btn" onClick={handleAddNew}>Add New Showcase Item</button>
             <button className="download-pdf-btn" onClick={generatePDF}>Download PDF</button>
             {error && <p className="error-message">{error}</p>}
@@ -103,28 +148,56 @@ function ShowcaseDashboard() {
                     </tr>
                 </thead>
                 <tbody>
-                    {items.length > 0 ? (
-                        items.map((item, index) => (
-                            <tr key={item._id}>
-                                <td>{index + 1}</td>
-                                <td>{item.name}</td>
-                                <td>{item.category}</td>
-                                <td>{item.description}</td>
-                                <td>{item.unit}</td>
-                                <td>{item.price}</td>
-                                <td>{item.discount ? `${item.discount} %` : 'No Discount'}</td>
-                                <td>
-                                    <img
-                                        src={`data:image/jpeg;base64,${item.imageBase64}`} // Image handling logic
-                                        alt={item.name}
-                                        className="showcase-image"
-                                    />
-                                </td>
-                                <td>
-                                    <button className="view-btn" onClick={() => handleView(item._id)}>View</button>
-                                    <button className="delete-btn" onClick={() => handleDelete(item._id)}>Delete</button>
-                                </td>
-                            </tr>
+                    {filteredItems.length > 0 ? (
+                        filteredItems.map((item, index) => (
+                            <React.Fragment key={item._id}>
+                                <tr>
+                                    <td>{index + 1}</td>
+                                    <td>{item.name}</td>
+                                    <td>{item.category}</td>
+                                    {editId === item._id ? (
+                                        <>
+                                            <td><input type="text" defaultValue={item.description} onChange={(e) => item.description = e.target.value} /></td>
+                                            <td><input type="text" defaultValue={item.unit} onChange={(e) => item.unit = e.target.value} /></td>
+                                            <td><input type="number" defaultValue={item.price} onChange={(e) => item.price = e.target.value} /></td>
+                                            <td><input type="number" defaultValue={item.discount} onChange={(e) => item.discount = e.target.value} /></td>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <td>{item.description}</td>
+                                            <td>{item.unit}</td>
+                                            <td>{item.price}</td>
+                                            <td>{item.discount ? `${item.discount} %` : 'No Discount'}</td>
+                                        </>
+                                    )}
+                                    <td>
+                                        <img
+                                            src={`data:image/jpeg;base64,${item.imageBase64}`}
+                                            alt={item.name}
+                                            className="showcase-image"
+                                        />
+                                    </td>
+                                    <td>
+                                        {editId === item._id ? (
+                                            <>
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={(e) => setUpdatedImage(e.target.files[0])}
+                                                />
+                                                <button onClick={() => handleUpdate(item._id)}>Save</button>
+                                                <button onClick={() => setEditId(null)}>Cancel</button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <button className="view-btn" onClick={() => handleView(item._id)}>View</button>
+                                                <button className="update-btn" onClick={() => handleEditToggle(item._id)}>Edit</button>
+                                                <button className="delete-btn" onClick={() => handleDelete(item._id)}>Delete</button>
+                                            </>
+                                        )}
+                                    </td>
+                                </tr>
+                            </React.Fragment>
                         ))
                     ) : (
                         <tr>
