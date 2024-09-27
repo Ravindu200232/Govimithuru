@@ -3,6 +3,8 @@ import axios from 'axios';
 import { jsPDF } from 'jspdf'; // Import jsPDF
 import 'jspdf-autotable'; // Import autoTable
 
+import logo from '../ui/img/logo.png';
+
 const OtherExpensesDashboard = () => {
     const [expenses, setExpenses] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -38,8 +40,19 @@ const OtherExpensesDashboard = () => {
     // Function to generate PDF of all expenses
     const generatePDF = () => {
         const doc = new jsPDF();
+        
+        // Add logo
+        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Adjust size and position as needed
+
+        // Company details
+        doc.setFontSize(10);
+        doc.text("Govimithu Pvt Limited", 14, 40);
+        doc.text("Anuradhapura Kahatagasdigiliya", 14, 45);
+        doc.text("Phone Number: 0789840996", 14, 50);
+
+        // Title
         doc.setFontSize(20);
-        doc.text("Other Expenses Report", 20, 20);
+        doc.text("Other Expenses Report", 20, 70);
         doc.setFontSize(12);
 
         // Prepare table data
@@ -57,7 +70,7 @@ const OtherExpensesDashboard = () => {
         doc.autoTable({
             head: headers,
             body: data,
-            startY: 30, // Start below the title
+            startY: 80, // Start below the title
         });
 
         // Save the PDF

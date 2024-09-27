@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import './css/inventryAll.css';
+import logo from '../ui/img/logo.png';
 
 function AllInventory() {
     const [items, setItems] = useState([]);
@@ -47,7 +48,16 @@ function AllInventory() {
     const downloadPDF = () => {
         const doc = new jsPDF();
         doc.setFontSize(12);
-        doc.text('Inventory List', 20, 20);
+
+        // Add logo
+        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Adjust size and position as needed
+
+        // Add company details
+        doc.text("Govimithu Pvt Limited", 20, 35);
+        doc.text("Anuradhapura Kahatagasdigiliya", 20, 40);
+        doc.text("Phone Number: 0789840996", 20, 45);
+        
+        doc.text('Inventory List', 20, 60);
         
         // Define the columns for the table
         const columns = [
@@ -77,7 +87,7 @@ function AllInventory() {
         autoTable(doc, {
             head: [columns.map(col => col.header)],
             body: rows.map(row => columns.map(col => row[col.dataKey])),
-            startY: 30,
+            startY: 70, // Adjust the starting Y position
             theme: 'striped' // Optional: you can set a theme for the table
         });
 
@@ -98,7 +108,7 @@ function AllInventory() {
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>SupName</th>
+                        <th>Supplier Name</th>
                         <th>Description</th>
                         <th>Category</th>
                         <th>Unit</th>

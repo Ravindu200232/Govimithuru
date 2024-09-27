@@ -1,42 +1,75 @@
 import React from 'react';
 import jsPDF from 'jspdf';
+import 'jspdf-autotable'; // Ensure you import this for the table
+import logo from '../ui/img/logo.png';
 
 const ReceiptDetails = ({ receipt, onClose }) => {
     const downloadPDF = () => {
         const doc = new jsPDF();
 
+        // Add logo
+        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Adjust size and position as needed
+
+        // Company details
+        doc.setFontSize(10);
+        doc.text("Govimithu Pvt Limited", 14, 40);
+        doc.text("Anuradhapura Kahatagasdigiliya", 14, 45);
+        doc.text("Phone Number: 0789840996", 14, 50);
+
+        // Receipt details
         doc.setFontSize(12);
-        doc.text('Receipt Details', 20, 20);
-        doc.text(`Receipt Number: ${receipt.receiptNumber}`, 20, 30);
-        doc.text(`Transaction ID: ${receipt.transactionId}`, 20, 40);
-        doc.text(`Date: ${new Date(receipt.date).toLocaleDateString()}`, 20, 50);
-        doc.text(`Customer Name: ${receipt.customerName}`, 20, 60);
-        doc.text(`Email: ${receipt.customerEmail}`, 20, 70);
-        doc.text(`Phone: ${receipt.customerPhone}`, 20, 80);
-        doc.text(`Billing Address: ${receipt.billingAddress}`, 20, 90);
+        doc.text('Receipt Details', 20, 70);
+        doc.text(`Receipt Number: ${receipt.receiptNumber}`, 20, 80);
+        doc.text(`Transaction ID: ${receipt.transactionId}`, 20, 90);
+        doc.text(`Date: ${new Date(receipt.date).toLocaleDateString()}`, 20, 100);
+        doc.text(`Customer Name: ${receipt.customerName}`, 20, 110);
+        doc.text(`Email: ${receipt.customerEmail}`, 20, 120);
+        doc.text(`Phone: ${receipt.customerPhone}`, 20, 130);
+        doc.text(`Billing Address: ${receipt.billingAddress}`, 20, 140);
         if (receipt.shippingAddress) {
-            doc.text(`Shipping Address: ${receipt.shippingAddress}`, 20, 100);
+            doc.text(`Shipping Address: ${receipt.shippingAddress}`, 20, 150);
         }
 
-        doc.text('Items', 20, 110);
+        // Items header
+        doc.text('Items', 20, 160);
         const items = receipt.items.map(item => {
-            return `Item Name: ${item.itemName}, Description: ${item.itemDescription}, Quantity: ${item.quantity}, Price per Unit: $${item.pricePerUnit.toFixed(2)}, Total Price: $${item.totalPrice.toFixed(2)}`;
-        });
-        items.forEach((item, index) => {
-            doc.text(item, 20, 120 + (index * 10));
+            return [
+                item.itemName,
+                item.itemDescription,
+                item.quantity,
+                item.pricePerUnit.toFixed(2),
+                item.totalPrice.toFixed(2)
+            ];
         });
 
-        doc.text(`Subtotal: $${receipt.subtotal.toFixed(2)}`, 20, 120 + (items.length * 10) + 10);
-        doc.text(`Discount: $${receipt.discount.toFixed(2)}`, 20, 130 + (items.length * 10) + 10);
-        doc.text(`Taxes: $${receipt.taxes.toFixed(2)}`, 20, 140 + (items.length * 10) + 10);
-        doc.text(`Shipping Cost: $${receipt.shippingCost.toFixed(2)}`, 20, 150 + (items.length * 10) + 10);
-        doc.text(`Total Amount: $${receipt.totalAmount.toFixed(2)}`, 20, 160 + (items.length * 10) + 10);
-        doc.text(`Payment Method: ${receipt.paymentMethod}`, 20, 170 + (items.length * 10) + 10);
-        doc.text(`Payment Status: ${receipt.paymentStatus}`, 20, 180 + (items.length * 10) + 10);
-        doc.text(`Company Name: ${receipt.companyName}`, 20, 190 + (items.length * 10) + 10);
-        doc.text(`Company Address: ${receipt.companyAddress}`, 20, 200 + (items.length * 10) + 10);
-        doc.text(`Company Contact: ${receipt.companyContact}`, 20, 210 + (items.length * 10) + 10);
+        // Table headers and body
+        const headers = [["Item Name", "Description", "Quantity", "Price per Unit", "Total Price"]];
+        doc.autoTable({
+            head: headers,
+            body: items.map(item => [
+                item[0],
+                item[1],
+                item[2],
+                `$${item[3]}`,
+                `$${item[4]}`
+            ]),
+            startY: 170, // Start below the receipt details
+        });
 
+        // Summary details
+        const summaryY = doc.autoTable.previous.finalY + 10;
+        doc.text(`Subtotal: $${receipt.subtotal.toFixed(2)}`, 20, summaryY);
+        doc.text(`Discount: $${receipt.discount.toFixed(2)}`, 20, summaryY + 10);
+        doc.text(`Taxes: $${receipt.taxes.toFixed(2)}`, 20, summaryY + 20);
+        doc.text(`Shipping Cost: $${receipt.shippingCost.toFixed(2)}`, 20, summaryY + 30);
+        doc.text(`Total Amount: $${receipt.totalAmount.toFixed(2)}`, 20, summaryY + 40);
+        doc.text(`Payment Method: ${receipt.paymentMethod}`, 20, summaryY + 50);
+        doc.text(`Payment Status: ${receipt.paymentStatus}`, 20, summaryY + 60);
+        doc.text(`Company Name: ${receipt.companyName}`, 20, summaryY + 70);
+        doc.text(`Company Address: ${receipt.companyAddress}`, 20, summaryY + 80);
+        doc.text(`Company Contact: ${receipt.companyContact}`, 20, summaryY + 90);
+
+        // Save PDF
         doc.save(`receipt_${receipt.receiptNumber}.pdf`);
     };
 

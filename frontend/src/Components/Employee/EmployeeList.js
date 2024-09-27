@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { jsPDF } from "jspdf";
 import './Employeecss/emplist.css';
+import logo from '../ui/img/logo.png'; // Ensure the path is correct
 
 function EmployeeList() {
     const [employees, setEmployees] = useState([]);
@@ -98,23 +99,35 @@ function EmployeeList() {
 
     const generatePDF = (employee) => {
         const doc = new jsPDF();
-        doc.setFontSize(20);
-        doc.text("Employee Details", 20, 20);
-        doc.setFontSize(12);
-        doc.text(`Employee ID: ${employee._id}`, 20, 40);
-        doc.text(`First Name: ${employee.firstName}`, 20, 50);
-        doc.text(`Last Name: ${employee.lastName}`, 20, 60);
-        doc.text(`Email: ${employee.email}`, 20, 70);
-        doc.text(`Position: ${employee.position}`, 20, 80);
-        doc.text(`Department: ${employee.department}`, 20, 90);
-        doc.text(`Phone Number: ${employee.phoneNumber}`, 20, 100);
-        doc.text(`NIC: ${employee.nic}`, 20, 110);
-        doc.text(`Driving NIC: ${employee.drivingNic}`, 20, 120);
-        doc.text(`Birthday: ${employee.birthday ? new Date(employee.birthday).toLocaleDateString() : 'No Birthday'}`, 20, 130);
 
+        // Add logo
+        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Adjust position and size as needed
+
+        // Add company details
+        doc.setFontSize(12);
+        doc.text("Govimithu Pvt Limited", 10, 40);
+        doc.text("Anuradhapura Kahatagasdigiliya", 10, 45);
+        doc.text("Phone Number: 0789840996", 10, 50);
+
+        // Add employee details
+        doc.setFontSize(20);
+        doc.text("Employee Details", 10, 70);
+        doc.setFontSize(12);
+        doc.text(`Employee ID: ${employee._id}`, 10, 90);
+        doc.text(`First Name: ${employee.firstName}`, 10, 100);
+        doc.text(`Last Name: ${employee.lastName}`, 10, 110);
+        doc.text(`Email: ${employee.email}`, 10, 120);
+        doc.text(`Position: ${employee.position}`, 10, 130);
+        doc.text(`Department: ${employee.department}`, 10, 140);
+        doc.text(`Phone Number: ${employee.phoneNumber}`, 10, 150);
+        doc.text(`NIC: ${employee.nic}`, 10, 160);
+        doc.text(`Driving NIC: ${employee.drivingNic}`, 10, 170);
+        doc.text(`Birthday: ${employee.birthday ? new Date(employee.birthday).toLocaleDateString() : 'No Birthday'}`, 10, 180);
+
+        // Add profile image if available
         if (employee.profileImageBase64) {
             const imgData = `data:image/jpeg;base64,${employee.profileImageBase64}`;
-            doc.addImage(imgData, 'JPEG', 20, 140, 50, 50);
+            doc.addImage(imgData, 'JPEG', 10, 190, 50, 50);
         }
 
         doc.save(`Employee_${employee._id}.pdf`);
@@ -127,7 +140,6 @@ function EmployeeList() {
     return (
         <div className="employee-list-container">
             <h2 className="employee-list-title">Employee List</h2>
-           
             {error && <p className="error-message">{error}</p>}
             <table className="employee-table">
                 <thead>
@@ -162,14 +174,9 @@ function EmployeeList() {
                                 <td>{employee.birthday ? new Date(employee.birthday).toLocaleDateString() : 'No Birthday'}</td>
                                 <td>{employee.profileImageBase64 ? <img src={`data:image/jpeg;base64,${employee.profileImageBase64}`} alt={`${employee.firstName} ${employee.lastName}`} className="employee-image" /> : 'No Image'}</td>
                                 <td>
-                                   
-                                    <br></br>
                                     <button className="delete-btn" onClick={() => handleDelete(employee._id)}>Delete</button>
-                                    <br></br>
                                     <button className="pdf-btn" onClick={() => generatePDF(employee)}>Download PDF</button>
-                                    <br></br><br></br>
                                     <button className="edit-btn" onClick={() => handleEdit(employee)}>Edit</button>
-                                    
                                 </td>
                             </tr>
                         ))

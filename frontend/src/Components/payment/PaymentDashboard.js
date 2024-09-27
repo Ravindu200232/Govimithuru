@@ -3,6 +3,7 @@ import axios from "axios";
 import { jsPDF } from "jspdf"; // Import jsPDF
 import "jspdf-autotable"; // Import autoTable
 import '../User/css/UserDashboard.css';
+import logo from '../ui/img/logo.png';
 
 function PaymentDashboard() {
     const [payments, setPayments] = useState([]);
@@ -31,8 +32,18 @@ function PaymentDashboard() {
     // Function to generate PDF of payments
     const generatePDF = () => {
         const doc = new jsPDF();
+        
+        // Add logo
+        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Adjust size and position as needed
+
+        // Company details
+        doc.setFontSize(10);
+        doc.text("Govimithu Pvt Limited", 14, 40);
+        doc.text("Anuradhapura Kahatagasdigiliya", 14, 45);
+        doc.text("Phone Number: 0789840996", 14, 50);
+        
         doc.setFontSize(20);
-        doc.text("Payment Records", 20, 20);
+        doc.text("Payment Records", 20, 70); // Adjust Y position after company info
         doc.setFontSize(12);
 
         // Prepare table headers
@@ -40,9 +51,9 @@ function PaymentDashboard() {
             ["ID", "Customer Name", "Card Name", "Card Type", "Card Number", "Expiration Date", "Total Price"]
         ];
 
-        // Prepare table data
-        const data = payments.map(payment => [
-            payment._id, // Add ID to the table
+        // Prepare table data with auto-generated IDs
+        const data = payments.map((payment, index) => [
+            index + 1, // Auto-generated ID starting from 1
             payment.customerName,
             payment.cardName,
             payment.cardType,
@@ -55,7 +66,7 @@ function PaymentDashboard() {
         doc.autoTable({
             head: headers,
             body: data,
-            startY: 30, // Start below the title
+            startY: 80, // Start below the title
         });
 
         // Save the PDF
@@ -86,7 +97,7 @@ function PaymentDashboard() {
                             <td>{payment.cardType}</td>
                             <td>{payment.cardNumber}</td>
                             <td>{payment.expirationDate}</td>
-                            <td>{payment.totalPrice}</td>
+                            <td>${payment.totalPrice.toFixed(2)}</td>
                             <td>
                                 <button className="delete-btn" onClick={() => handleDelete(payment._id)}>Delete</button>
                             </td>

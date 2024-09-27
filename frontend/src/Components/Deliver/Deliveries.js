@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { jsPDF } from "jspdf";
 import './css/deliverAll.css';
+import logo from '../ui/img/logo.png';
 
 function DeliveryDashboard() {
     const [deliveries, setDeliveries] = useState([]);
@@ -99,23 +100,32 @@ function DeliveryDashboard() {
     const generatePDF = (delivery) => {
         const doc = new jsPDF();
 
-        doc.setFontSize(20);
-        doc.text("Delivery Receipt", 20, 20);
+        // Add logo
+        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Adjust size and position as needed
 
+        // Add company details
+        doc.setFontSize(10);
+        doc.text("Govimithu Pvt Limited", 14, 40);
+        doc.text("Anuradhapura Kahatagasdigiliya", 14, 45);
+        doc.text("Phone Number: 0789840996", 14, 50);
+        doc.text("Delivery Receipt", 20, 70); // Title
+
+        // Add delivery details
         doc.setFontSize(12);
-        doc.text(`Delivery ID: ${delivery._id}`, 20, 40);
-        doc.text(`Delivery Person: ${delivery.deliveryPersonName}`, 20, 50);
-        doc.text(`Delivery Date: ${new Date(delivery.deliveryDate).toLocaleDateString()}`, 20, 60);
-        doc.text(`Status: ${delivery.status}`, 20, 70);
-        doc.text(`Address: ${delivery.address}`, 20, 80);
-        doc.text(`Postal Code: ${delivery.postalCode}`, 20, 90);
-        doc.text(`Email: ${delivery.email}`, 20, 100);
-        doc.text(`Phone Number: ${delivery.phoneNumber}`, 20, 110);
-        doc.text(`Delivery Type: ${delivery.deliveryType}`, 20, 120);
+        doc.text(`Delivery ID: ${delivery._id}`, 20, 90);
+        doc.text(`Delivery Person: ${delivery.deliveryPersonName}`, 20, 100);
+        doc.text(`Delivery Date: ${new Date(delivery.deliveryDate).toLocaleDateString()}`, 20, 110);
+        doc.text(`Status: ${delivery.status}`, 20, 120);
+        doc.text(`Address: ${delivery.address}`, 20, 130);
+        doc.text(`Postal Code: ${delivery.postalCode}`, 20, 140);
+        doc.text(`Email: ${delivery.email}`, 20, 150);
+        doc.text(`Phone Number: ${delivery.phoneNumber}`, 20, 160);
+        doc.text(`Delivery Type: ${delivery.deliveryType}`, 20, 170);
 
-        doc.text("Delivery Details:", 20, 140);
+        // Add delivery details items
+        doc.text("Delivery Details:", 20, 190);
         delivery.deliveryDetails.forEach((detail, index) => {
-            const y = 150 + (index * 10);
+            const y = 200 + (index * 10);
             doc.text(`${detail.itemName} - Qty: ${detail.quantity}, Price: ₹${detail.itemPrice}, Total: ₹${detail.totalPrice}`, 20, y);
         });
 
@@ -194,7 +204,6 @@ function DeliveryDashboard() {
                                 </select>
                             </td>
                             <td>
-                                
                                 <button className="delete-btn" onClick={() => handleDelete(delivery._id)}>Delete</button>
                                 {delivery.status !== 'Delivered' && (
                                     <button className="confirm-btn" onClick={() => handleConfirm(delivery._id)}>Confirm</button>

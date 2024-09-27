@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { jsPDF } from "jspdf"; // Import jsPDF
 import './SalaryDashboard.css'; // Add your CSS for styling
+import logo from '../ui/img/logo.png';
 
 function SalaryDashboard() {
   const [salaries, setSalaries] = useState([]);
@@ -25,17 +26,27 @@ function SalaryDashboard() {
   const generatePDF = (salary) => {
     const doc = new jsPDF();
     
+    // Add logo
+    doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Adjust size and position as needed
+
+    // Company details
+    doc.setFontSize(10);
+    doc.text("Govimithu Pvt Limited", 14, 40);
+    doc.text("Anuradhapura Kahatagasdigiliya", 14, 45);
+    doc.text("Phone Number: 0789840996", 14, 50);
+    
+    // Salary details
     doc.setFontSize(20);
-    doc.text("Salary Details", 20, 20);
+    doc.text("Salary Details", 20, 70);
 
     doc.setFontSize(12);
-    doc.text(`Name: ${salary.name}`, 20, 40);
-    doc.text(`Position: ${salary.position}`, 20, 50);
-    doc.text(`Basic Salary: $${salary.basicSalary.toFixed(2)}`, 20, 60);
-    doc.text(`Bonus: $${salary.bonus.toFixed(2)}`, 20, 70);
-    doc.text(`ETF: $${salary.ETF.toFixed(2)}`, 20, 80);
-    doc.text(`Total Salary: $${salary.totalSalary.toFixed(2)}`, 20, 90);
-    doc.text(`Payday: ${new Date(salary.payday).toLocaleDateString()}`, 20, 100);
+    doc.text(`Name: ${salary.name}`, 20, 90);
+    doc.text(`Position: ${salary.position}`, 20, 100);
+    doc.text(`Basic Salary: $${salary.basicSalary.toFixed(2)}`, 20, 110);
+    doc.text(`Bonus: $${salary.bonus.toFixed(2)}`, 20, 120);
+    doc.text(`ETF: $${salary.ETF.toFixed(2)}`, 20, 130);
+    doc.text(`Total Salary: $${salary.totalSalary.toFixed(2)}`, 20, 140);
+    doc.text(`Payday: ${new Date(salary.payday).toLocaleDateString()}`, 20, 150);
 
     doc.save(`Salary_${salary._id}.pdf`);
   };

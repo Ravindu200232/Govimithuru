@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { jsPDF } from "jspdf"; // Import jsPDF
+import "jspdf-autotable"; // Import autoTable
 import './css/UserDashboard.css';
+import logo from '../ui/img/logo.png';
 
 function UserDashboard() {
     const [users, setUsers] = useState([]);
@@ -57,8 +59,18 @@ function UserDashboard() {
     // Function to generate PDF of all users
     const generatePDF = () => {
         const doc = new jsPDF();
+        
+        // Add logo
+        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Adjust size and position as needed
+
+        // Company details
+        doc.setFontSize(10);
+        doc.text("Govimithu Pvt Limited", 14, 40);
+        doc.text("Anuradhapura Kahatagasdigiliya", 14, 45);
+        doc.text("Phone Number: 0789840996", 14, 50);
+        
         doc.setFontSize(20);
-        doc.text("User List", 20, 20);
+        doc.text("User List", 20, 70); // Adjust Y position after company info
         doc.setFontSize(12);
 
         // Table headers
@@ -69,7 +81,7 @@ function UserDashboard() {
         doc.autoTable({
             head: headers,
             body: data,
-            startY: 30, // Start below the title
+            startY: 80, // Start below the title
         });
 
         doc.save("UserList.pdf");

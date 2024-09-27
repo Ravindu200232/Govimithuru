@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import './css/Dashboard.css';
+import logo from '../ui/img/logo.png';
 
 function Carts() {
     const [cardItems, setCardItems] = useState([]);
@@ -40,10 +41,6 @@ function Carts() {
         setExpandedItemId(expandedItemId === id ? null : id);
     };
 
-    const handleSearch = () => {
-        // Logic for searching can be implemented here
-    };
-
     const filteredItems = cardItems.filter(item =>
         item.itemNamec.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.categoryc.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -53,26 +50,37 @@ function Carts() {
     const generatePDF = () => {
         const doc = new jsPDF();
 
+        // Add logo
+        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Adjust the position and size as needed
+
+        // Add company details
+        doc.setFontSize(10);
+        doc.text("Govimithu Pvt Limited", 14, 40);
+        doc.text("Anuradhapura Kahatagasdigiliya", 14, 45);
+        doc.text("Phone Number: 0789840996", 14, 50);
+
+        // Title
         doc.setFontSize(20);
-        doc.text('Cart Items', 14, 22);
+        doc.text('Cart Items', 14, 60);
 
         // Column headings
         doc.setFontSize(12);
-        doc.text('ID', 14, 32);
-        doc.text('Name', 40, 32);
-        doc.text('Category', 80, 32);
-        doc.text('Price', 120, 32);
-        doc.text('Available', 150, 32);
-        doc.text('Quantity', 180, 32);
+        doc.text('ID', 14, 70);
+        doc.text('Name', 40, 70);
+        doc.text('Category', 80, 70);
+        doc.text('Price', 120, 70);
+        doc.text('Available', 150, 70);
+        doc.text('Quantity', 180, 70);
         
         // Adding the items to the PDF
         filteredItems.forEach((item, index) => {
-            doc.text(`${index + 1}`, 14, 42 + (index * 10));
-            doc.text(item.itemNamec, 40, 42 + (index * 10));
-            doc.text(item.categoryc, 80, 42 + (index * 10));
-            doc.text(`RS:${item.pricec.toFixed(2)}`, 120, 42 + (index * 10));
-            doc.text(`${item.available}`, 150, 42 + (index * 10));
-            doc.text(`${item.quantityc}`, 180, 42 + (index * 10));
+            const y = 80 + (index * 10);
+            doc.text(`${index + 1}`, 14, y);
+            doc.text(item.itemNamec, 40, y);
+            doc.text(item.categoryc, 80, y);
+            doc.text(`RS:${item.pricec.toFixed(2)}`, 120, y);
+            doc.text(`${item.available}`, 150, y);
+            doc.text(`${item.quantityc}`, 180, y);
         });
 
         doc.save('cart_items.pdf');
@@ -91,7 +99,7 @@ function Carts() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <button className="search-btn" onClick={handleSearch}>Search</button>
+                <button className="search-btn" onClick={() => {}}>Search</button>
             </div>
             <button className="pdf-btn" onClick={generatePDF}>Download PDF</button>
             <table className="dashboard-table">
@@ -126,7 +134,7 @@ function Carts() {
                                     <td>{item.available}</td>
                                     <td>{item.quantityc}</td>
                                     <td>
-                                        <button onClick={() => handleView(item._id)}>View</button><p></p>
+                                        <button onClick={() => handleView(item._id)}>View</button>
                                         <button onClick={() => handleDelete(item._id)}>Delete</button>
                                     </td>
                                 </tr>
@@ -137,7 +145,7 @@ function Carts() {
                                                 <h3>Item Details</h3>
                                                 <p><strong>Item Name:</strong> {item.itemNamec || "No description available."}</p>
                                                 <p><strong>Category:</strong> {item.categoryc || "N/A"}</p>
-                                                <p><strong>Total Price </strong>{item.quantityc * item.pricec}</p>
+                                                <p><strong>Total Price:</strong> {item.quantityc * item.pricec}</p>
                                                 <p><strong>Remainder Quantity:</strong> {item.available - item.quantityc}</p>
                                             </div>
                                         </td>

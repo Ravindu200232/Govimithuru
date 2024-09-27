@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import './css/ShowcaseDashboard.css';
+import logo from '../ui/img/logo.png';
 
 function ShowcaseDashboard() {
     const [items, setItems] = useState([]);
@@ -47,7 +48,16 @@ function ShowcaseDashboard() {
     const generatePDF = () => {
         const doc = new jsPDF();
         doc.setFontSize(12);
-        doc.text('Showcase Items', 20, 20);
+
+        // Add logo
+        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Adjust size and position as needed
+
+        // Add company details
+        doc.text("Govimithu Pvt Limited", 20, 35);
+        doc.text("Anuradhapura Kahatagasdigiliya", 20, 40);
+        doc.text("Phone Number: 0789840996", 20, 45);
+
+        doc.text('Showcase Items', 20, 60);
         
         const data = items.map((item) => ({
             Name: item.name,
@@ -61,7 +71,7 @@ function ShowcaseDashboard() {
         autoTable(doc, {
             head: [['Name', 'Category', 'Description', 'Unit', 'Price', 'Discount']],
             body: data.map(item => [item.Name, item.Category, item.Description, item.Unit, item.Price, item.Discount]),
-            startY: 30,
+            startY: 70, // Adjust the starting Y position
             theme: 'striped'
         });
 
@@ -87,7 +97,7 @@ function ShowcaseDashboard() {
                         <th>Description</th>
                         <th>Unit</th>
                         <th>Price</th>
-                        <th>Discount</th> {/* New Discount Column */}
+                        <th>Discount</th>
                         <th>Image</th>
                         <th>Action</th>
                     </tr>

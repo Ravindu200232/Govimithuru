@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
 import './css/dashboard.css';
+import logo from '../ui/img/logo.png';
 
 function OrderDashboard() {
     const [orders, setOrders] = useState([]);
@@ -67,7 +68,7 @@ function OrderDashboard() {
                         ...orderToUpdate,
                         status: newStatus
                     };
-    
+
                     const res = await axios.put(`http://localhost:8000/orders/update/${id}`, updatedOrder);
                     if (res.status === 200) {
                         alert('Order updated successfully');
@@ -86,25 +87,37 @@ function OrderDashboard() {
         }
     };
 
-    const handleDownloadPDF = (order) => {
+    const handleDownloadPDF = (order, index) => {
         const doc = new jsPDF();
-        doc.setFontSize(12);
-        doc.text(`Order ID: ${order._id}`, 10, 10);
-        doc.text(`Customer Name: ${order.customerName}`, 10, 20);
-        doc.text(`Sale Date: ${new Date(order.saleDate).toLocaleDateString()}`, 10, 30);
-        doc.text(`Status: ${order.status}`, 10, 40);
-        doc.text(`Address: ${order.address}`, 10, 50);
-        doc.text(`Postal Code: ${order.postalCode}`, 10, 60);
-        doc.text(`Email: ${order.email}`, 10, 70);
-        doc.text(`Phone Number: ${order.phoneNumber}`, 10, 80);
-        doc.text(`Payment Type: ${order.paymentType}`, 10, 90);
-        doc.text("Product Details:", 10, 100);
 
-        order.productDetails.forEach((detail, index) => {
-            doc.text(`${index + 1}. ${detail.itemName} - Qty: ${detail.quantitySold}, Price: ₹${detail.itemPrice}, Total: ₹${detail.totalPrice}`, 10, 110 + (index * 10));
+        // Add logo
+        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Adjust size and position
+
+        // Add company details
+        doc.setFontSize(10);
+        doc.text("Govimithu Pvt Limited", 14, 40);
+        doc.text("Anuradhapura Kahatagasdigiliya", 14, 45);
+        doc.text("Phone Number: 0789840996", 14, 50);
+
+        // Order details
+        doc.setFontSize(12);
+        doc.text(`Order ID: ${index + 1}`, 10, 60); // Display as (1, 2, 3, ...)
+        doc.text(`Customer Name: ${order.customerName}`, 10, 70);
+        doc.text(`Sale Date: ${new Date(order.saleDate).toLocaleDateString()}`, 10, 80);
+        doc.text(`Status: ${order.status}`, 10, 90);
+        doc.text(`Address: ${order.address}`, 10, 100);
+        doc.text(`Postal Code: ${order.postalCode}`, 10, 110);
+        doc.text(`Email: ${order.email}`, 10, 120);
+        doc.text(`Phone Number: ${order.phoneNumber}`, 10, 130);
+        doc.text(`Payment Type: ${order.paymentType}`, 10, 140);
+        doc.text("Product Details:", 10, 150);
+
+        // Product details
+        order.productDetails.forEach((detail, detailIndex) => {
+            doc.text(`${detailIndex + 1}. ${detail.itemName} - Qty: ${detail.quantitySold}, Price: ₹${detail.itemPrice}, Total: ₹${detail.totalPrice}`, 10, 160 + (detailIndex * 10));
         });
 
-        doc.save(`Order_${order._id}.pdf`);
+        doc.save(`Order_${index + 1}.pdf`);
     };
 
     return (
@@ -149,8 +162,8 @@ function OrderDashboard() {
                                 </button>
                                 {expandedOrderId === order._id && (
                                     <div className="order-details">
-                                        {order.productDetails.map((detail, index) => (
-                                            <div key={index} className="product-detail">
+                                        {order.productDetails.map((detail, detailIndex) => (
+                                            <div key={detailIndex} className="product-detail">
                                                 {detail.itemName} - Qty: {detail.quantitySold}, Price: ₹{detail.itemPrice}, Total: ₹{detail.totalPrice}
                                             </div>
                                         ))}
@@ -167,8 +180,7 @@ function OrderDashboard() {
                             <td>
                                 <button className="update-btn" onClick={() => handleUpdate(order._id)}>Update</button>
                                 <button className="delete-btn" onClick={() => handleDelete(order._id)}>Delete</button>
-                               
-                                <button className="download-btn" onClick={() => handleDownloadPDF(order)}>Download PDF</button>
+                                <button className="download-btn" onClick={() => handleDownloadPDF(order, index)}>Download PDF</button>
                             </td>
                         </tr>
                     ))}

@@ -3,6 +3,7 @@ import axios from "axios";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import './css/InventoryDashboard.css';
+import logo from '../ui/img/logo.png';
 
 function InventoryDashboard() {
     const [items, setItems] = useState([]); // Original item list
@@ -55,8 +56,17 @@ function InventoryDashboard() {
     const downloadPDF = () => {
         const doc = new jsPDF();
         doc.setFontSize(12);
-        doc.text('Available Inventory Items', 20, 20);
+
+        // Add logo
+        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Adjust size and position as needed
+
+        // Add company details
+        doc.text("Govimithu Pvt Limited", 20, 35);
+        doc.text("Anuradhapura Kahatagasdigiliya", 20, 40);
+        doc.text("Phone Number: 0789840996", 20, 45);
         
+        doc.text('Available Inventory Items', 20, 60);
+
         const columns = [
             { header: "Name", dataKey: "name" },
             { header: "Supplier Name", dataKey: "supName" },
@@ -65,7 +75,7 @@ function InventoryDashboard() {
             { header: "Unit", dataKey: "unit" },
             { header: "Available Item", dataKey: "availableItem" }
         ];
-        
+
         const rows = filteredItems.map(item => ({
             name: item.name,
             supName: item.supName,
@@ -78,7 +88,7 @@ function InventoryDashboard() {
         autoTable(doc, {
             head: [columns.map(col => col.header)],
             body: rows.map(row => columns.map(col => row[col.dataKey])),
-            startY: 30,
+            startY: 70, // Adjust start position after company details
         });
 
         doc.save('inventory_items.pdf');
@@ -87,13 +97,22 @@ function InventoryDashboard() {
     const downloadItemPDF = (item) => {
         const doc = new jsPDF();
         doc.setFontSize(12);
-        doc.text('Item Details', 20, 20);
-        doc.text(`Name: ${item.name}`, 20, 30);
-        doc.text(`Supplier Name: ${item.supName}`, 20, 40);
-        doc.text(`Description: ${item.description}`, 20, 50);
-        doc.text(`Category: ${item.category}`, 20, 60);
-        doc.text(`Unit: ${item.unit}`, 20, 70);
-        doc.text(`Available Item: ${item.availableItem}`, 20, 80);
+        
+        // Add logo
+        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Adjust size and position as needed
+
+        // Add company details
+        doc.text("Govimithu Pvt Limited", 20, 35);
+        doc.text("Anuradhapura Kahatagasdigiliya", 20, 40);
+        doc.text("Phone Number: 0789840996", 20, 45);
+
+        doc.text('Item Details', 20, 60);
+        doc.text(`Name: ${item.name}`, 20, 70);
+        doc.text(`Supplier Name: ${item.supName}`, 20, 80);
+        doc.text(`Description: ${item.description}`, 20, 90);
+        doc.text(`Category: ${item.category}`, 20, 100);
+        doc.text(`Unit: ${item.unit}`, 20, 110);
+        doc.text(`Available Item: ${item.availableItem}`, 20, 120);
         
         doc.save(`${item.name}.pdf`); // Save with item name as file name
     };
