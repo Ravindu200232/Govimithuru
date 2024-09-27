@@ -18,7 +18,7 @@ function SidebarA() {
         </li>
         <li>
           <NavLink to="/admin/driver" activeClassName="active-link">
-            Confirm Msg
+            Drivers
           </NavLink>
         </li>
         <li>
