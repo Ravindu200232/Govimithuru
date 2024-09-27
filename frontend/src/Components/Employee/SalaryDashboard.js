@@ -42,10 +42,10 @@ function SalaryDashboard() {
     doc.setFontSize(12);
     doc.text(`Name: ${salary.name}`, 20, 90);
     doc.text(`Position: ${salary.position}`, 20, 100);
-    doc.text(`Basic Salary: $${salary.basicSalary.toFixed(2)}`, 20, 110);
-    doc.text(`Bonus: $${salary.bonus.toFixed(2)}`, 20, 120);
-    doc.text(`ETF: $${salary.ETF.toFixed(2)}`, 20, 130);
-    doc.text(`Total Salary: $${salary.totalSalary.toFixed(2)}`, 20, 140);
+    doc.text(`Basic Salary: Rs:${salary.basicSalary.toFixed(2)}`, 20, 110);
+    doc.text(`Bonus: Rs:${salary.bonus.toFixed(2)}`, 20, 120);
+    doc.text(`ETF: RS:${salary.ETF.toFixed(2)}`, 20, 130);
+    doc.text(`Total Salary: Rs:${salary.totalSalary.toFixed(2)}`, 20, 140);
     doc.text(`Payday: ${new Date(salary.payday).toLocaleDateString()}`, 20, 150);
 
     doc.save(`Salary_${salary._id}.pdf`);
@@ -78,10 +78,10 @@ function SalaryDashboard() {
               <tr key={salary._id}>
                 <td>{salary.name}</td>
                 <td>{salary.position}</td>
-                <td>${salary.basicSalary.toFixed(2)}</td>
-                <td>${salary.bonus.toFixed(2)}</td>
-                <td>${salary.ETF.toFixed(2)}</td>
-                <td>${salary.totalSalary.toFixed(2)}</td>
+                <td>Rs:{salary.basicSalary.toFixed(2)}</td>
+                <td>Rs:{salary.bonus.toFixed(2)}</td>
+                <td>Rs:{salary.ETF.toFixed(2)}</td>
+                <td>Rs:{salary.totalSalary.toFixed(2)}</td>
                 <td>{new Date(salary.payday).toLocaleDateString()}</td>
                 <td>
                   <button onClick={() => generatePDF(salary)}>Download PDF</button> {/* PDF Download Button */}

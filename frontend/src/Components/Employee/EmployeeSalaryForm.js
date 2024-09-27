@@ -5,7 +5,7 @@ import './Employeecss/EmployeeSalaryForm.css';
 function EmployeeSalaryForm() {
   const [employeeId, setEmployeeId] = useState('');
   const [bonus, setBonus] = useState('');
-  const [ETF, setETF] = useState('');
+  const [ETF, setETF] = useState(0); // Initialize ETF as a number
   const [payday, setPayday] = useState('');
   const [perDayPay, setPerDayPay] = useState('');
   const [workingDays, setWorkingDays] = useState('');
@@ -51,7 +51,7 @@ function EmployeeSalaryForm() {
         // Clear form
         setEmployeeId('');
         setBonus('');
-        setETF('');
+        setETF(0);
         setPayday('');
         setPerDayPay('');
         setWorkingDays('');
@@ -81,7 +81,6 @@ function EmployeeSalaryForm() {
             ))}
           </select>
         </div>
-        {/* Basic Salary input is removed */}
         <div>
           <label>Bonus</label>
           <input
@@ -91,12 +90,15 @@ function EmployeeSalaryForm() {
           />
         </div>
         <div>
-          <label>ETF(%)</label>
+          <label>ETF (%)</label>
           <input
-            type="number"
+            type="range"
+            min="0"
+            max="100"
             value={ETF}
             onChange={(e) => setETF(e.target.value)}
           />
+          <span>{ETF}%</span> {/* Display current ETF percentage */}
         </div>
         <div>
           <label>Working Days</label>

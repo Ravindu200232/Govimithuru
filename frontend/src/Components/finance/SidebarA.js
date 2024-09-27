@@ -12,7 +12,7 @@ function SidebarA() {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/admin/sales" activeClassName="active-link">
+          <NavLink to="/admin/sells" activeClassName="active-link">
             Balance
           </NavLink>
         </li>

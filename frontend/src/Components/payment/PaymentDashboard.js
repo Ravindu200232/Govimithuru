@@ -97,7 +97,7 @@ function PaymentDashboard() {
                             <td>{payment.cardType}</td>
                             <td>{payment.cardNumber}</td>
                             <td>{payment.expirationDate}</td>
-                            <td>${payment.totalPrice.toFixed(2)}</td>
+                            <td>Rs:{payment.totalPrice.toFixed(2)}</td>
                             <td>
                                 <button className="delete-btn" onClick={() => handleDelete(payment._id)}>Delete</button>
                             </td>

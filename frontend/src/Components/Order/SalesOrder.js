@@ -53,7 +53,7 @@ const SalesOrder = () => {
                     <tr>
                         <th>Item Name</th>
                         <th>Quantity Sold</th>
-                        <th>Total Sales ($)</th>
+                        <th>Total Sales (Rs)</th>
                     </tr>
                 </thead>
                 <tbody>

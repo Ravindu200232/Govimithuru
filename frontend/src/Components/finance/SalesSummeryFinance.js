@@ -59,7 +59,7 @@ const SellSummaryFinance = () => {
                     <tr>
                         <th>Item Name</th>
                         <th>Quantity Sold</th>
-                        <th>Total Sales ($)</th>
+                        <th>Total Sales (Rs:)</th>
                     </tr>
                 </thead>
                 <tbody>

@@ -177,7 +177,7 @@ function DeliveryDashboard() {
                                     <div className="delivery-details">
                                         {delivery.deliveryDetails.map((detail, index) => (
                                             <div key={index} className="product-detail">
-                                                {detail.itemName} - Qty: {detail.quantity}, Price: ₹{detail.itemPrice}, Total: ₹{detail.totalPrice}
+                                                {detail.itemName} - Qty: {detail.quantity}, Price: Rs:{detail.itemPrice}, Total: Rs:{detail.totalPrice}
                                             </div>
                                         ))}
                                     </div>

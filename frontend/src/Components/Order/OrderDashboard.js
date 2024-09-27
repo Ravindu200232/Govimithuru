@@ -164,7 +164,7 @@ function OrderDashboard() {
                                     <div className="order-details">
                                         {order.productDetails.map((detail, detailIndex) => (
                                             <div key={detailIndex} className="product-detail">
-                                                {detail.itemName} - Qty: {detail.quantitySold}, Price: ₹{detail.itemPrice}, Total: ₹{detail.totalPrice}
+                                                {detail.itemName} - Qty: {detail.quantitySold}, Price: Rs:{detail.itemPrice}, Total: Rs:{detail.totalPrice}
                                             </div>
                                         ))}
                                     </div>
