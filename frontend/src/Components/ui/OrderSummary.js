@@ -179,8 +179,8 @@ function OrderSummary() {
               <tr key={index}>
                 <td>{item.itemName}</td>
                 <td>{item.quantity}</td>
-                <td>₹{item.price.toFixed(2)}</td>
-                <td>₹{item.totalPrice.toFixed(2)}</td>
+                <td>Rs:{item.price.toFixed(2)}</td>
+                <td>Rs:{item.totalPrice.toFixed(2)}</td>
               </tr>
             ))}
           </tbody>

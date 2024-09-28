@@ -47,6 +47,7 @@ function Cart() {
     const orderSummary = cartItems
       .filter(item => checkedItems[item._id])
       .map(item => ({
+        id: item._id,  // Add the item ID here
         itemName: item.itemNamec,
         quantity: quantities[item._id],
         price: item.pricec,
@@ -56,19 +57,23 @@ function Cart() {
     sessionStorage.setItem('orderSummary', JSON.stringify(orderSummary));
 
     // Update quantities for selected items
-    orderSummary.forEach(item => {
-      axios.put(`http://localhost:8000/card/update/${item._id}`, { quantityc: item.quantity })
+    const updatePromises = orderSummary.map(item => {
+      return axios.put(`http://localhost:8000/card/update/${item.id}`, { quantityc: item.quantity })
         .then(() => {
-          console.log(`Quantity for item ${item._id} updated successfully`);
+          console.log(`Quantity for item ${item.id} updated successfully`);
         })
         .catch(err => {
-          console.error(`Error updating quantity for item ${item._id}:`, err);
+          console.error(`Error updating quantity for item ${item.id}:`, err);
         });
     });
 
-    navigate('/order-summary');
-    alert('Checkout successful! Quantities updated for selected items.');
-  };
+    Promise.all(updatePromises)
+      .then(() => {
+        navigate('/order-summary');
+        alert('Checkout successful! Quantities updated for selected items.');
+      });
+};
+
 
   const handleSelectItem = (id) => {
     setCheckedItems(prevCheckedItems => ({
