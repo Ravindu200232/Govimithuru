@@ -70,7 +70,7 @@ function Cart() {
     Promise.all(updatePromises)
       .then(() => {
         navigate('/order-summary');
-        alert('Checkout successful! Quantities updated for selected items.');
+      
       });
 };
 
