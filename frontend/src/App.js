@@ -623,7 +623,7 @@ function App() {
             )
           } />
 
-          <Route path="/admin/cropsolutionsadd" element={
+          <Route path="/admin/cropsolutions/add" element={
             isAdmin ? (
               <>
                 <NavbarA />
@@ -635,7 +635,7 @@ function App() {
                 </div>
               </>
             ) : (
-              <Navigate to="/admin/cropsolutionsadd" />
+              <Navigate to="/admin/cropsolutions/add" />
             )
           } />
 

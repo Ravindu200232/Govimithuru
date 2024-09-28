@@ -66,7 +66,7 @@ function Description() {
     })
     .then(response => {
         if (response.status === 200) {
-            alert('Item added to cart successfully!');
+            
             navigate('/cart'); // Redirect to the cart page
         }
     })
