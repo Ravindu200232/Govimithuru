@@ -63,6 +63,8 @@ function OrderSummary() {
     return month >= 1 && month <= 12 && expiryDate >= currentDate;
   };
 
+  
+
   const validateForm = () => {
     const newErrors = {};
     if (!customerInfo.name) newErrors.name = 'Customer name is required.';
@@ -90,6 +92,8 @@ function OrderSummary() {
     }
     return newErrors;
   };
+
+  
 
   const handleCompleteProcess = async (e) => {
     e.preventDefault();
@@ -185,8 +189,8 @@ function OrderSummary() {
               <tr key={index}>
                 <td>{item.itemName}</td>
                 <td>{item.quantity}</td>
-                <td>₹{item.price.toFixed(2)}</td>
-                <td>₹{item.totalPrice.toFixed(2)}</td>
+                <td>Rs:{item.price.toFixed(2)}</td>
+                <td>Rs:{item.totalPrice.toFixed(2)}</td>
               </tr>
             ))}
           </tbody>
@@ -229,47 +233,106 @@ function OrderSummary() {
           />
         </label>
         <label>
-          Postal Code:
-          <input
-            type="text"
-            name="postalCode"
-            value={customerInfo.postalCode}
-            onChange={handleInputChange}
-            required
-          />
-          {errors.postalCode && <span className="error">{errors.postalCode}</span>}
-        </label>
-        <label>
-          Email:
-          <input
-            type="email"
-            name="email"
-            value={customerInfo.email}
-            onChange={handleInputChange}
-            required
-          />
-          {errors.email && <span className="error">{errors.email}</span>}
-        </label>
-        <label>
-          Phone Number:
-          <input
-            type="tel"
-            name="phoneNumber"
-            value={customerInfo.phoneNumber}
-            onChange={handleInputChange}
-            required
-          />
-          {errors.phoneNumber && <span className="error">{errors.phoneNumber}</span>}
-        </label>
-        <label>
-          Second Phone Number:
-          <input
-            type="tel"
-            name="secondPhoneNumber"
-            value={customerInfo.secondPhoneNumber}
-            onChange={handleInputChange}
-          />
-        </label>
+  Postal Code:
+  <input
+    type="number" // Change to number type
+    name="postalCode"
+    value={customerInfo.postalCode}
+    onChange={handleInputChange}
+    required
+    min="0" // Minimum value
+    max="1000000" // Maximum value
+    onInput={(e) => {
+      if (e.target.value > 1000000) {
+        e.target.value = 1000000; // Limit to max value
+      }
+    }}
+  />
+  {errors.postalCode && <span className="error">{errors.postalCode}</span>}
+</label>
+
+
+<label>
+  Email:
+  <input
+    type="email"
+    name="email"
+    value={customerInfo.email}
+    onChange={(e) => {
+      const value = e.target.value;
+      // Simple email regex for validation
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      // Allow all input initially
+      handleInputChange(e);
+
+      // Check if the value is invalid
+      if (!emailPattern.test(value) && value !== "") {
+        // Show error if needed (you might want to set an error state here)
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          email: "Invalid email format",
+        }));
+      } else {
+        // Clear the error if valid
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          email: "",
+        }));
+      }
+    }}
+    required
+  />
+  {errors.email && <span className="error">{errors.email}</span>}
+</label>
+
+<label>
+  Phone Number:
+  <input
+    type="tel"
+    name="phoneNumber"
+    value={customerInfo.phoneNumber}
+    onChange={(e) => {
+      const value = e.target.value;
+
+      // Remove non-digit characters and limit to 10 digits
+      const numericValue = value.replace(/\D/g, '').slice(0, 10);
+      handleInputChange({ target: { name: 'phoneNumber', value: numericValue } });
+
+      // Validate and set errors
+      if (numericValue.length > 10) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          phoneNumber: "Phone number must be 10 digits",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          phoneNumber: "",
+        }));
+      }
+    }}
+    required
+  />
+  {errors.phoneNumber && <span className="error">{errors.phoneNumber}</span>}
+</label>
+
+<label>
+  Second Phone Number:
+  <input
+    type="tel"
+    name="secondPhoneNumber"
+    value={customerInfo.secondPhoneNumber}
+    onChange={(e) => {
+      const value = e.target.value;
+
+      // Remove non-digit characters and limit to 10 digits
+      const numericValue = value.replace(/\D/g, '').slice(0, 10);
+      handleInputChange({ target: { name: 'secondPhoneNumber', value: numericValue } });
+    }}
+  />
+</label>
+
 
         <fieldset>
           <legend>Payment Type:</legend>
@@ -299,15 +362,44 @@ function OrderSummary() {
           <>
             <h3>Payment Details</h3>
             <label>
-              Card Name:
-              <input
-                type="text"
-                name="cardName"
-                value={paymentDetails.cardName}
-                onChange={handlePaymentChange}
-              />
-              {errors.cardName && <span className="error">{errors.cardName}</span>}
-            </label>
+  Card Name:
+  <input
+    type="text"
+    name="cardName"
+    value={paymentDetails.cardName}
+    onChange={(e) => {
+      const value = e.target.value;
+      // Regex to allow only letters and spaces
+      const namePattern = /^[A-Za-z\s]+$/;
+
+      // Allow all input initially
+      handlePaymentChange(e);
+
+      // Check if the value is invalid
+      if (!namePattern.test(value) && value !== "") {
+        // Show error if needed
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          cardName: "Card name can only contain letters and spaces",
+        }));
+      } else if (value.length === 0) {
+        // Clear error if empty
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          cardName: "",
+        }));
+      } else {
+        // Clear the error if valid
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          cardName: "",
+        }));
+      }
+    }}
+  />
+  {errors.cardName && <span className="error">{errors.cardName}</span>}
+</label>
+
             <label>
               Card Type:
               <select
@@ -321,36 +413,106 @@ function OrderSummary() {
               </select>
             </label>
             <label>
-              Card Number:
-              <input
-                type="text"
-                name="cardNumber"
-                value={paymentDetails.cardNumber}
-                onChange={handlePaymentChange}
-              />
-              {errors.cardNumber && <span className="error">{errors.cardNumber}</span>}
-            </label>
-            <label>
-              Expiration Date (MM/YY):
-              <input
-                type="text"
-                name="expirationDate"
-                value={paymentDetails.expirationDate}
-                onChange={handlePaymentChange}
-                placeholder="MM/YY"
-              />
-              {errors.expirationDate && <span className="error">{errors.expirationDate}</span>}
-            </label>
-            <label>
-              CVV:
-              <input
-                type="text"
-                name="cvv"
-                value={paymentDetails.cvv}
-                onChange={handlePaymentChange}
-              />
-              {errors.cvv && <span className="error">{errors.cvv}</span>}
-            </label>
+  Card Number:
+  <input
+    type="text"
+    name="cardNumber"
+    value={paymentDetails.cardNumber}
+    onChange={(e) => {
+      const value = e.target.value;
+      // Regex to allow only digits and limit to 16 digits
+      const numericValue = value.replace(/\D/g, '').slice(0, 16);
+      handlePaymentChange({ target: { name: 'cardNumber', value: numericValue } });
+
+      // Validate card number length
+      if (numericValue.length !== 16 && numericValue.length > 0) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          cardNumber: "Card number must be 16 digits",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          cardNumber: "",
+        }));
+      }
+    }}
+  />
+  {errors.cardNumber && <span className="error">{errors.cardNumber}</span>}
+</label>
+
+<label>
+  Expiration Date (MM/YY):
+  <input
+    type="text"
+    name="expirationDate"
+    value={paymentDetails.expirationDate}
+    onChange={(e) => {
+      const value = e.target.value;
+      // Regex to match MM/YY format
+      const expirationPattern = /^(0[1-9]|1[0-2])\/?([0-9]{2})$/;
+      handlePaymentChange(e);
+
+      // Validate expiration date format
+      if (!expirationPattern.test(value) && value !== "") {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          expirationDate: "Invalid expiration date format (MM/YY)",
+        }));
+      } else {
+        // Further check if the date is in the past
+        const [month, year] = value.split('/').map(Number);
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear() % 100; // Get last two digits of the year
+        const currentMonth = currentDate.getMonth() + 1; // Months are 0-based
+
+        if (year < currentYear || (year === currentYear && month < currentMonth)) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            expirationDate: "Expiration date is in the past",
+          }));
+        } else {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            expirationDate: "",
+          }));
+        }
+      }
+    }}
+    placeholder="MM/YY"
+  />
+  {errors.expirationDate && <span className="error">{errors.expirationDate}</span>}
+</label>
+
+<label>
+  CVV:
+  <input
+    type="text"
+    name="cvv"
+    value={paymentDetails.cvv}
+    onChange={(e) => {
+      const value = e.target.value;
+      // Allow only digits and limit to 4 characters
+      const numericValue = value.replace(/\D/g, '').slice(0, 4);
+      handlePaymentChange({ target: { name: 'cvv', value: numericValue } });
+
+      // Validate CVV length
+      if (numericValue.length < 3 && numericValue.length > 0) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          cvv: "CVV must be at least 3 digits",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          cvv: "",
+        }));
+      }
+    }}
+  />
+  {errors.cvv && <span className="error">{errors.cvv}</span>}
+</label>
+
           </>
         )}
 
@@ -360,7 +522,7 @@ function OrderSummary() {
       </form>
 
       <div className="total-price">
-        <h3>Total Price: ₹{totalPrice}</h3>
+        <h3>Total Price: Rs:{totalPrice}</h3>
       </div>
     </div>
   );

@@ -124,7 +124,7 @@ router.get("/organic-farming", async (req, res) => {
 // Get all Showcase items with category 'Equpments'
 router.get("/equipments", async (req, res) => {
     try {
-        const showcaseItems = await Showcase.find({ category: 'Equipments' });
+        const showcaseItems = await Showcase.find({ category: 'Equipment' });
         res.json(showcaseItems);
     } catch (err) {
         res.status(500).send({ status: "Error with getting items", error: err.message });

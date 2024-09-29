@@ -73,7 +73,26 @@ function Cart() {
 
     Promise.all(updatePromises)
       .then(() => {
+        // Delete the selected items after updating quantities
+        const deletePromises = selectedItems.map(item => {
+          return axios.delete(`http://localhost:8000/card/delete/${item._id}`)
+            .then(() => {
+              console.log(`Item ${item._id} deleted successfully`);
+            })
+            .catch(err => {
+              console.error(`Error deleting item ${item._id}:`, err);
+            });
+        });
+
+        return Promise.all(deletePromises);
+      })
+      .then(() => {
+        // After deletion, navigate to the order summary
         navigate('/order-summary');
+      })
+      .catch(err => {
+        console.error('Error during checkout process:', err);
+        alert('An error occurred during checkout.');
       });
   };
 

@@ -11,17 +11,59 @@ const Signup = () => {
         password: '',
         repassword: ''
     });
-    
+
+    const [errors, setErrors] = useState({});
     const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        validateField(e.target.name, e.target.value);
+    };
+
+    const validateField = (name, value) => {
+        let errorMessage = '';
+
+        switch (name) {
+            case 'firstname':
+            case 'lastname':
+                const namePattern = /^[A-Za-z\s]*$/;
+                if (!namePattern.test(value)) {
+                    errorMessage = "Name can only contain letters and spaces.";
+                }
+                break;
+            case 'username':
+                const usernamePattern = /^[a-zA-Z0-9_]{3,16}$/;
+                if (!usernamePattern.test(value)) {
+                    errorMessage = "Username must be 3-16 characters and can only contain letters, numbers, and underscores.";
+                }
+                break;
+            case 'email':
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(value)) {
+                    errorMessage = "Invalid email format.";
+                }
+                break;
+            case 'password':
+                if (value.length < 8) {
+                    errorMessage = "Password must be at least 8 characters long.";
+                }
+                break;
+            case 'repassword':
+                if (value !== formData.password) {
+                    errorMessage = "Passwords do not match.";
+                }
+                break;
+            default:
+                break;
+        }
+
+        setErrors((prevErrors) => ({ ...prevErrors, [name]: errorMessage }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (formData.password !== formData.repassword) {
-            alert("Passwords do not match!");
+        if (Object.values(errors).some(error => error)) {
+            alert("Please fix the errors in the form.");
             return;
         }
         try {
@@ -29,7 +71,7 @@ const Signup = () => {
             alert(response.data);
             navigate('/login');
         } catch (error) {
-            alert("Email or Username Allready Exiting");
+            alert("Email or Username already exists");
         }
     };
 
@@ -80,6 +122,8 @@ const Signup = () => {
                 required
                 style={inputStyle}
             />
+            {errors.firstname && <span className="error">{errors.firstname}</span>}
+
             <input
                 type="text"
                 name="lastname"
@@ -88,6 +132,8 @@ const Signup = () => {
                 required
                 style={inputStyle}
             />
+            {errors.lastname && <span className="error">{errors.lastname}</span>}
+
             <input
                 type="text"
                 name="username"
@@ -96,6 +142,8 @@ const Signup = () => {
                 required
                 style={inputStyle}
             />
+            {errors.username && <span className="error">{errors.username}</span>}
+
             <input
                 type="email"
                 name="email"
@@ -104,6 +152,8 @@ const Signup = () => {
                 required
                 style={inputStyle}
             />
+            {errors.email && <span className="error">{errors.email}</span>}
+
             <input
                 type="password"
                 name="password"
@@ -112,6 +162,8 @@ const Signup = () => {
                 required
                 style={inputStyle}
             />
+            {errors.password && <span className="error">{errors.password}</span>}
+
             <input
                 type="password"
                 name="repassword"
@@ -120,6 +172,8 @@ const Signup = () => {
                 required
                 style={inputStyle}
             />
+            {errors.repassword && <span className="error">{errors.repassword}</span>}
+
             <button type="submit" style={buttonStyle}>Sign Up</button>
             <button type="button" style={loginButtonStyle} onClick={() => navigate('/login')}>Login</button>
         </form>

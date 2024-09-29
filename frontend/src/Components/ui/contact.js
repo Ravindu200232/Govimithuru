@@ -20,7 +20,7 @@ For inquiries, product information, or assistance, feel free to reach out to us 
 
         <div className="info-box contact-box">
           <h2>Contact</h2>
-          <p><b>Phone:</b> +123-456-7890</p>
+          <p><b>Phone:</b> +94789840996</p>
           <p><b>Email:</b> info@govimothiru.com</p>
           <p>Working Hours<br></br>
 Monday - Friday: 9:00 AM - 6:00 PM<br></br>
@@ -31,7 +31,7 @@ Sunday: Closed</p>
 
         <div className="info-box address-box">
           <h2>Address</h2>
-          <p><b>123 Green Valley Road, Agriville, Country</b> </p>
+          <p><b>Kahatagasdigiliya,Anuradhaoura</b> </p>
         </div>
       </div>
 
