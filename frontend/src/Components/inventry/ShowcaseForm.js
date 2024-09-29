@@ -3,6 +3,14 @@ import './css/ShowcaseForm.css';
 import axios from 'axios';
 
 const predefinedItems = [
+
+
+  //seed
+
+  "Tomato Seed","Pumpkin Seed","Cucumber Seed","Carrot Seed","Pepper Seed",
+  
+
+
   // Growth Promoters
   "Seaweed extract", "Humic acid", "Amino acid solutions", "Mycorrhizal fungi",
   "Plant hormones (e.g., auxins, gibberellins)", "Rooting powders", "Foliar sprays",
@@ -73,7 +81,7 @@ const predefinedItems = [
   "Protective netting", "Soil sieve", "Water timers", "Compost aerators",
 
   // Fertilizers
-  "Compost", "Manure (e.g., cow, chicken)", "Fish emulsion", "Bone meal", 
+  "Compost", "Manure", "Fish emulsion", "Bone meal", 
   "Blood meal", "Kelp meal", "Worm castings", "Rock phosphate", "Greensand", 
   "Epsom salts", "Alfalfa meal", "Cottonseed meal", "Molasses", "Seaweed extract", 
   "Organic granular fertilizers", "Liquid organic fertilizers", "Organic NPK fertilizers", 
@@ -241,7 +249,7 @@ function ShowcaseForm() {
             type="number"
             id="packetSize"
             min="1"
-            max="150"
+            max="500"
             value={packetSize}
             onChange={(e) => setPacketSize(e.target.value)}
             required
@@ -256,22 +264,33 @@ function ShowcaseForm() {
             required
           >
             <option value="kg">KG</option>
-            <option value="g">g</option>
-            <option value="L">L</option>
+            <option value="l">L</option>
             <option value="ml">ml</option>
+            <option value="g">g</option>
+            <option value="item">Item</option>
           </select>
         </div>
         <div className="form-group">
-          <label htmlFor="price">Price</label>
-          <input
-            type="number"
-            id="price"
-            placeholder="Enter Price"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            required
-          />
-        </div>
+  <label htmlFor="price">Price</label>
+  <input
+    type="number"
+    id="price"
+    placeholder="Enter Price"
+    min="0"
+    max="1000000"
+    step="0.01" // Allows decimals with two places
+    value={price}
+    onChange={(e) => {
+      let value = parseFloat(e.target.value);
+      if (value > 1000000) {
+        value = 1000000;
+      }
+      setPrice(value.toFixed(2)); // Ensures two decimal places
+    }}
+    required
+  />
+</div>
+
         <div className="form-group">
           <label htmlFor="discount">Discount (%)</label>
           <input

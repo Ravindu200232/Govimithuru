@@ -44,19 +44,23 @@ function Cart() {
   };
 
   const handleCheckout = () => {
-    const orderSummary = cartItems
-      .filter(item => checkedItems[item._id])
-      .map(item => ({
-        id: item._id,  // Add the item ID here
-        itemName: item.itemNamec,
-        quantity: quantities[item._id],
-        price: item.pricec,
-        totalPrice: (item.pricec * quantities[item._id]), // Ensure this is a number
-      }));
+    const selectedItems = cartItems.filter(item => checkedItems[item._id]);
+    
+    if (selectedItems.length === 0) {
+      alert('Please select at least one item to proceed to checkout.');
+      return;
+    }
+
+    const orderSummary = selectedItems.map(item => ({
+      id: item._id,
+      itemName: item.itemNamec,
+      quantity: quantities[item._id],
+      price: item.pricec,
+      totalPrice: (item.pricec * quantities[item._id]),
+    }));
 
     sessionStorage.setItem('orderSummary', JSON.stringify(orderSummary));
 
-    // Update quantities for selected items
     const updatePromises = orderSummary.map(item => {
       return axios.put(`http://localhost:8000/card/update/${item.id}`, { quantityc: item.quantity })
         .then(() => {
@@ -70,10 +74,8 @@ function Cart() {
     Promise.all(updatePromises)
       .then(() => {
         navigate('/order-summary');
-      
       });
-};
-
+  };
 
   const handleSelectItem = (id) => {
     setCheckedItems(prevCheckedItems => ({
@@ -142,7 +144,6 @@ function Cart() {
                   </button>
                 </div>
                 <p>Available: {availability[item._id]}</p>
-               
               </div>
               <div className="remove-item" onClick={() => removeItem(item._id)}>X</div>
             </div>
