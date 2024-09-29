@@ -95,3 +95,9 @@ body {
 .navbar .nav-links a:hover::after {
     width: 100%; /* Expand underline on hover */
 }
+
+.active-link {
+    font-weight: bold;
+    color: #007bff; /* Change this color to your desired active link color */
+  }
+  

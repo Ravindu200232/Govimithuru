@@ -60,4 +60,18 @@ router.get('/', async (req, res) => {
   }
 });
 
+
+router.delete('/delete/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedSalary = await Salary.findByIdAndDelete(id);
+    if (!deletedSalary) {
+      return res.status(404).send('Salary record not found');
+    }
+    res.status(200).send('Salary record deleted successfully');
+  } catch (err) {
+    res.status(500).send('Error deleting salary record');
+  }
+});
+
 module.exports = router;

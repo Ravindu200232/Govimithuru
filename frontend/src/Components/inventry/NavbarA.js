@@ -22,34 +22,33 @@ function NavbarA() {
       </div>
       <ul className="navbar-menu">
         <li>
-          <NavLink to="/admin/inventory" activeClassName="active-link">Inventory</NavLink>
+          <NavLink to="/admin/inventory" className={({ isActive }) => (isActive ? 'active-link' : '')}>Inventory</NavLink>
         </li>
         <li>
-          <NavLink to="/admin/cart" activeClassName="active-link">Shopping Cart</NavLink>
+          <NavLink to="/admin/cart" className={({ isActive }) => (isActive ? 'active-link' : '')}>Shopping Cart</NavLink>
         </li>
         <li>
-          <NavLink to="/admin/orders" activeClassName="active-link">Orders</NavLink>
+          <NavLink to="/admin/orders" className={({ isActive }) => (isActive ? 'active-link' : '')}>Orders</NavLink>
         </li>
         <li>
-          <NavLink to="/admin/delivery" activeClassName="active-link">Delivery</NavLink>
+          <NavLink to="/admin/delivery" className={({ isActive }) => (isActive ? 'active-link' : '')}>Delivery</NavLink>
         </li>
         <li>
-          <NavLink to="/admin/employee" activeClassName="active-link">Employee</NavLink>
+          <NavLink to="/admin/employee" className={({ isActive }) => (isActive ? 'active-link' : '')}>Employee</NavLink>
         </li>
         <li>
-          <NavLink to="/admin/customers" activeClassName="active-link">Customer</NavLink>
+          <NavLink to="/admin/customers" className={({ isActive }) => (isActive ? 'active-link' : '')}>Customer</NavLink>
         </li>
         <li>
-          <NavLink to="/admin/sells" activeClassName="active-link">Finance</NavLink>
+          <NavLink to="/admin/sells" className={({ isActive }) => (isActive ? 'active-link' : '')}>Finance</NavLink>
         </li>
         <li>
-          <NavLink to="/admin/payment" activeClassName="active-link">Payment</NavLink>
+          <NavLink to="/admin/payment" className={({ isActive }) => (isActive ? 'active-link' : '')}>Payment</NavLink>
         </li>
       </ul>
       <div className="navbar-user">
         <img src={img2} alt="User Avatar" className="user-avatar" />
         <button className="logout-btn" onClick={handleLogout}>Logout</button>
-        {/* Optionally, add a dropdown for user settings */}
       </div>
     </nav>
   );

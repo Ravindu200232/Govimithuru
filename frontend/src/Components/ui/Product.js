@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './css/product.css';
 
 // Import category images
@@ -10,70 +10,69 @@ import equipmentsImage from './img/eqump.jpg';
 import fertilizersImage from './img/fertilizer.jpg';
 import irrigationImage from './img/irrigation.jpg';
 import gardeningImage from './img/gardening.png';
-//import bulkImage from './img/bulk.png';
+
+const categories = [
+  { name: 'SEEDS', image: seedsImage, link: '/seeds' },
+  { name: 'Growth Promoters', image: growthPromotersImage, link: '/growthPromoters' },
+  { name: 'Remedies', image: remediesImage, link: '/remedies' },
+  { name: 'Organic Farming', image: organicFarmingImage, link: '/organicFarming' },
+  { name: 'Equipments', image: equipmentsImage, link: '/equipments' },
+  { name: 'Fertilizers', image: fertilizersImage, link: '/fertilizers' },
+  { name: 'Irrigation', image: irrigationImage, link: '/irrigation' },
+  { name: 'Gardening', image: gardeningImage, link: '/gardening' },
+];
 
 function Product() {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // Filter categories based on the search term
+  const filteredCategories = categories.filter(category =>
+    category.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="product-page">
       <section className="products-section">
         <div className="search-bar">
-          <input type="text" placeholder="Search Product, Categories, and Brand" />
+          <input
+            type="text"
+            placeholder="Search Product, Categories, and Brand"
+            value={searchTerm}
+            onChange={handleSearch}
+          />
           <button className="technical-name-btn">Search by Technical Name</button>
         </div>
 
         <div className="product-categories">
-          <div className="category">
-            <a href="/seeds">
-              <img src={seedsImage} alt="Seeds" />
-              <span>SEEDS</span>
-            </a>
-          </div>
-          <div className="category">
-            <a href="/growthPromoters">
-              <img src={growthPromotersImage} alt="Growth Promoters" />
-              <span>Growth Promoters</span>
-            </a>
-          </div>
-          <div className="category">
-            <a href="/remedies">
-              <img src={remediesImage} alt="Remedies" />
-              <span>Remedies</span>
-            </a>
-          </div>
-          <div className="category">
-            <a href="/organicFarming">
-              <img src={organicFarmingImage} alt="Organic Farming" />
-              <span>Organic Farming</span>
-            </a>
-          </div>
-          <div className="category">
-            <a href="/equipments">
-              <img src={equipmentsImage} alt="Equipments" />
-              <span>Equipments</span>
-            </a>
-          </div>
-          <div className="category">
-            <a href="/fertilizers">
-              <img src={fertilizersImage} alt="Fertilizers" />
-              <span>Fertilizers</span>
-            </a>
-          </div>
-          <div className="category">
-            <a href="/irrigation">
-              <img src={irrigationImage} alt="Irrigation" />
-              <span>Irrigation</span>
-            </a>
-          </div>
-          <div className="category">
-            <a href="/gardening">
-              <img src={gardeningImage} alt="Gardening" />
-              <span>Gardening</span>
-            </a>
-          </div>
+          {filteredCategories.length > 0 ? (
+            filteredCategories.map((category, index) => (
+              <div className="category" key={index}>
+                <a href={category.link}>
+                  <img src={category.image} alt={category.name} />
+                  <span>{category.name}</span>
+                </a>
+              </div>
+            ))
+          ) : (
+            <p>No categories found</p>
+          )}
         </div>
       </section>
+
+      <div>
+        <br></br> <br></br> <br></br> <br></br> <br></br> <br></br> <br></br> <br></br> <br></br> <br></br> <br></br> <br></br> <br></br>
+      </div>
     </div>
+    
   );
+
+
+
+  
 }
 
 export default Product;

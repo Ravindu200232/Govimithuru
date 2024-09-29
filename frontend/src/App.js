@@ -141,7 +141,7 @@ function App() {
                 <Footer />
               </>
             ) : (
-              <Navigate to="/login" />
+              <Navigate to="/home" />
             )
           } />
 

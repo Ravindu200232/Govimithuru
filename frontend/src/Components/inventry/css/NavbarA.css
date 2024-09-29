@@ -31,14 +31,13 @@
 .navbar-menu li a {
     color: #000000;
     text-decoration: none;
-    font-size: 16px;
+    font-size: 18px;
     transition: color 0.3s ease; /* Transition effect for color change */
 }
 
 /* Navbar menu links hover effect */
 .navbar-menu li a:hover {
-    text-decoration: underline;
-    color: #007bff; /* Color change on hover */
+    color: #dc0f0f; /* Color change on hover */
 }
 
 /* User avatar styles */
@@ -53,3 +52,9 @@
     border-radius: 50%;
     margin-left: 10px;
 }
+
+.active-link {
+    font-weight: bold;
+    color: #000000; /* Change this color to your desired active link color */
+  }
+  

@@ -123,7 +123,7 @@ const EmployeeSummary = () => {
                             <th>ID</th>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Position</th>
+                            <th>Designation</th>
                             <th>Department</th>
                             <th>Phone</th>
                             <th>NIC</th>
