@@ -160,7 +160,7 @@ function OrderSummary() {
         await axios.post('http://localhost:8000/payments/add', paymentData);  // Fix the payment endpoint
       }
 
-      navigate(`/confirmation/${orderId}`);
+      navigate(`/confirmation/${orderId}`, { state: { orderData, totalPrice } });
     } catch (error) {
       console.error('Error submitting order or delivery:', error);
       alert(`Failed to submit: ${error.response?.data?.error || 'Unknown error'}`);
