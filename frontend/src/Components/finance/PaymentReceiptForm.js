@@ -162,7 +162,7 @@ const PaymentReceiptForm = () => {
             </label>
             <label>
                 Transaction ID:
-                <input type="text" name="transactionId" placeholder="Transaction ID" onChange={handleInputChange} required />
+                <input type="number" name="transactionId" placeholder="Transaction ID" onChange={handleInputChange} required />
                 {errors.transactionId && <span className="error">{errors.transactionId}</span>}
             </label>
             <label>
@@ -171,10 +171,23 @@ const PaymentReceiptForm = () => {
                 {errors.date && <span className="error">{errors.date}</span>}
             </label>
             <label>
-                Customer Name:
-                <input type="text" name="customerName" placeholder="Customer Name" onChange={handleInputChange} required />
-                {errors.customerName && <span className="error">{errors.customerName}</span>}
-            </label>
+    Customer Name:
+    <input
+        type="text"
+        name="customerName"
+        placeholder="Customer Name"
+        onChange={handleInputChange}
+        onKeyPress={(e) => {
+            // Allow only letters (a-z and A-Z)
+            if (!/^[a-zA-Z\s]*$/.test(e.key)) {
+                e.preventDefault();
+            }
+        }}
+        required
+    />
+    {errors.customerName && <span className="error">{errors.customerName}</span>}
+</label>
+
             <label>
                 Customer Email:
                 <input
@@ -207,13 +220,25 @@ const PaymentReceiptForm = () => {
             <label>
                 Customer Phone:
                 <input
-                    type="text"
-                    name="customerPhone"
-                    placeholder="Customer Phone"
-                    maxLength={10} // Max 10 digits
-                    onChange={handleInputChange}
-                    required
-                />
+    type="text"
+    name="customerPhone"
+    placeholder="Customer Phone"
+    maxLength={10} // Restrict to 10 digits
+    onKeyPress={(e) => {
+        // Allow only digits (0-9)
+        if (!/[0-9]/.test(e.key)) {
+            e.preventDefault();
+        }
+    }}
+    onChange={(e) => {
+        const value = e.target.value;
+        // Ensure only numeric input and restrict to 10 digits
+        if (/^\d{0,10}$/.test(value)) {
+            handleInputChange(e); // Call your input handler here
+        }
+    }}
+    required
+/>
                 {errors.customerPhone && <span className="error">{errors.customerPhone}</span>}
             </label>
             <label>

@@ -137,7 +137,7 @@ const SellSummaryFinance = () => {
 
     return (
         <div>
-            <h1>Sales Summary</h1>
+            <h1>Monthly Sales Summary</h1>
             <table>
                 <thead>
                     <tr>
@@ -156,9 +156,9 @@ const SellSummaryFinance = () => {
                     ))}
                 </tbody>
             </table>
-            <h2>Total Sales (Rs): {totalSales.toFixed(2)}</h2>
+            <h2>Monthly Total Sales (Rs): {totalSales.toFixed(2)}</h2>
 
-            <h1>Expenses Summary</h1>
+            <h1>Monthly Expenses Summary</h1>
             <table>
                 <thead>
                     <tr>
@@ -186,9 +186,9 @@ const SellSummaryFinance = () => {
                 </tbody>
             </table>
 
-            <h2>Final Total (Sales - Expenses): {finalTotal.toFixed(2)}</h2>
+            <h2>Monthly Final Total (Sales - Expenses): {finalTotal.toFixed(2)}</h2>
 
-            <h1>Financial Summary Pie Chart</h1>
+            <h1>Monthly Financial Summary Pie Chart</h1>
             <Pie data={pieData} />
         </div>
     );

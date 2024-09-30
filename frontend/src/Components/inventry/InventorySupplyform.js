@@ -188,13 +188,20 @@ function InventorySupplyform() {
         <div className="form-group">
           <label htmlFor="companyName">Company Name</label>
           <input
-            type="text"
-            id="companyName"
-            required
-            placeholder="Enter Company Name"
-            value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
-          />
+    type="text"
+    id="companyName"
+    required
+    placeholder="Enter Company Name"
+    value={companyName}
+    onChange={(e) => setCompanyName(e.target.value)}
+    onKeyPress={(e) => {
+        // Allow only letters (a-z, A-Z) and spaces
+        if (!/^[a-zA-Z\s]*$/.test(e.key)) {
+            e.preventDefault();
+        }
+    }}
+/>
+
         </div>
         <div className="form-group">
           <label htmlFor="description">Description</label>

@@ -201,17 +201,24 @@ function OrderSummary() {
 
       <h2>Customer Information</h2>
       <form onSubmit={handleCompleteProcess}>
-        <label>
-          Customer Name:
-          <input
-            type="text"
-            name="name"
-            value={customerInfo.name}
-            onChange={handleInputChange}
-            required
-          />
-          {errors.name && <span className="error">{errors.name}</span>}
-        </label>
+      <label>
+  Customer Name:
+  <input
+    type="text"
+    name="name"
+    value={customerInfo.name}
+    onChange={(e) => {
+      const value = e.target.value;
+      // Regular expression to allow only letters and spaces
+      if (/^[A-Za-z\s]*$/.test(value)) {
+        handleInputChange(e);
+      }
+    }}
+    required
+  />
+  {errors.name && <span className="error">{errors.name}</span>}
+</label>
+
         <label>
           1st Address:
           <input
@@ -317,21 +324,7 @@ function OrderSummary() {
   {errors.phoneNumber && <span className="error">{errors.phoneNumber}</span>}
 </label>
 
-<label>
-  Second Phone Number:
-  <input
-    type="tel"
-    name="secondPhoneNumber"
-    value={customerInfo.secondPhoneNumber}
-    onChange={(e) => {
-      const value = e.target.value;
 
-      // Remove non-digit characters and limit to 10 digits
-      const numericValue = value.replace(/\D/g, '').slice(0, 10);
-      handleInputChange({ target: { name: 'secondPhoneNumber', value: numericValue } });
-    }}
-  />
-</label>
 
 
         <fieldset>
