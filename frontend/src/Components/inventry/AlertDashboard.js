@@ -43,6 +43,7 @@ const AlertDashboard = () => {
                     <tr>
                         <th>Item</th>
                         <th>Alert Message</th>
+                        <td>Date</td>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -52,6 +53,7 @@ const AlertDashboard = () => {
                             <tr key={alert._id}>
                                 <td>{alert.itemId?.name}</td>
                                 <td>{alert.message}</td>
+                                <td>{alert.createdAt}</td>
                                 <td>
                                     <button onClick={() => handleDeleteAlert(alert._id)}>
                                         Delete
