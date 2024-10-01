@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import img2 from "./img/WhatsApp Image 2024-09-21 at 01.51.31_83da0e81.jpg"; // Imported profile image
 
 function Profile() {
   const [user, setUser] = useState({
     firstname: '',
     lastname: '',
     username: '',
-    email: ''
+    email: '',
+    imageUrl: img2 // Use the imported image as the default
   });
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
@@ -24,7 +26,10 @@ function Profile() {
         const data = await response.json();
 
         if (data.user) {
-          setUser(data.user);
+          setUser({
+            ...data.user,
+            imageUrl: data.user.imageUrl || img2 // Use the user's image URL or the default
+          });
         } else {
           console.error("User not found");
         }
@@ -133,10 +138,25 @@ function Profile() {
     marginLeft: '10px',
   };
 
+  const imageStyle = {
+    width: '150px',
+    height: '150px',
+    borderRadius: '50%', // Circular border
+    marginBottom: '20px',
+    objectFit: 'cover', // Maintain aspect ratio
+  };
+
   return (
     <div style={containerStyle}>
       <h1 style={headingStyle}>Profile Details</h1>
       
+      {/* Profile Image */}
+      <img 
+        src={user.imageUrl} 
+        alt="Profile" 
+        style={imageStyle} 
+      />
+
       {/* Editable form */}
       <div>
         <label style={detailStyle}>

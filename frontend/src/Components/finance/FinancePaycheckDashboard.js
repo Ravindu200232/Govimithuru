@@ -7,6 +7,7 @@ const FinancePaycheckDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [selectedReceipt, setSelectedReceipt] = useState(null); // State for selected receipt
+    const [searchQuery, setSearchQuery] = useState(''); // Search query state
 
     useEffect(() => {
         const fetchReceipts = async () => {
@@ -43,13 +44,31 @@ const FinancePaycheckDashboard = () => {
         setSelectedReceipt(null); // Close details view
     };
 
+    // Filter receipts based on search query
+    const filteredReceipts = receipts.filter(
+        (receipt) =>
+            receipt.receiptNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            receipt.transactionId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            receipt.customerName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
 
     return (
         <div>
             <h2>Finance Paycheck Receipts</h2>
-            {receipts.length === 0 ? (
+
+            {/* Search bar */}
+            <input
+                type="text"
+                placeholder="Search by receipt number, transaction ID, or customer name..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{ marginBottom: '10px', padding: '5px', width: '100%' }}
+            />
+
+            {filteredReceipts.length === 0 ? (
                 <p>No receipts available.</p>
             ) : (
                 <table>
@@ -64,7 +83,7 @@ const FinancePaycheckDashboard = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {receipts.map((receipt) => (
+                        {filteredReceipts.map((receipt) => (
                             <tr key={receipt._id}>
                                 <td>{receipt.receiptNumber}</td>
                                 <td>{receipt.transactionId}</td>

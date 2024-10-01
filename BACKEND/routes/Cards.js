@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Add Card Item
+
 // Add Card Item
 router.post('/add', async (req, res) => {
     const { itemNamec, categoryc, pricec, quantityc, imagec } = req.body; // Include imagec

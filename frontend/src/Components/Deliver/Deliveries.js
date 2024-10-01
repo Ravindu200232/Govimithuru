@@ -147,10 +147,10 @@ function DeliveryDashboard() {
             <table className="delivery-table">
                 <thead>
                     <tr>
-                        <th>Delivery ID</th>
-                        <th>Delivery Person Name</th>
-                        <th>Delivery Details</th>
-                        <th>Delivery Date</th>
+                        <th>Customer ID</th>
+                        <th>Customer Name</th>
+                        <th>Order Details</th>
+                        <th>Order Date</th>
                         <th>Status</th>
                         <th>Address</th>
                         <th>Postal Code</th>

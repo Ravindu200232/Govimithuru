@@ -121,12 +121,12 @@ function Description() {
           <div className="price-section">
             {seedItem.discount > 0 ? (
               <>
-                <p className="discount">Original Price: ₹{seedItem.price.toFixed(2)}</p>
+                <p className="discount">Original Price: Rs:{seedItem.price.toFixed(2)}</p>
                 <p className="discount-percentage">Discount: {seedItem.discount}% off</p>
-                <p>Discounted Price: ₹{ (seedItem.price - (seedItem.price * (seedItem.discount / 100))).toFixed(2) }</p>
+                <p>Discounted Price: Rs:{ (seedItem.price - (seedItem.price * (seedItem.discount / 100))).toFixed(2) }</p>
               </>
             ) : (
-              <p>Price: ₹{seedItem.price.toFixed(2)}</p>
+              <p>Price: Rs:{seedItem.price.toFixed(2)}</p>
             )}
           </div>
           

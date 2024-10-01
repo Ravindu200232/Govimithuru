@@ -101,7 +101,7 @@ function App() {
   };
 
   const handleAdminLogin = (email, password) => {
-    if (email === 'admin2232@gmail.com' && password === 'R2232r#') {
+    if (email === 'admin2232@gmail.com' && password === 'R200232r#') {
       setIsAdmin(true);
       Cookies.set('isAdmin', 'true', { expires: 20 / 288 });
       alert("Admin logged in successfully!");
@@ -141,7 +141,7 @@ function App() {
                 <Footer />
               </>
             ) : (
-              <Navigate to="/login" />
+              <Navigate to="/home" />
             )
           } />
 

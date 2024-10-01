@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'; 
-import { useNavigate } from 'react-router-dom'; // Use useNavigate
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './css/OrderSummary .css';
 
 function OrderSummary() {
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
   const [orderSummary, setOrderSummary] = useState([]);
   const [customerInfo, setCustomerInfo] = useState({
     name: '',
@@ -33,7 +33,7 @@ function OrderSummary() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setCustomerInfo(prevInfo => ({
+    setCustomerInfo((prevInfo) => ({
       ...prevInfo,
       [name]: value,
     }));
@@ -41,7 +41,7 @@ function OrderSummary() {
 
   const handlePaymentChange = (e) => {
     const { name, value } = e.target;
-    setPaymentDetails(prevDetails => ({
+    setPaymentDetails((prevDetails) => ({
       ...prevDetails,
       [name]: value,
     }));
@@ -51,7 +51,7 @@ function OrderSummary() {
     const cardPattern = {
       visa: /^4[0-9]{12}(?:[0-9]{3})?$/,
       mastercard: /^5[1-5][0-9]{14}$/,
-      amex: /^3[47][0-9]{13}$/
+      amex: /^3[47][0-9]{13}$/,
     };
     return cardPattern[paymentDetails.cardType].test(number);
   };
@@ -60,39 +60,40 @@ function OrderSummary() {
     const [month, year] = date.split('/');
     const currentDate = new Date();
     const expiryDate = new Date(`20${year}`, month - 1);
-    return (
-      month >= 1 && month <= 12 && 
-      expiryDate >= currentDate
-    );
+    return month >= 1 && month <= 12 && expiryDate >= currentDate;
   };
+
+  
 
   const validateForm = () => {
     const newErrors = {};
-    if (!customerInfo.name) newErrors.name = "Customer name is required.";
-    if (!customerInfo.address1) newErrors.address1 = "1st address is required.";
-    if (!customerInfo.postalCode) newErrors.postalCode = "Postal code is required.";
+    if (!customerInfo.name) newErrors.name = 'Customer name is required.';
+    if (!customerInfo.address1) newErrors.address1 = '1st address is required.';
+    if (!customerInfo.postalCode) newErrors.postalCode = 'Postal code is required.';
     if (!customerInfo.email) {
-      newErrors.email = "Email is required.";
+      newErrors.email = 'Email is required.';
     } else if (!/\S+@\S+\.\S+/.test(customerInfo.email)) {
-      newErrors.email = "Email is invalid.";
+      newErrors.email = 'Email is invalid.';
     }
-    if (!customerInfo.phoneNumber) newErrors.phoneNumber = "Phone number is required.";
+    if (!customerInfo.phoneNumber) newErrors.phoneNumber = 'Phone number is required.';
     if (customerInfo.paymentType === 'online') {
-      if (!paymentDetails.cardName) newErrors.cardName = "Card name is required.";
+      if (!paymentDetails.cardName) newErrors.cardName = 'Card name is required.';
       if (!paymentDetails.cardNumber) {
-        newErrors.cardNumber = "Card number is required.";
+        newErrors.cardNumber = 'Card number is required.';
       } else if (!validateCardNumber(paymentDetails.cardNumber)) {
-        newErrors.cardNumber = "Invalid card number.";
+        newErrors.cardNumber = 'Invalid card number.';
       }
       if (!paymentDetails.expirationDate) {
-        newErrors.expirationDate = "Expiration date is required.";
+        newErrors.expirationDate = 'Expiration date is required.';
       } else if (!validateExpirationDate(paymentDetails.expirationDate)) {
-        newErrors.expirationDate = "Invalid expiration date.";
+        newErrors.expirationDate = 'Invalid expiration date.';
       }
-      if (!paymentDetails.cvv) newErrors.cvv = "CVV is required.";
+      if (!paymentDetails.cvv) newErrors.cvv = 'CVV is required.';
     }
     return newErrors;
   };
+
+  
 
   const handleCompleteProcess = async (e) => {
     e.preventDefault();
@@ -105,55 +106,64 @@ function OrderSummary() {
     setErrors({});
     setLoading(true);
 
-    // Generate a unique order ID
     const orderId = `O${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
-
+    
     const orderData = {
-      orderId, // Include order ID
+      orderId,
       customerName: customerInfo.name,
       saleDate: new Date(),
-      status: "Pending",
+      status: 'Pending',
       address: `${customerInfo.address1} ${customerInfo.address2}`.trim(),
       postalCode: customerInfo.postalCode,
       email: customerInfo.email,
       phoneNumber: customerInfo.phoneNumber,
       paymentType: customerInfo.paymentType,
-      productDetails: orderSummary.map(item => ({
+      productDetails: orderSummary.map((item) => ({
         itemName: item.itemName,
         quantitySold: item.quantity,
         itemPrice: item.price,
-        totalPrice: item.totalPrice
-      }))
+        totalPrice: item.totalPrice,
+      })),
     };
 
     const deliveryData = {
       deliveryPersonName: customerInfo.name,
       deliveryDate: new Date(),
-      status: "Pending",
+      status: 'Pending',
       address: `${customerInfo.address1} ${customerInfo.address2}`.trim(),
       postalCode: customerInfo.postalCode,
       email: customerInfo.email,
       phoneNumber: customerInfo.phoneNumber,
       deliveryType: customerInfo.paymentType === 'cash' ? 'standard' : 'express',
-      deliveryDetails: orderSummary.map(item => ({
+      deliveryDetails: orderSummary.map((item) => ({
         itemName: item.itemName,
         quantity: item.quantity,
         itemPrice: item.price,
-        totalPrice: item.totalPrice
-      }))
+        totalPrice: item.totalPrice,
+      })),
     };
 
     try {
-      // Submit order
       await axios.post('http://localhost:8000/orders/add', orderData);
-      // Submit delivery
       await axios.post('http://localhost:8000/delivery/add', deliveryData);
-      
-      // Redirect to confirmation page using navigate
-      navigate(`/confirmation/${orderId}`);
+
+      if (customerInfo.paymentType === 'online') {
+        const paymentData = {
+          customerName: customerInfo.name,
+          cardName: paymentDetails.cardName,
+          cardType: paymentDetails.cardType,
+          cardNumber: paymentDetails.cardNumber,
+          expirationDate: paymentDetails.expirationDate,
+          cvv: paymentDetails.cvv,
+          totalPrice: totalPrice,  // Make sure to send totalPrice
+        };
+        await axios.post('http://localhost:8000/payments/add', paymentData);  // Fix the payment endpoint
+      }
+
+      navigate(`/confirmation/${orderId}`, { state: { orderData, totalPrice } });
     } catch (error) {
-      console.error("Error submitting order or delivery:", error);
-      alert(`Failed to submit: ${error.response?.data?.error || "Unknown error"}`);
+      console.error('Error submitting order or delivery:', error);
+      alert(`Failed to submit: ${error.response?.data?.error || 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
@@ -191,39 +201,131 @@ function OrderSummary() {
 
       <h2>Customer Information</h2>
       <form onSubmit={handleCompleteProcess}>
-        <label>
-          Customer Name:
-          <input type="text" name="name" value={customerInfo.name} onChange={handleInputChange} required />
-          {errors.name && <span className="error">{errors.name}</span>}
-        </label>
+      <label>
+  Customer Name:
+  <input
+    type="text"
+    name="name"
+    value={customerInfo.name}
+    onChange={(e) => {
+      const value = e.target.value;
+      // Regular expression to allow only letters and spaces
+      if (/^[A-Za-z\s]*$/.test(value)) {
+        handleInputChange(e);
+      }
+    }}
+    required
+  />
+  {errors.name && <span className="error">{errors.name}</span>}
+</label>
+
         <label>
           1st Address:
-          <input type="text" name="address1" value={customerInfo.address1} onChange={handleInputChange} required />
+          <input
+            type="text"
+            name="address1"
+            value={customerInfo.address1}
+            onChange={handleInputChange}
+            required
+          />
           {errors.address1 && <span className="error">{errors.address1}</span>}
         </label>
         <label>
           2nd Address:
-          <input type="text" name="address2" value={customerInfo.address2} onChange={handleInputChange} />
+          <input
+            type="text"
+            name="address2"
+            value={customerInfo.address2}
+            onChange={handleInputChange}
+          />
         </label>
         <label>
-          Postal Code:
-          <input type="text" name="postalCode" value={customerInfo.postalCode} onChange={handleInputChange} required />
-          {errors.postalCode && <span className="error">{errors.postalCode}</span>}
-        </label>
-        <label>
-          Email:
-          <input type="email" name="email" value={customerInfo.email} onChange={handleInputChange} required />
-          {errors.email && <span className="error">{errors.email}</span>}
-        </label>
-        <label>
-          Phone Number:
-          <input type="tel" name="phoneNumber" value={customerInfo.phoneNumber} onChange={handleInputChange} required />
-          {errors.phoneNumber && <span className="error">{errors.phoneNumber}</span>}
-        </label>
-        <label>
-          Second Phone Number:
-          <input type="tel" name="secondPhoneNumber" value={customerInfo.secondPhoneNumber} onChange={handleInputChange} />
-        </label>
+  Postal Code:
+  <input
+    type="number" // Change to number type
+    name="postalCode"
+    value={customerInfo.postalCode}
+    onChange={handleInputChange}
+    required
+    min="0" // Minimum value
+    max="1000000" // Maximum value
+    onInput={(e) => {
+      if (e.target.value > 1000000) {
+        e.target.value = 1000000; // Limit to max value
+      }
+    }}
+  />
+  {errors.postalCode && <span className="error">{errors.postalCode}</span>}
+</label>
+
+
+<label>
+  Email:
+  <input
+    type="email"
+    name="email"
+    value={customerInfo.email}
+    onChange={(e) => {
+      const value = e.target.value;
+      // Simple email regex for validation
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      // Allow all input initially
+      handleInputChange(e);
+
+      // Check if the value is invalid
+      if (!emailPattern.test(value) && value !== "") {
+        // Show error if needed (you might want to set an error state here)
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          email: "Invalid email format",
+        }));
+      } else {
+        // Clear the error if valid
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          email: "",
+        }));
+      }
+    }}
+    required
+  />
+  {errors.email && <span className="error">{errors.email}</span>}
+</label>
+
+<label>
+  Phone Number:
+  <input
+    type="tel"
+    name="phoneNumber"
+    value={customerInfo.phoneNumber}
+    onChange={(e) => {
+      const value = e.target.value;
+
+      // Remove non-digit characters and limit to 10 digits
+      const numericValue = value.replace(/\D/g, '').slice(0, 10);
+      handleInputChange({ target: { name: 'phoneNumber', value: numericValue } });
+
+      // Validate and set errors
+      if (numericValue.length > 10) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          phoneNumber: "Phone number must be 10 digits",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          phoneNumber: "",
+        }));
+      }
+    }}
+    required
+  />
+  {errors.phoneNumber && <span className="error">{errors.phoneNumber}</span>}
+</label>
+
+
+
 
         <fieldset>
           <legend>Payment Type:</legend>
@@ -235,7 +337,7 @@ function OrderSummary() {
               checked={customerInfo.paymentType === 'cash'}
               onChange={handleInputChange}
             />
-            Cash on Delivery
+            Cash
           </label>
           <label>
             <input
@@ -245,27 +347,52 @@ function OrderSummary() {
               checked={customerInfo.paymentType === 'online'}
               onChange={handleInputChange}
             />
-            Online Pay
+            Online Payment
           </label>
         </fieldset>
-        
-        <button type="submit" disabled={loading}>
-          {loading ? 'Processing...' : 'Complete Order and Payment'}
-        </button>
 
         {customerInfo.paymentType === 'online' && (
-          <div>
+          <>
+            <h3>Payment Details</h3>
             <label>
-              Card Name:
-              <input
-                type="text"
-                name="cardName"
-                value={paymentDetails.cardName}
-                onChange={handlePaymentChange}
-                required
-              />
-              {errors.cardName && <span className="error">{errors.cardName}</span>}
-            </label>
+  Card Name:
+  <input
+    type="text"
+    name="cardName"
+    value={paymentDetails.cardName}
+    onChange={(e) => {
+      const value = e.target.value;
+      // Regex to allow only letters and spaces
+      const namePattern = /^[A-Za-z\s]+$/;
+
+      // Allow all input initially
+      handlePaymentChange(e);
+
+      // Check if the value is invalid
+      if (!namePattern.test(value) && value !== "") {
+        // Show error if needed
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          cardName: "Card name can only contain letters and spaces",
+        }));
+      } else if (value.length === 0) {
+        // Clear error if empty
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          cardName: "",
+        }));
+      } else {
+        // Clear the error if valid
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          cardName: "",
+        }));
+      }
+    }}
+  />
+  {errors.cardName && <span className="error">{errors.cardName}</span>}
+</label>
+
             <label>
               Card Type:
               <select
@@ -275,49 +402,121 @@ function OrderSummary() {
               >
                 <option value="visa">Visa</option>
                 <option value="mastercard">MasterCard</option>
-                <option value="amex">American Express</option>
+                <option value="amex">Amex</option>
               </select>
             </label>
             <label>
-              Card Number:
-              <input
-                type="text"
-                name="cardNumber"
-                value={paymentDetails.cardNumber}
-                onChange={handlePaymentChange}
-                required
-              />
-              {errors.cardNumber && <span className="error">{errors.cardNumber}</span>}
-            </label>
-            <label>
-              Expiration Date:
-              <input
-                type="text"
-                name="expirationDate"
-                placeholder="MM/YY"
-                value={paymentDetails.expirationDate}
-                onChange={handlePaymentChange}
-                required
-              />
-              {errors.expirationDate && <span className="error">{errors.expirationDate}</span>}
-            </label>
-            <label>
-              CVV:
-              <input
-                type="text"
-                name="cvv"
-                value={paymentDetails.cvv}
-                onChange={handlePaymentChange}
-                required
-              />
-              {errors.cvv && <span className="error">{errors.cvv}</span>}
-            </label>
-            <div>
-              <strong>Total Price: ₹{totalPrice}</strong>
-            </div>
-          </div>
+  Card Number:
+  <input
+    type="text"
+    name="cardNumber"
+    value={paymentDetails.cardNumber}
+    onChange={(e) => {
+      const value = e.target.value;
+      // Regex to allow only digits and limit to 16 digits
+      const numericValue = value.replace(/\D/g, '').slice(0, 16);
+      handlePaymentChange({ target: { name: 'cardNumber', value: numericValue } });
+
+      // Validate card number length
+      if (numericValue.length !== 16 && numericValue.length > 0) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          cardNumber: "Card number must be 16 digits",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          cardNumber: "",
+        }));
+      }
+    }}
+  />
+  {errors.cardNumber && <span className="error">{errors.cardNumber}</span>}
+</label>
+
+<label>
+  Expiration Date (MM/YY):
+  <input
+    type="text"
+    name="expirationDate"
+    value={paymentDetails.expirationDate}
+    onChange={(e) => {
+      const value = e.target.value;
+      // Regex to match MM/YY format
+      const expirationPattern = /^(0[1-9]|1[0-2])\/?([0-9]{2})$/;
+      handlePaymentChange(e);
+
+      // Validate expiration date format
+      if (!expirationPattern.test(value) && value !== "") {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          expirationDate: "Invalid expiration date format (MM/YY)",
+        }));
+      } else {
+        // Further check if the date is in the past
+        const [month, year] = value.split('/').map(Number);
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear() % 100; // Get last two digits of the year
+        const currentMonth = currentDate.getMonth() + 1; // Months are 0-based
+
+        if (year < currentYear || (year === currentYear && month < currentMonth)) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            expirationDate: "Expiration date is in the past",
+          }));
+        } else {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            expirationDate: "",
+          }));
+        }
+      }
+    }}
+    placeholder="MM/YY"
+  />
+  {errors.expirationDate && <span className="error">{errors.expirationDate}</span>}
+</label>
+
+<label>
+  CVV:
+  <input
+    type="text"
+    name="cvv"
+    value={paymentDetails.cvv}
+    onChange={(e) => {
+      const value = e.target.value;
+      // Allow only digits and limit to 4 characters
+      const numericValue = value.replace(/\D/g, '').slice(0, 4);
+      handlePaymentChange({ target: { name: 'cvv', value: numericValue } });
+
+      // Validate CVV length
+      if (numericValue.length < 3 && numericValue.length > 0) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          cvv: "CVV must be at least 3 digits",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          cvv: "",
+        }));
+      }
+    }}
+  />
+  {errors.cvv && <span className="error">{errors.cvv}</span>}
+</label>
+
+          </>
         )}
+
+        <button type="submit" disabled={loading}>
+          {loading ? 'Processing...' : 'Complete Purchase'}
+        </button>
       </form>
+
+      <div className="total-price">
+        <h3>Total Price: Rs:{totalPrice}</h3>
+      </div>
     </div>
   );
 }

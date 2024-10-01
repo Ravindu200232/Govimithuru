@@ -16,10 +16,12 @@ function EmployeeForm() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
+    // Handler for image upload
     function handleImageChange(e) {
         setProfileImage(e.target.files[0]);
     }
 
+    // Reset form fields
     function resetForm() {
         setFirstName('');
         setLastName('');
@@ -34,6 +36,7 @@ function EmployeeForm() {
         setError('');
     }
 
+    // Calculate age based on birthday
     function calculateAge(dateOfBirth) {
         const today = new Date();
         const birthDate = new Date(dateOfBirth);
@@ -45,33 +48,44 @@ function EmployeeForm() {
         return age;
     }
 
+    // Validate age
     function isValidAge(birthday) {
         const age = calculateAge(birthday);
         return age >= 18 && age <= 45;
     }
 
+    // Validate NIC
     function isValidNic(nic) {
-        const nicRegex = /^(V)?\d{1,12}$/; // NIC must start with 'V' (optional) followed by up to 12 digits
-        return nicRegex.test(nic);
+        const nicRegex = /^\d{1,11}[0-9V]$/; // First 11 digits followed by either a digit or 'V'
+        return nicRegex.test(nic) && nic.length <= 12; // Ensure length is up to 12
     }
 
+    // Validate Driving NIC
     function isValidDrivingNic(drivingNic) {
-        const drivingNicRegex = /^(V)?\d{1,12}$/; // Driving NIC follows the same format
-        return drivingNicRegex.test(drivingNic);
+        const drivingNicRegex = /^\d{1,11}[0-9V]$/; // Driving NIC follows the same format
+        return drivingNicRegex.test(drivingNic) && drivingNic.length <= 12;
     }
 
+    // Validate Phone Number
     function isValidPhoneNumber(phone) {
         const phoneRegex = /^\d{10}$/; // Phone number must be exactly 10 digits
         return phoneRegex.test(phone);
     }
 
+    // Validate unique fields (email, NIC, drivingNic if applicable)
     async function validateUniqueFields() {
         try {
-            const response = await axios.post('http://localhost:8000/employee/validate', {
+            const payload = {
                 email,
                 nic,
-                drivingNic
-            });
+            };
+
+            // Include drivingNic only if position is Driver
+            if (position === 'Driver') {
+                payload.drivingNic = drivingNic;
+            }
+
+            const response = await axios.post('http://localhost:8000/employee/validate', payload);
             return response.data.isUnique;
         } catch (err) {
             setError('Failed to validate unique fields. Please try again.');
@@ -80,35 +94,43 @@ function EmployeeForm() {
         }
     }
 
+    // Handle form submission
     async function sendData(e) {
         e.preventDefault();
         setLoading(true);
         setError('');
 
+        // Validate age
         if (!isValidAge(birthday)) {
             setError('Age must be between 18 and 45 years.');
             setLoading(false);
             return;
         }
 
+        // Validate NIC
         if (!isValidNic(nic)) {
-            setError('NIC must be up to 12 digits and can optionally start with "V".');
+            setError('NIC must be up to 12 characters: first 11 digits followed by either a digit or "V".');
             setLoading(false);
             return;
         }
 
-        if (!isValidDrivingNic(drivingNic)) {
-            setError('Driving NIC must be up to 12 digits and can optionally start with "V".');
-            setLoading(false);
-            return;
+        // If position is Driver, validate Driving NIC
+        if (position === 'Driver') {
+            if (!isValidDrivingNic(drivingNic)) {
+                setError('Driving NIC must be up to 12 characters: first 11 digits followed by either a digit or "V".');
+                setLoading(false);
+                return;
+            }
         }
 
+        // Validate Phone Number
         if (!isValidPhoneNumber(phoneNumber)) {
             setError('Phone number must be exactly 10 digits.');
             setLoading(false);
             return;
         }
 
+        // Validate unique fields
         const isUnique = await validateUniqueFields();
         if (!isUnique) {
             setError('Email, NIC, or Driving NIC already exists.');
@@ -116,6 +138,7 @@ function EmployeeForm() {
             return;
         }
 
+        // Prepare form data
         const formData = new FormData();
         formData.append('firstName', firstName);
         formData.append('lastName', lastName);
@@ -124,7 +147,10 @@ function EmployeeForm() {
         formData.append('department', department);
         formData.append('phoneNumber', phoneNumber);
         formData.append('nic', nic);
-        formData.append('drivingNic', drivingNic);
+        // Append drivingNic only if position is Driver
+        if (position === 'Driver') {
+            formData.append('drivingNic', drivingNic);
+        }
         formData.append('birthday', birthday);
         if (profileImage) {
             formData.append('profileImage', profileImage);
@@ -142,6 +168,7 @@ function EmployeeForm() {
         }
     }
 
+    // Prevent form submission on Enter key in phone number field
     const handlePhoneKeyDown = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault(); // Prevent form submission
@@ -243,32 +270,53 @@ function EmployeeForm() {
                         id="nic"
                         placeholder="Enter NIC"
                         value={nic}
-                        onChange={(e) => setNic(e.target.value)}
+                        onChange={(e) => {
+                            const value = e.target.value.toUpperCase(); // Convert to uppercase for 'V'
+                            // Validate NIC format: 11 digits followed by a digit or 'V'
+                            if (/^\d{0,11}[0-9V]?$/.test(value)) {
+                                setNic(value);
+                            }
+                        }}
+                        maxLength="12" // Limit input to 12 characters
                         required
                     />
                 </div>
+                {/* Conditionally render Driving License field if position is Driver */}
+                {position === 'Driver' && (
+                    <div className="form-group">
+                        <label htmlFor="drivingNic">Driving License</label>
+                        <input
+                            type="text"
+                            id="drivingNic"
+                            placeholder="Enter Driving NIC"
+                            value={drivingNic}
+                            onChange={(e) => {
+                                const value = e.target.value.toUpperCase(); // Convert to uppercase for 'V'
+                                // Validate Driving NIC format: 11 digits followed by a digit or 'V'
+                                if (/^\d{0,11}[0-9V]?$/.test(value)) {
+                                    setDrivingNic(value);
+                                }
+                            }}
+                            maxLength="12" // Limit input to 12 characters
+                            required={position === 'Driver'} // Make it required only if Driver
+                        />
+                    </div>
+                )}
                 <div className="form-group">
-                    <label htmlFor="drivingNic">Driving NIC</label>
-                    <input
-                        type="text"
-                        id="drivingNic"
-                        placeholder="Enter Driving NIC"
-                        value={drivingNic}
-                        onChange={(e) => setDrivingNic(e.target.value)}
-                        required
-                    />
-                </div>
+    <label htmlFor="birthday">Birthday</label>
+    <input
+        type="date"
+        id="birthday"
+        value={birthday}
+        onChange={(e) => setBirthday(e.target.value)}
+        min="1961-01-01" // Restrict minimum date to January 1, 1961
+        max="2006-12-31" // Restrict maximum date to December 31, 2006
+        required
+    />
+</div>
+
                 <div className="form-group">
-                    <label htmlFor="birthday">Birthday</label>
-                    <input
-                        type="date"
-                        id="birthday"
-                        value={birthday}
-                        onChange={(e) => setBirthday(e.target.value)}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="profileImage">Upload Profile Image</label>
+                    <label htmlFor="profileImage">Profile Image</label>
                     <input
                         type="file"
                         id="profileImage"
@@ -278,7 +326,7 @@ function EmployeeForm() {
                 </div>
                 <div className="form-buttons">
                     <button type="submit" className="add-button" disabled={loading}>
-                        {loading ? 'Adding...' : 'Add'}
+                        {loading ? 'Adding...' : 'Add Employee'}
                     </button>
                     <button type="button" className="cancel-button" onClick={resetForm}>
                         Cancel

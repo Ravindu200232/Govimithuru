@@ -7,8 +7,10 @@ import logo from '../ui/img/logo.png'; // Ensure the path is correct
 
 function EmployeeList() {
     const [employees, setEmployees] = useState([]);
+    const [filteredEmployees, setFilteredEmployees] = useState([]); // New state for filtered employees
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [searchQuery, setSearchQuery] = useState(''); // New state for search query
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [formData, setFormData] = useState({
         firstName: '',
@@ -28,6 +30,7 @@ function EmployeeList() {
         axios.get('http://localhost:8000/employee/')
             .then((res) => {
                 setEmployees(res.data);
+                setFilteredEmployees(res.data); // Initialize filtered employees
                 setLoading(false);
             })
             .catch((err) => {
@@ -35,6 +38,22 @@ function EmployeeList() {
                 setLoading(false);
             });
     }, []);
+
+    // Handle search
+    useEffect(() => {
+        const lowercasedQuery = searchQuery.toLowerCase();
+        const filtered = employees.filter(emp =>
+            emp.firstName.toLowerCase().includes(lowercasedQuery) ||
+            emp.lastName.toLowerCase().includes(lowercasedQuery) ||
+            emp.email.toLowerCase().includes(lowercasedQuery) ||
+            emp.position.toLowerCase().includes(lowercasedQuery) ||
+            emp.department.toLowerCase().includes(lowercasedQuery) ||
+            emp.phoneNumber.toLowerCase().includes(lowercasedQuery) ||
+            emp.nic.toLowerCase().includes(lowercasedQuery) ||
+            emp.drivingNic.toLowerCase().includes(lowercasedQuery)
+        );
+        setFilteredEmployees(filtered);
+    }, [searchQuery, employees]);
 
     const handleView = (id) => {
         navigate(`/employee/view/${id}`);
@@ -45,6 +64,7 @@ function EmployeeList() {
             axios.delete(`http://localhost:8000/employee/delete/${id}`)
                 .then(() => {
                     setEmployees(employees.filter(emp => emp._id !== id));
+                    setFilteredEmployees(filteredEmployees.filter(emp => emp._id !== id)); // Update filtered list
                     alert('Employee Deleted');
                 })
                 .catch((err) => {
@@ -78,6 +98,7 @@ function EmployeeList() {
         try {
             await axios.put(`http://localhost:8000/employee/update/${selectedEmployee._id}`, formData);
             setEmployees(employees.map(emp => (emp._id === selectedEmployee._id ? { ...emp, ...formData } : emp)));
+            setFilteredEmployees(filteredEmployees.map(emp => (emp._id === selectedEmployee._id ? { ...emp, ...formData } : emp))); // Update filtered list
             setSelectedEmployee(null);
             setFormData({
                 firstName: '',
@@ -99,16 +120,12 @@ function EmployeeList() {
 
     const generatePDF = (employee) => {
         const doc = new jsPDF();
-
         // Add logo
-        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Adjust position and size as needed
-
-        // Add company details
+        doc.addImage(logo, 'PNG', 10, 10, 50, 20); 
         doc.setFontSize(12);
         doc.text("Govimithu Pvt Limited", 10, 40);
         doc.text("Anuradhapura Kahatagasdigiliya", 10, 45);
         doc.text("Phone Number: 0789840996", 10, 50);
-
         // Add employee details
         doc.setFontSize(20);
         doc.text("Employee Details", 10, 70);
@@ -123,13 +140,10 @@ function EmployeeList() {
         doc.text(`NIC: ${employee.nic}`, 10, 160);
         doc.text(`Driving NIC: ${employee.drivingNic}`, 10, 170);
         doc.text(`Birthday: ${employee.birthday ? new Date(employee.birthday).toLocaleDateString() : 'No Birthday'}`, 10, 180);
-
-        // Add profile image if available
         if (employee.profileImageBase64) {
             const imgData = `data:image/jpeg;base64,${employee.profileImageBase64}`;
             doc.addImage(imgData, 'JPEG', 10, 190, 50, 50);
         }
-
         doc.save(`Employee_${employee._id}.pdf`);
     };
 
@@ -141,6 +155,16 @@ function EmployeeList() {
         <div className="employee-list-container">
             <h2 className="employee-list-title">Employee List</h2>
             {error && <p className="error-message">{error}</p>}
+
+            {/* Search Bar */}
+            <input
+                type="text"
+                placeholder="Search employees..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-bar"
+            />
+
             <table className="employee-table">
                 <thead>
                     <tr>
@@ -159,8 +183,8 @@ function EmployeeList() {
                     </tr>
                 </thead>
                 <tbody>
-                    {employees.length > 0 ? (
-                        employees.map((employee, index) => (
+                    {filteredEmployees.length > 0 ? (
+                        filteredEmployees.map((employee, index) => (
                             <tr key={employee._id}>
                                 <td>{index + 1}</td>
                                 <td>{employee.firstName}</td>
@@ -196,49 +220,42 @@ function EmployeeList() {
                         placeholder="First Name"
                         value={formData.firstName}
                         onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                        required
                     />
                     <input
                         type="text"
                         placeholder="Last Name"
                         value={formData.lastName}
                         onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                        required
                     />
                     <input
                         type="email"
                         placeholder="Email"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        required
                     />
                     <input
                         type="text"
                         placeholder="Position"
                         value={formData.position}
                         onChange={(e) => setFormData({ ...formData, position: e.target.value })}
-                        required
                     />
                     <input
                         type="text"
                         placeholder="Department"
                         value={formData.department}
                         onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                        required
                     />
                     <input
                         type="text"
                         placeholder="Phone Number"
                         value={formData.phoneNumber}
                         onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                        required
                     />
                     <input
                         type="text"
                         placeholder="NIC"
                         value={formData.nic}
                         onChange={(e) => setFormData({ ...formData, nic: e.target.value })}
-                        required
                     />
                     <input
                         type="text"
@@ -252,8 +269,19 @@ function EmployeeList() {
                         value={formData.birthday}
                         onChange={(e) => setFormData({ ...formData, birthday: e.target.value })}
                     />
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                            const file = e.target.files[0];
+                            const reader = new FileReader();
+                            reader.onload = () => {
+                                setFormData({ ...formData, profileImageBase64: reader.result.split(',')[1] });
+                            };
+                            reader.readAsDataURL(file);
+                        }}
+                    />
                     <button type="submit">Update Employee</button>
-                    <button type="button" onClick={() => setSelectedEmployee(null)}>Cancel</button>
                 </form>
             )}
         </div>

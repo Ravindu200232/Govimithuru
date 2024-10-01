@@ -5,27 +5,54 @@ import Cookies from 'js-cookie';
 
 const Login = ({ onLogin }) => {
     const [credentials, setCredentials] = useState({ email: '', password: '' });
+    const [errors, setErrors] = useState({});
     const navigate = useNavigate();
 
     const handleChange = (e) => {
-        setCredentials({ ...credentials, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setCredentials({ ...credentials, [name]: value });
+        validateField(name, value);
+    };
+
+    const validateField = (name, value) => {
+        let errorMessage = '';
+
+        if (name === 'email') {
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(value) && value !== "") {
+                errorMessage = "Invalid email format.";
+            }
+        }
+
+        if (name === 'password') {
+            if (value.length < 8) {
+                errorMessage = "Password must be at least 8 characters long.";
+            }
+        }
+
+        setErrors((prevErrors) => ({ ...prevErrors, [name]: errorMessage }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (Object.values(errors).some(error => error)) {
+            alert("Please fix the errors in the form.");
+            return;
+        }
+
         try {
             const response = await axios.post('http://localhost:8000/auth/login', credentials);
             alert(response.data);
-    
+
             // Save user data and token in cookies with a 10-minute expiration
-            Cookies.set('user', JSON.stringify(response.data), { expires: 10 / (24 * 60) }); // 10 minutes
-    
+            Cookies.set('user', JSON.stringify(response.data), { expires: 10 / (24 * 60) });
+
             // Store the first name and username in local storage
-            localStorage.setItem('username', response.data.username); // Save username
-            Cookies.set('firstName', response.data.firstName, { expires: 10 / (24 * 60) }); // Store first name
-    
+            localStorage.setItem('username', response.data.username);
+            Cookies.set('firstName', response.data.firstName, { expires: 10 / (24 * 60) });
+
             // Check for admin credentials
-            if (credentials.email === 'admin2232@gmail.com' && credentials.password === 'R2232r#') {
+            if (credentials.email === 'admin2232@gmail.com' && credentials.password === 'R200232r#') {
                 Cookies.set('role', 'admin', { expires: 10 / (24 * 60) });
                 navigate('/admin/inventory'); // Redirect to admin inventory
             } else {
@@ -33,10 +60,9 @@ const Login = ({ onLogin }) => {
                 navigate('/home'); // Redirect to home for regular users
             }
         } catch (error) {
-            alert("Email or Password Are Incorrect Please Try Again");
+            alert("Email or Password are incorrect. Please try again.");
         }
     };
-    
 
     // Inline styles
     const formStyle = {
@@ -80,6 +106,8 @@ const Login = ({ onLogin }) => {
                 required
                 style={inputStyle}
             />
+            {errors.email && <span className="error" style={{ color: 'red' }}>{errors.email}</span>}
+
             <input
                 type="password"
                 name="password"
@@ -88,6 +116,8 @@ const Login = ({ onLogin }) => {
                 required
                 style={inputStyle}
             />
+            {errors.password && <span className="error" style={{ color: 'red' }}>{errors.password}</span>}
+
             <button type="submit" style={buttonStyle}>Login</button>
             {/* Additional Links */}
             <div style={{ marginTop: '10px', textAlign: 'center' }}>

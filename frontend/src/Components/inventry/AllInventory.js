@@ -270,9 +270,12 @@ function AllInventory() {
                                 <tr>
                                     <td colSpan="9">
                                         <div className="edit-row">
-                                            <select
+                                        <select
                                                 value={item.name}
-                                                onChange={(e) => item.name = e.target.value}
+                                                onChange={(e) => {
+                                                    const updatedItem = { ...item, name: e.target.value }; // Avoid direct mutation
+                                                    setItems(prevItems => prevItems.map(i => (i._id === item._id ? updatedItem : i)));
+                                                }}
                                             >
                                                 {nameOptions.map((nameOption, idx) => (
                                                     <option key={idx} value={nameOption}>{nameOption}</option>

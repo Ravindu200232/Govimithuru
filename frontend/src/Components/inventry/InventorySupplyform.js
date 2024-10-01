@@ -3,6 +3,12 @@ import './css/InventorySupplyform.css';
 import axios from "axios";
 
 const predefinedItems = [
+
+
+  //seed
+
+  "Tomato Seed","Pumpkin Seed","Cucumber Seed","Carrot Seed","Pepper Seed",
+
   // Growth Promoters
   "Seaweed extract", "Humic acid", "Amino acid solutions", "Mycorrhizal fungi",
   "Plant hormones (e.g., auxins, gibberellins)", "Rooting powders", "Foliar sprays",
@@ -37,8 +43,7 @@ const predefinedItems = [
   "Comfrey leaf extract", "Potato peels for pest control",
 
   // Organic Farming
-  "Organic seeds", "Green manures", "Crop rotation systems", "Cover crops", 
-  "Organic mulch", "Companion planting guides", "Organic pest control products", 
+  "Organic seeds", "Green manures","Organic mulch", "Companion planting guides", "Organic pest control products", 
   "Permaculture techniques", "Organic soil amendments", "Eco-friendly weed control", 
   "Sustainable irrigation systems", "Biodynamic farming inputs", "Organic compost", 
   "Natural fertilizers", "Seed saving kits", "Organic certification resources", 
@@ -73,7 +78,7 @@ const predefinedItems = [
   "Protective netting", "Soil sieve", "Water timers", "Compost aerators",
 
   // Fertilizers
-  "Compost", "Manure (e.g., cow, chicken)", "Fish emulsion", "Bone meal", 
+  "Compost", "Manure", "Fish emulsion", "Bone meal", 
   "Blood meal", "Kelp meal", "Worm castings", "Rock phosphate", "Greensand", 
   "Epsom salts", "Alfalfa meal", "Cottonseed meal", "Molasses", "Seaweed extract", 
   "Organic granular fertilizers", "Liquid organic fertilizers", "Organic NPK fertilizers", 
@@ -183,18 +188,27 @@ function InventorySupplyform() {
         <div className="form-group">
           <label htmlFor="companyName">Company Name</label>
           <input
-            type="text"
-            id="companyName"
-            placeholder="Enter Company Name"
-            value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
-          />
+    type="text"
+    id="companyName"
+    required
+    placeholder="Enter Company Name"
+    value={companyName}
+    onChange={(e) => setCompanyName(e.target.value)}
+    onKeyPress={(e) => {
+        // Allow only letters (a-z, A-Z) and spaces
+        if (!/^[a-zA-Z\s]*$/.test(e.key)) {
+            e.preventDefault();
+        }
+    }}
+/>
+
         </div>
         <div className="form-group">
           <label htmlFor="description">Description</label>
           <input
             type="text"
             id="description"
+            required
             placeholder="Enter Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -204,6 +218,7 @@ function InventorySupplyform() {
           <label htmlFor="category">Category</label>
           <select
             id="category"
+            required
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           >
@@ -220,16 +235,27 @@ function InventorySupplyform() {
           </select>
         </div>
         <div className="form-group">
-          <label htmlFor="packetSize">Packet Size</label>
-          <input
-            type="number"
-            id="packetSize"
-            min="1"
-            max="150"
-            value={packetSize}
-            onChange={(e) => setPacketSize(e.target.value)}
-          />
-        </div>
+  <label htmlFor="packetSize">Packet Size</label>
+  <input
+    type="number"
+    required
+    id="packetSize"
+    min="1"
+    max="1000"
+    value={packetSize}
+    onChange={(e) => {
+      const value = parseInt(e.target.value, 10);
+      if (value >= 1 && value <= 1000) {
+        setPacketSize(value);
+      } else if (value > 1000) {
+        setPacketSize(1000); // Optionally, cap it at 1000 if the user goes above
+      } else if (value < 1) {
+        setPacketSize(1); // Optionally, set it to 1 if the user enters a negative number or 0
+      }
+    }}
+  />
+</div>
+
         <div className="form-group">
           <label htmlFor="unit">Unit</label>
           <select
@@ -239,32 +265,53 @@ function InventorySupplyform() {
           >
             <option value="kg">KG</option>
             <option value="l">L</option>
+            <option value="ml">ml</option>
+            <option value="g">g</option>
+            <option value="item">Item</option>
           </select>
         </div>
         <div className="form-group">
-          <label htmlFor="quantity">Quantity Available</label>
-          <input
-            type="number"
-            id="quantity"
-            placeholder="Enter Quantity"
-            value={quantityAvailable}
-            onChange={(e) => setQuantityAvailable(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="supplyDate">Supply Date</label>
-          <input
-            type="date"
-            id="supplyDate"
-            value={supplyDate}
-            onChange={(e) => setSupplyDate(e.target.value)}
-          />
-        </div>
+  <label htmlFor="quantity">Quantity Available</label>
+  <input
+    type="number"
+    required
+    id="quantity"
+    placeholder="Enter Quantity"
+    min="1"
+    max="1000"
+    value={quantityAvailable}
+    onChange={(e) => {
+      const value = parseInt(e.target.value, 10);
+      if (value >= 1 && value <= 1000) {
+        setQuantityAvailable(value);
+      } else if (value > 1000) {
+        setQuantityAvailable(1000); // Optionally cap the value at 1000
+      } else if (value < 1) {
+        setQuantityAvailable(1); // Optionally set it to 1 if the user enters a value less than 1
+      }
+    }}
+  />
+</div>
+
+<div className="form-group">
+  <label htmlFor="supplyDate">Supply Date</label>
+  <input
+  required
+    type="date"
+    id="supplyDate"
+    value={supplyDate}
+    max={new Date().toISOString().split("T")[0]} // Set the max attribute to today's date
+    onChange={(e) => setSupplyDate(e.target.value)}
+  />
+</div>
+
+
         <div className="form-group">
           <label htmlFor="phoneNumber">Phone Number</label>
           <input
             type="text"
             id="phoneNumber"
+            required
             placeholder="Enter Phone Number (Max 10 digits)"
             value={phoneNumber}
             onChange={(e) => {
