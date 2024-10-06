@@ -14,29 +14,44 @@ const SellSummaryFinance = () => {
     const [totalSalaries, setTotalSalaries] = useState(0);
     const [totalGiveChecks, setTotalGiveChecks] = useState(0);
     const [finalTotal, setFinalTotal] = useState(0);
+    const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7)); // Default to current month
+
+    const handleMonthChange = (e) => {
+        setSelectedMonth(e.target.value);
+    };
+
+    // Helper function to check if a date is within the selected month
+    const isInSelectedMonth = (date) => {
+        const selectedYear = selectedMonth.split('-')[0];
+        const selectedMonthNum = selectedMonth.split('-')[1];
+        const [year, month] = date.split('-');
+        return year === selectedYear && month === selectedMonthNum;
+    };
 
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await fetch('http://localhost:8000/orders/');
+                const response = await fetch('http://localhost:8000/orders');
                 const orders = await response.json();
 
                 const summary = {};
                 let totalSalesAmount = 0;
 
-                orders.forEach(order => {
-                    order.productDetails.forEach(product => {
-                        if (summary[product.itemName]) {
-                            summary[product.itemName].quantitySold += product.quantitySold;
-                            summary[product.itemName].totalSales += product.totalPrice;
-                        } else {
-                            summary[product.itemName] = {
-                                quantitySold: product.quantitySold,
-                                totalSales: product.totalPrice,
-                            };
-                        }
+                orders
+                    .filter(order => isInSelectedMonth(order.saleDate)) // Filter by month
+                    .forEach(order => {
+                        order.productDetails.forEach(product => {
+                            if (summary[product.itemName]) {
+                                summary[product.itemName].quantitySold += product.quantitySold;
+                                summary[product.itemName].totalSales += product.totalPrice;
+                            } else {
+                                summary[product.itemName] = {
+                                    quantitySold: product.quantitySold,
+                                    totalSales: product.totalPrice,
+                                };
+                            }
+                        });
                     });
-                });
 
                 totalSalesAmount = Object.values(summary).reduce((acc, item) => acc + item.totalSales, 0);
 
@@ -52,9 +67,11 @@ const SellSummaryFinance = () => {
 
         const fetchOtherExpenses = async () => {
             try {
-                const response = await fetch('http://localhost:8000/api/otherexpenses/');
+                const response = await fetch('http://localhost:8000/api/otherexpenses');
                 const expenses = await response.json();
-                const totalExpenses = expenses.reduce((acc, expense) => acc + (expense.amount || 0), 0);
+                const totalExpenses = expenses
+                    .filter(expense => isInSelectedMonth(expense.date)) // Filter by month
+                    .reduce((acc, expense) => acc + (expense.amount || 0), 0);
                 setTotalOtherExpenses(totalExpenses);
             } catch (error) {
                 console.error('Error fetching other expenses:', error);
@@ -63,9 +80,11 @@ const SellSummaryFinance = () => {
 
         const fetchPaychecks = async () => {
             try {
-                const response = await fetch('http://localhost:8000/api/givechecks/');
+                const response = await fetch('http://localhost:8000/api/givechecks');
                 const paychecks = await response.json();
-                const totalPaychecksAmount = paychecks.reduce((acc, paycheck) => acc + (paycheck.totalAmount || 0), 0);
+                const totalPaychecksAmount = paychecks
+                    .filter(paycheck => isInSelectedMonth(paycheck.date)) // Filter by month
+                    .reduce((acc, paycheck) => acc + (paycheck.totalAmount || 0), 0);
                 setTotalPaychecks(totalPaychecksAmount);
             } catch (error) {
                 console.error('Error fetching paychecks:', error);
@@ -74,9 +93,11 @@ const SellSummaryFinance = () => {
 
         const fetchSalaries = async () => {
             try {
-                const response = await fetch('http://localhost:8000/salary/');
+                const response = await fetch('http://localhost:8000/salary');
                 const salaries = await response.json();
-                const totalSalariesAmount = salaries.reduce((acc, salary) => acc + (salary.totalSalary || 0), 0);
+                const totalSalariesAmount = salaries
+                    .filter(salary => isInSelectedMonth(salary.payday)) // Filter by month
+                    .reduce((acc, salary) => acc + (salary.totalSalary || 0), 0);
                 setTotalSalaries(totalSalariesAmount);
             } catch (error) {
                 console.error('Error fetching salaries:', error);
@@ -85,9 +106,11 @@ const SellSummaryFinance = () => {
 
         const fetchGiveChecks = async () => {
             try {
-                const response = await fetch('http://localhost:8000/api/givechecks/');
+                const response = await fetch('http://localhost:8000/api/givechecks');
                 const giveChecks = await response.json();
-                const totalGiveChecksAmount = giveChecks.reduce((acc, check) => acc + (check.amount || 0), 0);
+                const totalGiveChecksAmount = giveChecks
+                    .filter(check => isInSelectedMonth(check.date)) // Filter by month
+                    .reduce((acc, check) => acc + (check.amount || 0), 0);
                 setTotalGiveChecks(totalGiveChecksAmount);
             } catch (error) {
                 console.error('Error fetching give checks:', error);
@@ -99,6 +122,8 @@ const SellSummaryFinance = () => {
             setFinalTotal(final);
         };
 
+        setLoading(true);
+
         Promise.all([
             fetchOrders(),
             fetchOtherExpenses(),
@@ -109,7 +134,7 @@ const SellSummaryFinance = () => {
             calculateFinalTotal();
             setLoading(false);
         });
-    }, [totalSales, totalOtherExpenses, totalPaychecks, totalSalaries, totalGiveChecks]);
+    }, [selectedMonth, totalSales, totalOtherExpenses, totalPaychecks, totalSalaries, totalGiveChecks]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -138,6 +163,15 @@ const SellSummaryFinance = () => {
     return (
         <div>
             <h1>Monthly Sales Summary</h1>
+
+            <label htmlFor="month">Select Month: </label>
+            <input
+                type="month"
+                id="month"
+                value={selectedMonth}
+                onChange={handleMonthChange}
+            />
+
             <table>
                 <thead>
                     <tr>
