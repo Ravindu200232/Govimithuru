@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const Attendance = () => {
+const AttendanceDashboard = () => {
     const [attendanceRecords, setAttendanceRecords] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -16,14 +16,14 @@ const Attendance = () => {
         }
     };
 
-    const markAttendance = async (employeeName, nic) => {
+    const deleteAttendance = async (id) => {
         try {
-            await axios.post('http://localhost:8000/api/attendances/increment', { employeeName, nic });
-            alert('Attendance marked successfully!');
+            await axios.delete(`http://localhost:8000/api/attendances/${id}`);
+            alert('Attendance record deleted successfully!');
             fetchAttendance();
         } catch (error) {
-            console.error('Error marking attendance:', error);
-            setErrorMessage(error.response?.data?.message || 'Error marking attendance');
+            console.error('Error deleting attendance record:', error);
+            setErrorMessage(error.response?.data?.message || 'Error deleting attendance record');
         }
     };
 
@@ -61,7 +61,7 @@ const Attendance = () => {
             padding: '5px 10px',
             border: 'none',
             borderRadius: '4px',
-            backgroundColor: '#007bff',
+            backgroundColor: '#ff4d4d',
             color: '#fff',
             cursor: 'pointer',
             transition: 'background-color 0.3s',
@@ -74,13 +74,16 @@ const Attendance = () => {
 
     return (
         <div style={styles.container}>
-            <h1 style={styles.header}>Attendance List</h1>
+            <h1 style={styles.header}>Attendance Dashboard</h1>
             {errorMessage && <p style={styles.errorMessage}>{errorMessage}</p>}
             <table style={styles.table}>
                 <thead>
                     <tr>
                         <th style={styles.th}>Employee Name</th>
                         <th style={styles.th}>NIC</th>
+                        <th style={styles.th}>Status</th>
+                        <th style={styles.th}>Attendance Dates & Times</th>
+                        <th style={styles.th}>Attendance Count</th>
                         <th style={styles.th}>Actions</th>
                     </tr>
                 </thead>
@@ -89,12 +92,23 @@ const Attendance = () => {
                         <tr key={record._id}>
                             <td style={styles.td}>{record.employeeName}</td>
                             <td style={styles.td}>{record.nic}</td>
+                            <td style={styles.td}>{record.status}</td>
+                            <td style={styles.td}>
+                                <ul style={{ padding: 0, margin: 0 }}>
+                                    {record.attendanceTimes.map((time, index) => (
+                                        <li key={index} style={{ listStyleType: 'none' }}>
+                                            {new Date(time).toLocaleString()}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </td>
+                            <td style={styles.td}>{record.attendanceCount}</td> {/* Display Attendance Count */}
                             <td style={styles.td}>
                                 <button 
                                     style={styles.button}
-                                    onClick={() => markAttendance(record.employeeName, record.nic)}
+                                    onClick={() => deleteAttendance(record._id)}
                                 >
-                                    Mark Attendance
+                                    Delete
                                 </button>
                             </td>
                         </tr>
@@ -105,4 +119,4 @@ const Attendance = () => {
     );
 };
 
-export default Attendance;
+export default AttendanceDashboard;

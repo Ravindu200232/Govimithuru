@@ -20,7 +20,7 @@ router.post('/increment', async (req, res) => {
 
         if (attendanceRecord) {
             if (attendanceRecord.attendanceCount >= 1) {
-                return res.status(400).json({ message: 'Attendance already marked 5 times for today.' });
+                return res.status(400).json({ message: 'Attendance already marked 1 times for today.' });
             }
 
             // Increment the attendance count and add the current time to attendanceTimes
@@ -54,5 +54,23 @@ router.get('/', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+
+// Delete attendance record by ID
+router.delete('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedAttendance = await Attendance.findByIdAndDelete(id);
+
+        if (!deletedAttendance) {
+            return res.status(404).json({ message: 'Attendance record not found' });
+        }
+
+        res.status(200).json({ message: 'Attendance record deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 
 module.exports = router;
