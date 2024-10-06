@@ -19,8 +19,9 @@ router.post('/increment', async (req, res) => {
         });
 
         if (attendanceRecord) {
-            // Update attendance count
+            // Update attendance count and push the current time to attendanceTimes
             attendanceRecord.attendanceCount += 1;
+            attendanceRecord.attendanceTimes.push(new Date());
             await attendanceRecord.save();
             return res.status(200).json(attendanceRecord);
         }
@@ -29,6 +30,7 @@ router.post('/increment', async (req, res) => {
             employeeName,
             status: 'Present',
             attendanceCount: 1, // Initialize count to 1
+            attendanceTimes: [new Date()] // Initialize attendanceTimes with the current time
         });
         await newAttendance.save();
         res.status(201).json(newAttendance);

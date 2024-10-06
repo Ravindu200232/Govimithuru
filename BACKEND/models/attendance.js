@@ -16,10 +16,14 @@ const AttendanceSchema = new mongoose.Schema({
         default: Date.now, // Automatically set to the current date
         required: true,
     },
-    attendanceCount: {  // Corrected property name
+    attendanceCount: {
         type: Number,
         default: 0,  // Default attendance count
         required: false,
+    },
+    attendanceTimes: {
+        type: [Date], // Array to store attendance times
+        default: []   // Default to an empty array
     }
 }, { timestamps: true });
 
