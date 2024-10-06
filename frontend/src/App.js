@@ -81,7 +81,7 @@ import CropSolutionDashboard from './Components/inventry/CropSolutionDashboard';
 import OfferDashboard from './Components/inventry/OfferDashboard';
 import BestSellerDashboard from './Components/inventry/BestSellerDashboard';
 import Cashbook from './Components/finance/Cashbook';
-
+import Attendance from './Components/Employee/Attendance';
 
 
 function App() {
@@ -941,6 +941,23 @@ function App() {
                   <FinanceSidebar />
                   <div className="content">
                     <Cashbook />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+
+          <Route path="/admin/employee/attendence" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <SidebarE />
+                  <div className="content">
+                    <Attendance />
                   </div>
                 </div>
               </>

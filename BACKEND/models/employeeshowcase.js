@@ -1,5 +1,6 @@
 // models/employee.js
 const mongoose = require('mongoose');
+const Attendance = require('./attendance'); // Import the Attendance model
 
 const EmployeeSchema = new mongoose.Schema({
     firstName: {
@@ -51,6 +52,25 @@ EmployeeSchema.virtual('profileImageBase64').get(function () {
     }
     return null;
 });
+
+// Middleware to create an attendance record after an employee is saved
+// Middleware to create an attendance record after an employee is saved
+EmployeeSchema.post('save', async function(doc) {
+    console.log('Employee saved:', doc); // Check if the employee was saved successfully
+    try {
+        const attendanceRecord = new Attendance({
+            employeeName: `${doc.firstName} ${doc.lastName}`,
+            status: 'Present',
+            date: new Date()
+        });
+
+        await attendanceRecord.save();
+        console.log('Attendance record created:', attendanceRecord);
+    } catch (error) {
+        console.error('Error creating attendance record:', error);
+    }
+});
+
 
 const Employee = mongoose.model('Employee', EmployeeSchema);
 
