@@ -132,27 +132,32 @@ const Cashbook = () => {
         doc.setFontSize(20);
         doc.text("Cash Book", 14, 70); // Add title for cash book section
 
-        const headers = [["Date", "Description", "Type", "Amount (Rs)"]];
+        const headers = [["Date", "Description", "Type", "Amount (Rs)", "Balance (Rs)"]];
         const data = [];
+        let currentBalance = 0;
 
         // Sales Entries
         sellSummary.forEach(item => {
-            data.push([new Date(item.date).toLocaleDateString(), item.itemName, 'Sales', item.totalSales.toFixed(2)]);
+            currentBalance += item.totalSales;
+            data.push([new Date(item.date).toLocaleDateString(), item.itemName, 'Sales', item.totalSales.toFixed(2), currentBalance.toFixed(2)]);
         });
 
         // Expense Entries
         expenses.forEach(expense => {
-            data.push([new Date(expense.date).toLocaleDateString(), expense.expenseName, 'Expense', (-expense.amount).toFixed(2)]);
+            currentBalance -= expense.amount;
+            data.push([new Date(expense.date).toLocaleDateString(), expense.expenseName, 'Expense', (-expense.amount).toFixed(2), currentBalance.toFixed(2)]);
         });
 
         // Salary Entries
         salaries.forEach(salary => {
-            data.push([new Date(salary.payday).toLocaleDateString(), `${salary.name} Salary`, 'Salary', (-salary.totalSalary).toFixed(2)]);
+            currentBalance -= salary.totalSalary;
+            data.push([new Date(salary.payday).toLocaleDateString(), `${salary.name} Salary`, 'Salary', (-salary.totalSalary).toFixed(2), currentBalance.toFixed(2)]);
         });
 
         // Paychecks Entries
         paycheckRecords.forEach(paycheck => {
-            data.push([new Date(paycheck.date).toLocaleDateString(), `${paycheck.customerName} Paycheck`, 'Paycheck', (-paycheck.totalAmount).toFixed(2)]);
+            currentBalance -= paycheck.totalAmount;
+            data.push([new Date(paycheck.date).toLocaleDateString(), `${paycheck.customerName} Paycheck`, 'Paycheck', (-paycheck.totalAmount).toFixed(2), currentBalance.toFixed(2)]);
         });
 
         // Add the autoTable with cash book entries
@@ -163,9 +168,8 @@ const Cashbook = () => {
         });
 
         // Cash Book Total
-        const totalEntries = totalSales - (totalOtherExpenses + totalPaychecks + totalSalaries + totalGiveChecks);
         doc.setFontSize(16);
-        doc.text(`Table Total: Rs ${totalEntries.toFixed(2)}`, 14, doc.lastAutoTable.finalY + 10); // Positioning below the table
+        doc.text(`Final Balance: Rs ${currentBalance.toFixed(2)}`, 14, doc.lastAutoTable.finalY + 10); // Positioning below the table
 
         // Save the PDF
         doc.save("CashBook.pdf");
@@ -200,46 +204,32 @@ const Cashbook = () => {
                         <th>Description</th>
                         <th>Type</th>
                         <th>Amount (Rs)</th>
+                        <th>Balance (Rs)</th>
                     </tr>
                 </thead>
                 <tbody>
                     {/* Individual Sales Entries */}
-                    {sellSummary.map(item => (
-                        <tr key={item.itemName}>
-                            <td>{new Date(item.date).toLocaleDateString()}</td>
-                            <td>{item.itemName}</td>
-                            <td>Sales</td>
-                            <td>{item.totalSales.toFixed(2)}</td>
-                        </tr>
-                    ))}
-
-                    {/* Expense Entries */}
-                    {expenses.map(expense => (
-                        <tr key={expense._id}>
-                            <td>{new Date(expense.date).toLocaleDateString()}</td>
-                            <td>{expense.expenseName}</td>
-                            <td>Expense</td>
-                            <td>{(-expense.amount).toFixed(2)}</td>
-                        </tr>
-                    ))}
-                    
-                    {/* Salary Entries */}
-                    {salaries.map(salary => (
-                        <tr key={salary._id}>
-                            <td>{new Date(salary.payday).toLocaleDateString()}</td>
-                            <td>{salary.name} Salary</td>
-                            <td>Salary</td>
-                            <td>{(-salary.totalSalary).toFixed(2)}</td>
-                        </tr>
-                    ))}
-                    
-                    {/* Paychecks Entries */}
-                    {paycheckRecords.map(paycheck => (
-                        <tr key={paycheck._id}>
-                            <td>{new Date(paycheck.date).toLocaleDateString()}</td>
-                            <td>{paycheck.customerName} Paycheck</td>
-                            <td>Paycheck</td>
-                            <td>{(-paycheck.totalAmount).toFixed(2)}</td>
+                    {sellSummary.concat(expenses, salaries, paycheckRecords).reduce((acc, item) => {
+                        const type = item.itemName ? 'Sales' : item.expenseName ? 'Expense' : item.name ? 'Salary' : 'Paycheck';
+                        const amount = item.totalSales || -item.amount || -item.totalSalary || -item.totalAmount;
+                        const newRow = {
+                            ...item,
+                            type,
+                            amount
+                        };
+                        acc.push(newRow);
+                        return acc;
+                    }, []).reduce((acc, row) => {
+                        const balance = (acc.length ? acc[acc.length - 1].balance : 0) + row.amount;
+                        acc.push({ ...row, balance });
+                        return acc;
+                    }, []).map((row, index) => (
+                        <tr key={index}>
+                            <td>{new Date(row.date || row.payday || row.saleDate).toLocaleDateString()}</td>
+                            <td>{row.itemName || row.expenseName || `${row.name} Salary` || `${row.customerName} Paycheck`}</td>
+                            <td>{row.type}</td>
+                            <td>{row.amount.toFixed(2)}</td>
+                            <td>{row.balance.toFixed(2)}</td>
                         </tr>
                     ))}
                 </tbody>
