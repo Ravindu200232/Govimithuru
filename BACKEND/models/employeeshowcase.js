@@ -33,7 +33,7 @@ const EmployeeSchema = new mongoose.Schema({
     },
     drivingNic: {
         type: String,
-        required: true,
+        required: false,
     },
     profileImage: {
         type: Buffer, // Store profile image as binary data
@@ -53,13 +53,14 @@ EmployeeSchema.virtual('profileImageBase64').get(function () {
     return null;
 });
 
-// Middleware to create an attendance record after an employee is saved
+
 // Middleware to create an attendance record after an employee is saved
 EmployeeSchema.post('save', async function(doc) {
     console.log('Employee saved:', doc); // Check if the employee was saved successfully
     try {
         const attendanceRecord = new Attendance({
             employeeName: `${doc.firstName} ${doc.lastName}`,
+            nic: doc.nic,
             status: 'Present',
             date: new Date()
         });

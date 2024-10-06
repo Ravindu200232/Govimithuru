@@ -1,4 +1,3 @@
-// models/attendance.js
 const mongoose = require('mongoose');
 
 const AttendanceSchema = new mongoose.Schema({
@@ -14,6 +13,10 @@ const AttendanceSchema = new mongoose.Schema({
     date: {
         type: Date,
         default: Date.now, // Automatically set to the current date
+        required: true,
+    },
+    nic: {
+        type: String,
         required: true,
     },
     attendanceCount: {

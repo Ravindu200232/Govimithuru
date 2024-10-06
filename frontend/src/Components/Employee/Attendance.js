@@ -16,9 +16,9 @@ const Attendance = () => {
         }
     };
 
-    const markAttendance = async (employeeName) => {
+    const markAttendance = async (employeeName, nic) => {
         try {
-            await axios.post('http://localhost:8000/api/attendances/increment', { employeeName });
+            await axios.post('http://localhost:8000/api/attendances/increment', { employeeName, nic });
             alert('Attendance marked successfully!');
             fetchAttendance();
         } catch (error) {
@@ -77,10 +77,10 @@ const Attendance = () => {
             <ul style={styles.list}>
                 {attendanceRecords.map(record => (
                     <li key={record._id} style={styles.listItem}>
-                        <span>{record.employeeName}</span>
+                        <span>{record.employeeName} (NIC: {record.nic})</span>
                         <button 
                             style={styles.button}
-                            onClick={() => markAttendance(record.employeeName)}
+                            onClick={() => markAttendance(record.employeeName, record.nic)}
                         >
                             Mark Attendance
                         </button>

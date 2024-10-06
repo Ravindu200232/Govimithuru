@@ -1,11 +1,10 @@
-// routes/attendances.js
 const express = require('express');
 const router = express.Router();
 const Attendance = require('../models/attendance');
 
 // Increment attendance
 router.post('/increment', async (req, res) => {
-    const { employeeName } = req.body;
+    const { employeeName, nic } = req.body;
 
     try {
         const today = new Date();
@@ -15,11 +14,16 @@ router.post('/increment', async (req, res) => {
 
         const attendanceRecord = await Attendance.findOne({
             employeeName,
+            nic,
             date: { $gte: today, $lt: tomorrow }
         });
 
         if (attendanceRecord) {
-            // Update attendance count and push the current time to attendanceTimes
+            if (attendanceRecord.attendanceCount >= 1) {
+                return res.status(400).json({ message: 'Attendance already marked 5 times for today.' });
+            }
+
+            // Increment the attendance count and add the current time to attendanceTimes
             attendanceRecord.attendanceCount += 1;
             attendanceRecord.attendanceTimes.push(new Date());
             await attendanceRecord.save();
@@ -28,9 +32,11 @@ router.post('/increment', async (req, res) => {
 
         const newAttendance = new Attendance({
             employeeName,
+            nic,
             status: 'Present',
-            attendanceCount: 1, // Initialize count to 1
-            attendanceTimes: [new Date()] // Initialize attendanceTimes with the current time
+            attendanceCount: 1,
+            attendanceTimes: [new Date()],
+            date: today // Ensure the date is set
         });
         await newAttendance.save();
         res.status(201).json(newAttendance);
