@@ -39,21 +39,20 @@ const SellSummaryFinance = () => {
                 const summary = {};
                 let totalSalesAmount = 0;
 
-                orders
-                    .filter(order => isInSelectedMonth(order.saleDate))
-                    .forEach(order => {
-                        order.productDetails.forEach(product => {
-                            if (summary[product.itemName]) {
-                                summary[product.itemName].quantitySold += product.quantitySold;
-                                summary[product.itemName].totalSales += product.totalPrice;
-                            } else {
-                                summary[product.itemName] = {
-                                    quantitySold: product.quantitySold,
-                                    totalSales: product.totalPrice,
-                                };
-                            }
-                        });
+                // Filter and summarize sales for the selected month
+                orders.filter(order => isInSelectedMonth(order.saleDate)).forEach(order => {
+                    order.productDetails.forEach(product => {
+                        if (summary[product.itemName]) {
+                            summary[product.itemName].quantitySold += product.quantitySold;
+                            summary[product.itemName].totalSales += product.totalPrice;
+                        } else {
+                            summary[product.itemName] = {
+                                quantitySold: product.quantitySold,
+                                totalSales: product.totalPrice,
+                            };
+                        }
                     });
+                });
 
                 totalSalesAmount = Object.values(summary).reduce((acc, item) => acc + item.totalSales, 0);
                 setSellSummary(Object.entries(summary).map(([itemName, details]) => ({
@@ -62,39 +61,35 @@ const SellSummaryFinance = () => {
                 })));
                 setTotalSales(totalSalesAmount);
 
+                // Fetch expenses and filter by selected month
                 const expensesResponse = await axios.get('http://localhost:8000/api/otherexpenses/');
-                const totalExpenses = expensesResponse.data
-                    .filter(expense => isInSelectedMonth(expense.date))
-                    .reduce((acc, expense) => acc + (expense.amount || 0), 0);
+                const filteredExpenses = expensesResponse.data.filter(expense => isInSelectedMonth(expense.date));
+                const totalExpenses = filteredExpenses.reduce((acc, expense) => acc + (expense.amount || 0), 0);
                 
-                setExpenses(expensesResponse.data);
+                setExpenses(filteredExpenses);
                 setTotalOtherExpenses(totalExpenses);
 
+                // Fetch paychecks and filter by selected month
                 const paychecksResponse = await fetch('http://localhost:8000/api/givechecks');
                 const paychecks = await paychecksResponse.json();
-                const totalPaychecksAmount = paychecks
-                    .filter(paycheck => isInSelectedMonth(paycheck.date))
-                    .reduce((acc, paycheck) => acc + (paycheck.totalAmount || 0), 0);
+                const filteredPaychecks = paychecks.filter(paycheck => isInSelectedMonth(paycheck.date));
+                const totalPaychecksAmount = filteredPaychecks.reduce((acc, paycheck) => acc + (paycheck.totalAmount || 0), 0);
+                
                 setTotalPaychecks(totalPaychecksAmount);
-                setPaycheckRecords(paychecks.filter(paycheck => isInSelectedMonth(paycheck.date)));
+                setPaycheckRecords(filteredPaychecks);
 
+                // Fetch salaries and filter by selected month
                 const salariesResponse = await fetch('http://localhost:8000/salary');
                 const salariesData = await salariesResponse.json();
-                setSalaries(salariesData);
-
-                const totalSalariesAmount = salariesData
-                    .filter(salary => isInSelectedMonth(salary.payday))
-                    .reduce((acc, salary) => acc + (salary.totalSalary || 0), 0);
+                const filteredSalaries = salariesData.filter(salary => isInSelectedMonth(salary.payday));
+                const totalSalariesAmount = filteredSalaries.reduce((acc, salary) => acc + (salary.totalSalary || 0), 0);
+                
+                setSalaries(filteredSalaries);
                 setTotalSalaries(totalSalariesAmount);
 
-                const giveChecksResponse = await fetch('http://localhost:8000/api/givechecks');
-                const giveChecks = await giveChecksResponse.json();
-                const totalGiveChecksAmount = giveChecks
-                    .filter(check => isInSelectedMonth(check.date))
-                    .reduce((acc, check) => acc + (check.amount || 0), 0);
-                setTotalGiveChecks(totalGiveChecksAmount);
-
-                const final = totalSales - (totalOtherExpenses + totalPaychecks + totalSalaries + totalGiveChecks);
+                // Calculate final total
+                const totalGiveChecksAmount = totalGiveChecks || 0; // Ensure this is defined
+                const final = totalSales - (totalOtherExpenses + totalPaychecks + totalSalaries + totalGiveChecksAmount);
                 setFinalTotal(final);
 
             } catch (err) {
@@ -217,7 +212,6 @@ const SellSummaryFinance = () => {
                         <td>Salaries</td>
                         <td>{totalSalaries.toFixed(2)}</td>
                     </tr>
-                    
                 </tbody>
             </table>
 
@@ -258,7 +252,6 @@ const SellSummaryFinance = () => {
                         <th>Date</th>
                         <th>Category</th>
                         <th>Payment Method</th>
-                        
                     </tr>
                 </thead>
                 <tbody>
@@ -270,7 +263,6 @@ const SellSummaryFinance = () => {
                             <td>{new Date(expense.date).toLocaleDateString()}</td>
                             <td>{expense.category}</td>
                             <td>{expense.paymentMethod}</td>
-                           
                         </tr>
                     ))}
                 </tbody>
@@ -287,7 +279,6 @@ const SellSummaryFinance = () => {
                         <th>ETF</th>
                         <th>Total Salary</th>
                         <th>Payday</th>
-                        
                     </tr>
                 </thead>
                 <tbody>
@@ -300,7 +291,6 @@ const SellSummaryFinance = () => {
                             <td>Rs:{salary.ETF.toFixed(2)}</td>
                             <td>Rs:{salary.totalSalary.toFixed(2)}</td>
                             <td>{new Date(salary.payday).toLocaleDateString()}</td>
-                           
                         </tr>
                     ))}
                 </tbody>
