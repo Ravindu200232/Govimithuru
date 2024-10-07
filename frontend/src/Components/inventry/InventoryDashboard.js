@@ -26,11 +26,11 @@ function InventoryDashboard() {
             });
     };
 
-    const handleSearch = () => {
-        if (searchQuery.trim() === "") {
+    const handleSearch = (query) => {
+        if (query.trim() === "") {
             setFilteredItems(items); // Reset to original items if search query is empty
         } else {
-            const lowerCaseQuery = searchQuery.toLowerCase();
+            const lowerCaseQuery = query.toLowerCase();
             const filtered = items.filter(
                 (item) =>
                     item.name.toLowerCase().includes(lowerCaseQuery) ||
@@ -39,7 +39,6 @@ function InventoryDashboard() {
             setFilteredItems(filtered);
         }
     };
-
     const handleDelete = (id) => {
         if (window.confirm("Are you sure you want to delete this item?")) {
             axios.delete(`http://localhost:8000/availableitem/${id}`)
@@ -140,14 +139,17 @@ function InventoryDashboard() {
         <div>
             <h2 className="inventory-list-title">Available Inventory Dashboard</h2>
             <div className="search-bar">
-                <input
-                    type="text"
-                    placeholder="Search by Name or Category"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <button className="search-btn" onClick={handleSearch}>Search</button>
-            </div>
+            <input
+                type="text"
+                placeholder="Search by Name or Category"
+                value={searchQuery}
+                onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    handleSearch(e.target.value); // Call handleSearch on input change
+                }}
+            />
+
+        </div>
             <button className="download-btn" onClick={downloadPDF}>Download All Items as PDF</button>
             <table className="inventory-table">
                 <thead>

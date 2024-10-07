@@ -2,7 +2,6 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import './css/Navbar.css';
 import logo from './img/logo.png';
-import img2 from "./img/WhatsApp Image 2024-09-21 at 01.51.31_83da0e81.jpg"; // Imported profile image
 
 function Navbar() {
   const navigate = useNavigate();
@@ -41,7 +40,7 @@ function Navbar() {
           )}
         </li>
         <li>
-        <img src={img2} alt="Profile" style={imageStyle} /> {/* Profile image */}
+       
         </li>
         <li>
           <button onClick={handleLogout} style={{ cursor: 'pointer' }}>Logout</button>

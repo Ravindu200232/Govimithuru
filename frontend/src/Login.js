@@ -42,29 +42,28 @@ const Login = ({ onLogin }) => {
 
         try {
             const response = await axios.post('http://localhost:8000/auth/login', credentials);
-            alert(response.data);
+            alert(response.data.message);
 
-            // Save user data and token in cookies with a 10-minute expiration
             Cookies.set('user', JSON.stringify(response.data), { expires: 10 / (24 * 60) });
-
-            // Store the first name and username in local storage
             localStorage.setItem('username', response.data.username);
             Cookies.set('firstName', response.data.firstName, { expires: 10 / (24 * 60) });
 
-            // Check for admin credentials
             if (credentials.email === 'admin2232@gmail.com' && credentials.password === 'R200232r#') {
                 Cookies.set('role', 'admin', { expires: 10 / (24 * 60) });
-                navigate('/admin/inventory'); // Redirect to admin inventory
+                navigate('/admin/inventory');
             } else {
-                onLogin(); // Notify parent component of login
-                navigate('/home'); // Redirect to home for regular users
+                onLogin();
+                navigate('/Home');
             }
         } catch (error) {
             alert("Email or Password are incorrect. Please try again.");
         }
     };
 
-    // Inline styles
+    const loginWithGoogle = () => {
+        window.open("http://localhost:8000/auth/google", "_self");
+    };
+
     const formStyle = {
         backgroundColor: '#ffffff',
         padding: '20px',
@@ -119,7 +118,8 @@ const Login = ({ onLogin }) => {
             {errors.password && <span className="error" style={{ color: 'red' }}>{errors.password}</span>}
 
             <button type="submit" style={buttonStyle}>Login</button>
-            {/* Additional Links */}
+            <button type="button" onClick={loginWithGoogle} style={buttonStyle}>Sign In With Google</button>
+
             <div style={{ marginTop: '10px', textAlign: 'center' }}>
                 <p>
                     Don't have an account? <span onClick={() => navigate('/signup')} style={{ color: '#007bff', cursor: 'pointer' }}>Sign Up</span>

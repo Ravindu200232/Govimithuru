@@ -131,7 +131,7 @@ function App() {
 
           {/* User-facing routes */}
           
-          <Route path="/home" element={
+          <Route path="/Home" element={
             isLoggedIn ? (
               <>
                 <Navbar />
@@ -143,7 +143,7 @@ function App() {
                 <Footer />
               </>
             ) : (
-              <Navigate to="/home" />
+              <Navigate to="/Home" />
             )
           } />
 

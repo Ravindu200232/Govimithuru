@@ -19,13 +19,14 @@ function PaymentDashboard() {
     }, []);
 
     const handleDelete = (id) => {
-        axios.delete(`http://localhost:8000/payment/deletes/${id}`)
+        axios.delete(`http://localhost:8000/payments/${id}`)
             .then(() => {
+                // Update state to remove the deleted payment
                 setPayments(payments.filter(payment => payment._id !== id));
                 alert("Payment deleted successfully");
             })
             .catch((err) => {
-                alert(err.message);
+                alert("Error: " + err.message);
             });
     };
 
@@ -48,7 +49,7 @@ function PaymentDashboard() {
 
         // Prepare table headers
         const headers = [
-            ["ID", "Customer Name", "Card Name", "Card Type", "Card Number", "Expiration Date", "Total Price"]
+            ["ID", "Customer Name", "Card Name", "Card Type", "Card Number", "Expiration Date", "Total Price", "Pay Date"]
         ];
 
         // Prepare table data with auto-generated IDs
@@ -59,7 +60,8 @@ function PaymentDashboard() {
             payment.cardType,
             payment.cardNumber,
             payment.expirationDate,
-            `$${payment.totalPrice.toFixed(2)}`
+            `$${payment.totalPrice.toFixed(2)}`,
+            new Date(payment.date).toLocaleString() // Format the date and time
         ]);
 
         // Create the table
@@ -86,6 +88,7 @@ function PaymentDashboard() {
                         <th>Card Number</th>
                         <th>Expiration Date</th>
                         <th>Total Price</th>
+                        <th>Pay Date</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -97,7 +100,8 @@ function PaymentDashboard() {
                             <td>{payment.cardType}</td>
                             <td>{payment.cardNumber}</td>
                             <td>{payment.expirationDate}</td>
-                            <td>Rs:{payment.totalPrice.toFixed(2)}</td>
+                            <td>Rs: {payment.totalPrice.toFixed(2)}</td>
+                            <td>{new Date(payment.date).toLocaleString()}</td> {/* Show both date and time */}
                             <td>
                                 <button className="delete-btn" onClick={() => handleDelete(payment._id)}>Delete</button>
                             </td>

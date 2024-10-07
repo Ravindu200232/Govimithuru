@@ -8,7 +8,7 @@ const deliverySchema = new mongoose.Schema({
     status: { type: String, default: "Pending" },
     address: { type: String, required: true },
     postalCode: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true, match: /.+\@.+\..+/ }, // Simple email validation
     phoneNumber: { type: String, required: true },
     driverName: { type: String, required: false },
     deliveryType: { type: String, enum: ['standard', 'express'], required: true },
@@ -25,7 +25,7 @@ const deliverySchema = new mongoose.Schema({
 // Pre-save hook to send email when delivery is processed
 deliverySchema.pre('save', async function (next) {
     if (this.isNew) { // Check if it's a new delivery
-        this.status = "Pending"; // Update the status to Delivered
+        this.status = "Pending"; // Update the status to Pending
         
         try {
             const emailContent = createDeliveryEmailContent(this);
@@ -34,6 +34,7 @@ deliverySchema.pre('save', async function (next) {
         } catch (error) {
             console.error("Error sending email:", error);
             // Handle email send failure appropriately (e.g., log it, alert admin)
+            return next(error); // Pass the error to the next middleware
         }
     }
     next();
@@ -75,22 +76,18 @@ function createDeliveryEmailContent(delivery) {
 // Function to send the delivery email
 async function sendDeliveryEmail(to, subject, htmlContent) {
     const transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com", // Correct host for Gmail
-        port: 465,              // Correct SSL port for Gmail
-        secure: true,           // Use SSL
-        logger: true,
-        debug: true,
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
         auth: {
             user: "bandarasumith326@gmail.com", // Your sender email address
             pass: 'enag cmin nzoy wpuk', // Your new app password here
         },
-        tls: {
-            rejectUnauthorized: false // Set to true in production
-        }
+        
     });
 
     const info = await transporter.sendMail({
-        from: 'Your Store <your-email@gmail.com>',
+        from: 'Govimithuru <bandarasumith326@gmail.com>',
         to: to,
         subject: subject,
         html: htmlContent,

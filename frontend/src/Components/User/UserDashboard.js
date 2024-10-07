@@ -9,7 +9,6 @@ function UserDashboard() {
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [formData, setFormData] = useState({ firstname: '', lastname: '', username: '', email: '' });
-    const [searchQuery, setSearchQuery] = useState(""); // Search query state
 
     useEffect(() => {
         fetchUsers();
@@ -57,13 +56,6 @@ function UserDashboard() {
         }
     };
 
-    // Filter users based on search query
-    const filteredUsers = users.filter(user => 
-        user.firstname.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        user.lastname.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        user.email.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
     // Function to generate PDF of all users
     const generatePDF = () => {
         const doc = new jsPDF();
@@ -99,15 +91,6 @@ function UserDashboard() {
         <div>
             <h2 className="user-dashboard-title">User Dashboard</h2>
 
-            {/* Search bar */}
-            <input
-                type="text"
-                placeholder="Search users..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="search-bar"
-            />
-
             <button onClick={generatePDF} className="download-pdf-btn">Download PDF</button>
 
             <table className="user-table">
@@ -119,7 +102,7 @@ function UserDashboard() {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredUsers.map((user) => (
+                    {users.map((user) => (
                         <tr key={user._id}>
                             <td>{user.firstname} {user.lastname}</td>
                             <td>{user.email}</td>
