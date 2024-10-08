@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import logo from './Components/ui/img/logo.png';
+import backgroundImage from './Components/ui/img/1663151489748.png';
 
 const Signup = () => {
     const [formData, setFormData] = useState({
@@ -23,7 +25,6 @@ const Signup = () => {
 
     const validateField = (name, value) => {
         let errorMessage = '';
-
         switch (name) {
             case 'firstname':
             case 'lastname':
@@ -57,18 +58,15 @@ const Signup = () => {
             default:
                 break;
         }
-
         setErrors((prevErrors) => ({ ...prevErrors, [name]: errorMessage }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (Object.values(errors).some(error => error)) {
             setFormMessage("Please fix the errors in the form.");
             return;
         }
-
         try {
             const response = await axios.post('http://localhost:8000/auth/signup', formData);
             setFormMessage(response.data); // Success message from the server
@@ -78,16 +76,27 @@ const Signup = () => {
         }
     };
 
+    // Styles
+    const formWrapperStyle = {
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    };
+
     const formStyle = {
         backgroundColor: '#ffffff',
         padding: '20px',
         borderRadius: '8px',
         boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-        width: '300px',
+        width: '350px',
         display: 'flex',
         flexDirection: 'column',
-        margin: '0 auto',
-        marginTop: '100px'
+        alignItems: 'center',
+        position: 'relative'
     };
 
     const inputStyle = {
@@ -95,7 +104,8 @@ const Signup = () => {
         padding: '10px',
         border: '1px solid #ccc',
         borderRadius: '4px',
-        fontSize: '16px'
+        fontSize: '16px',
+        width: '100%'
     };
 
     const buttonStyle = {
@@ -106,6 +116,7 @@ const Signup = () => {
         borderRadius: '4px',
         cursor: 'pointer',
         fontSize: '16px',
+        width: '100%',
         marginBottom: '10px'
     };
 
@@ -120,75 +131,83 @@ const Signup = () => {
         textAlign: 'center'
     };
 
+    const logoStyle = {
+        width: '100px',
+        marginBottom: '20px'
+    };
+
     return (
-        <form onSubmit={handleSubmit} style={formStyle}>
-            <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Sign Up</h2>
-            
-            {formMessage && <p style={messageStyle}>{formMessage}</p>}
+        <div style={formWrapperStyle}>
+            <form onSubmit={handleSubmit} style={formStyle}>
+                <img src={logo} alt="Logo" style={logoStyle} />
+                <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Sign Up</h2>
 
-            <input
-                type="text"
-                name="firstname"
-                placeholder="First Name"
-                onChange={handleChange}
-                required
-                style={inputStyle}
-            />
-            {errors.firstname && <span className="error" style={{ color: 'red' }}>{errors.firstname}</span>}
+                {formMessage && <p style={messageStyle}>{formMessage}</p>}
 
-            <input
-                type="text"
-                name="lastname"
-                placeholder="Last Name"
-                onChange={handleChange}
-                required
-                style={inputStyle}
-            />
-            {errors.lastname && <span className="error" style={{ color: 'red' }}>{errors.lastname}</span>}
+                <input
+                    type="text"
+                    name="firstname"
+                    placeholder="First Name"
+                    onChange={handleChange}
+                    required
+                    style={inputStyle}
+                />
+                {errors.firstname && <span className="error" style={{ color: 'red' }}>{errors.firstname}</span>}
 
-            <input
-                type="text"
-                name="username"
-                placeholder="Username"
-                onChange={handleChange}
-                required
-                style={inputStyle}
-            />
-            {errors.username && <span className="error" style={{ color: 'red' }}>{errors.username}</span>}
+                <input
+                    type="text"
+                    name="lastname"
+                    placeholder="Last Name"
+                    onChange={handleChange}
+                    required
+                    style={inputStyle}
+                />
+                {errors.lastname && <span className="error" style={{ color: 'red' }}>{errors.lastname}</span>}
 
-            <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                onChange={handleChange}
-                required
-                style={inputStyle}
-            />
-            {errors.email && <span className="error" style={{ color: 'red' }}>{errors.email}</span>}
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="Username"
+                    onChange={handleChange}
+                    required
+                    style={inputStyle}
+                />
+                {errors.username && <span className="error" style={{ color: 'red' }}>{errors.username}</span>}
 
-            <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                onChange={handleChange}
-                required
-                style={inputStyle}
-            />
-            {errors.password && <span className="error" style={{ color: 'red' }}>{errors.password}</span>}
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    onChange={handleChange}
+                    required
+                    style={inputStyle}
+                />
+                {errors.email && <span className="error" style={{ color: 'red' }}>{errors.email}</span>}
 
-            <input
-                type="password"
-                name="repassword"
-                placeholder="Re-enter Password"
-                onChange={handleChange}
-                required
-                style={inputStyle}
-            />
-            {errors.repassword && <span className="error" style={{ color: 'red' }}>{errors.repassword}</span>}
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    onChange={handleChange}
+                    required
+                    style={inputStyle}
+                />
+                {errors.password && <span className="error" style={{ color: 'red' }}>{errors.password}</span>}
 
-            <button type="submit" style={buttonStyle}>Sign Up</button>
-            <button type="button" style={loginButtonStyle} onClick={() => navigate('/login')}>Login</button>
-        </form>
+                <input
+                    type="password"
+                    name="repassword"
+                    placeholder="Re-enter Password"
+                    onChange={handleChange}
+                    required
+                    style={inputStyle}
+                />
+                {errors.repassword && <span className="error" style={{ color: 'red' }}>{errors.repassword}</span>}
+
+                <button type="submit" style={buttonStyle}>Sign Up</button>
+                <button type="button" style={loginButtonStyle} onClick={() => navigate('/login')}>Login</button>
+            </form>
+        </div>
     );
 };
 

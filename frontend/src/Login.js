@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import logo from './Components/ui/img/logo.png';
+import backgroundImage from './Components/ui/img/1663151489748.png';  // Add your background image here
 
 const Login = ({ onLogin }) => {
     const [credentials, setCredentials] = useState({ email: '', password: '' });
@@ -65,6 +67,16 @@ const Login = ({ onLogin }) => {
         window.open("http://localhost:8000/auth/google", "_self");
     };
 
+    const pageStyle = {
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        minHeight: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    };
+
     const formStyle = {
         backgroundColor: '#ffffff',
         padding: '20px',
@@ -73,8 +85,7 @@ const Login = ({ onLogin }) => {
         width: '300px',
         display: 'flex',
         flexDirection: 'column',
-        margin: '0 auto',
-        marginTop: '100px'
+        textAlign: 'center',
     };
 
     const inputStyle = {
@@ -97,43 +108,46 @@ const Login = ({ onLogin }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} style={formStyle}>
-            <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Login</h2>
-            
-            <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                onChange={handleChange}
-                required
-                style={inputStyle}
-            />
-            {errors.email && <span className="error" style={{ color: 'red' }}>{errors.email}</span>}
+        <div style={pageStyle}>
+            <form onSubmit={handleSubmit} style={formStyle}>
+                <img src={logo} alt="Logo" style={{ marginBottom: '20px', width: '100px', alignSelf: 'center' }} />
+                <h2 style={{ marginBottom: '20px' }}>Login</h2>
+                
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    onChange={handleChange}
+                    required
+                    style={inputStyle}
+                />
+                {errors.email && <span className="error" style={{ color: 'red' }}>{errors.email}</span>}
 
-            <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                onChange={handleChange}
-                required
-                style={inputStyle}
-            />
-            {errors.password && <span className="error" style={{ color: 'red' }}>{errors.password}</span>}
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    onChange={handleChange}
+                    required
+                    style={inputStyle}
+                />
+                {errors.password && <span className="error" style={{ color: 'red' }}>{errors.password}</span>}
 
-            <button type="submit" style={buttonStyle}>Login</button>
-            <button type="button" onClick={loginWithGoogle} style={buttonStyle}>Sign In With Google</button>
+                <button type="submit" style={buttonStyle}>Login</button>
+                <button type="button" onClick={loginWithGoogle} style={buttonStyle}>Sign In With Google</button>
 
-            {serverMessage && <div style={{ color: serverMessage.includes("incorrect") ? 'red' : 'green', marginTop: '10px', textAlign: 'center' }}>{serverMessage}</div>}
+                {serverMessage && <div style={{ color: serverMessage.includes("incorrect") ? 'red' : 'green', marginTop: '10px' }}>{serverMessage}</div>}
 
-            <div style={{ marginTop: '10px', textAlign: 'center' }}>
-                <p>
-                    Don't have an account? <span onClick={() => navigate('/signup')} style={{ color: '#007bff', cursor: 'pointer' }}>Sign Up</span>
-                </p>
-                <p>
-                    <span onClick={() => navigate('/forgot-password')} style={{ color: '#007bff', cursor: 'pointer' }}>Forgot Password?</span>
-                </p>
-            </div>
-        </form>
+                <div style={{ marginTop: '10px' }}>
+                    <p>
+                        Don't have an account? <span onClick={() => navigate('/signup')} style={{ color: '#007bff', cursor: 'pointer' }}>Sign Up</span>
+                    </p>
+                    <p>
+                        <span onClick={() => navigate('/forgot-password')} style={{ color: '#007bff', cursor: 'pointer' }}>Forgot Password?</span>
+                    </p>
+                </div>
+            </form>
+        </div>
     );
 };
 
