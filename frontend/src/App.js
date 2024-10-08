@@ -99,7 +99,7 @@ function App() {
   const handleLogin = () => {
     setIsLoggedIn(true);
     Cookies.set('isLoggedIn', 'true', { expires: 20 / 288 });
-    alert("Logged in successfully!");
+   
   };
 
   const handleAdminLogin = (email, password) => {

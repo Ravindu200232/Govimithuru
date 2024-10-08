@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 const Login = ({ onLogin }) => {
     const [credentials, setCredentials] = useState({ email: '', password: '' });
     const [errors, setErrors] = useState({});
+    const [serverMessage, setServerMessage] = useState('');
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -36,13 +37,13 @@ const Login = ({ onLogin }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (Object.values(errors).some(error => error)) {
-            alert("Please fix the errors in the form.");
+            setServerMessage("Please fix the errors in the form.");
             return;
         }
 
         try {
             const response = await axios.post('http://localhost:8000/auth/login', credentials);
-            alert(response.data.message);
+            setServerMessage(response.data.message);
 
             Cookies.set('user', JSON.stringify(response.data), { expires: 10 / (24 * 60) });
             localStorage.setItem('username', response.data.username);
@@ -56,7 +57,7 @@ const Login = ({ onLogin }) => {
                 navigate('/Home');
             }
         } catch (error) {
-            alert("Email or Password are incorrect. Please try again.");
+            setServerMessage("Email or Password are incorrect. Please try again.");
         }
     };
 
@@ -91,12 +92,14 @@ const Login = ({ onLogin }) => {
         border: 'none',
         borderRadius: '4px',
         cursor: 'pointer',
-        fontSize: '16px'
+        fontSize: '16px',
+        marginBottom: '10px'
     };
 
     return (
         <form onSubmit={handleSubmit} style={formStyle}>
             <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Login</h2>
+            
             <input
                 type="email"
                 name="email"
@@ -119,6 +122,8 @@ const Login = ({ onLogin }) => {
 
             <button type="submit" style={buttonStyle}>Login</button>
             <button type="button" onClick={loginWithGoogle} style={buttonStyle}>Sign In With Google</button>
+
+            {serverMessage && <div style={{ color: serverMessage.includes("incorrect") ? 'red' : 'green', marginTop: '10px', textAlign: 'center' }}>{serverMessage}</div>}
 
             <div style={{ marginTop: '10px', textAlign: 'center' }}>
                 <p>
