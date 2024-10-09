@@ -4,6 +4,10 @@
     font-family: "Alegreya Sans SC", sans-serif;
 }
 
+.expiring {
+    background-color: #ffcccb; /* Light red background */
+}
+
 .search-bar {
     display: flex;
     align-items: center;
@@ -55,6 +59,7 @@
 
 .add-store-btn {
     margin-left: 10px;
+    margin-right: 10px; /* Add margin for spacing */
     padding: 5px 10px;
     background-color: #4CAF50;
     color: white;
@@ -68,7 +73,7 @@
 
 .view-btn, .delete-btn, .update-btn {
     padding: 10px 15px;
-    margin-right: 5px;
+    margin-right: 10px; /* Increased margin for spacing */
     cursor: pointer;
     border: none;
     border-radius: 10px;
@@ -78,7 +83,6 @@
 
 .view-btn {
     background-color: #007bff;
-
 }
 
 .delete-btn {
@@ -117,5 +121,25 @@
 .inventory-table input[type="date"]:focus {
     border-color: #6a6c6d; /* Highlight border on focus */
     outline: none; /* Remove outline */
-    
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .search-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-bar input {
+        width: 100%;
+        margin-bottom: 10px; /* Space between input and button */
+    }
+
+    .search-bar .search-btn {
+        width: 100%; /* Full width for buttons */
+    }
+
+    .inventory-table th, .inventory-table td {
+        padding: 10px; /* Reduce padding for smaller screens */
+    }
 }

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import img2 from "./img/WhatsApp Image 2024-09-21 at 01.51.31_83da0e81.jpg"; // Imported profile image
 import '@fortawesome/fontawesome-free/css/all.min.css'; // Import Font Awesome
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Profile() {
   const [user, setUser] = useState({
@@ -61,13 +63,14 @@ function Profile() {
       });
 
       if (response.ok) {
-        alert("User updated successfully!");
+        toast.success("User updated successfully!");
         setIsEditing(false);
       } else {
-        alert("Error updating user");
+        toast.error("Error updating user");
       }
     } catch (error) {
       console.error("Error updating user:", error);
+      toast.error("Error updating user");
     }
   };
 
@@ -75,6 +78,7 @@ function Profile() {
     localStorage.removeItem('user');
     localStorage.removeItem('username');
     navigate('/login');
+    toast.success("Logged out successfully");
   };
 
   const handleDeleteAccount = async () => {
@@ -86,13 +90,14 @@ function Profile() {
         });
 
         if (response.ok) {
-          alert("Account deleted successfully!");
+          toast.success("Account deleted successfully!");
           handleLogout(); // Log out after deletion
         } else {
-          alert("Error deleting account");
+          toast.error("Error deleting account");
         }
       } catch (error) {
         console.error("Error deleting account:", error);
+        toast.error("Error deleting account");
       }
     }
   };
@@ -211,6 +216,7 @@ function Profile() {
         <button onClick={handleLogout} style={{ marginLeft: '10px' }}>Logout</button>
         <button onClick={handleDeleteAccount} style={deleteButtonStyle}>Delete Account</button>
       </div>
+      <ToastContainer />
     </div>
   );
 }
