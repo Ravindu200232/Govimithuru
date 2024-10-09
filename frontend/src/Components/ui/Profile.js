@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import img2 from "./img/WhatsApp Image 2024-09-21 at 01.51.31_83da0e81.jpg"; // Imported profile image
+import '@fortawesome/fontawesome-free/css/all.min.css'; // Import Font Awesome
 
 function Profile() {
   const [user, setUser] = useState({
@@ -160,7 +161,7 @@ function Profile() {
       {/* Editable form */}
       <div>
         <label style={detailStyle}>
-          First Name:
+          <i className="fas fa-user"></i> First Name:
           <input 
             type="text" 
             name="firstname" 
@@ -170,7 +171,7 @@ function Profile() {
           />
         </label>
         <label style={detailStyle}>
-          Last Name:
+          <i className="fas fa-user"></i> Last Name:
           <input 
             type="text" 
             name="lastname" 
@@ -180,7 +181,7 @@ function Profile() {
           />
         </label>
         <label style={detailStyle}>
-          Username:
+          <i className="fas fa-user-circle"></i> Username:
           <input 
             type="text" 
             name="username" 
@@ -190,7 +191,7 @@ function Profile() {
           />
         </label>
         <label style={detailStyle}>
-          Email:
+          <i className="fas fa-envelope"></i> Email:
           <input 
             type="email" 
             name="email" 

@@ -1,41 +1,50 @@
 import React from 'react';
-
-import './css/contsssssssssact.css';
+import './css/contsssssssssact.css'; // Adjust the path as necessary
+import '@fortawesome/fontawesome-free/css/all.min.css'; // Import Font Awesome
 
 const Contact = () => {
   return (
     <div className="contact-page">
       <div className="header-banner">
-      <h1 style={{ color: 'white' }}>Contact</h1>
-
+        <h1 style={{ color: 'white' }}>Contact</h1>
       </div>
       
       <div className="content-section">
         <div className="info-box about-box">
           <h2>About</h2>
-          <p><b>At Govi Mothiru Agriculture Shop, we are dedicated to providing the best products and services for all your agricultural needs. Whether you're a seasoned farmer or just starting out, our knowledgeable team is here to assist you with expert advice and high-quality supplies.
-
-For inquiries, product information, or assistance, feel free to reach out to us using the contact details below. We value your feedback and are committed to helping you grow your agricultural endeavors.</b></p>
+          <p>
+            <b>
+              At Govi Mothiru Agriculture Shop, we are dedicated to providing the best products and services for all your agricultural needs. 
+              Whether you're a seasoned farmer or just starting out, our knowledgeable team is here to assist you with expert advice and high-quality supplies.
+              For inquiries, product information, or assistance, feel free to reach out to us using the contact details below. 
+              We value your feedback and are committed to helping you grow your agricultural endeavors.
+            </b>
+          </p>
         </div>
 
         <div className="info-box contact-box">
           <h2>Contact</h2>
-          <p><b>Phone:</b> +94789840996</p>
-          <p><b>Email:</b> info@govimothiru.com</p>
-          <p>Working Hours<br></br>
-Monday - Friday: 9:00 AM - 6:00 PM<br></br>
-Saturday: 10:00 AM - 4:00 PM<br></br>
-Sunday: Closed</p>
-          
+          <p>
+            <i className="fas fa-phone-alt"></i> <b>Phone:</b> +94789840996
+          </p>
+          <p>
+            <i className="fas fa-envelope"></i> <b>Email:</b> info@govimothiru.com
+          </p>
+          <p>
+            <b>Working Hours</b><br />
+            Monday - Friday: 9:00 AM - 6:00 PM<br />
+            Saturday: 10:00 AM - 4:00 PM<br />
+            Sunday: Closed
+          </p>
         </div>
 
         <div className="info-box address-box">
           <h2>Address</h2>
-          <p><b>Kahatagasdigiliya,Anuradhaoura</b> </p>
+          <p>
+            <i className="fas fa-map-marker-alt"></i> <b>Kahatagasdigiliya, Anuradhapura</b>
+          </p>
         </div>
       </div>
-
-      
 
       <div className="map-section">
         <iframe
@@ -50,8 +59,6 @@ Sunday: Closed</p>
           tabIndex="0"
         ></iframe>
       </div>
-
-      
     </div>
   );
 };
