@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaFacebook, FaInstagram, FaWhatsapp, FaCommentDots } from 'react-icons/fa'; 
+import { FaFacebook, FaInstagram, FaWhatsapp, FaCommentDots, FaServicestack, FaProjectDiagram, FaUsers, FaNewspaper, FaEnvelope } from 'react-icons/fa'; 
 import logo from './img/logo.png'; 
 
 function Footer() {
@@ -56,11 +56,11 @@ function Footer() {
         </div>
         <div style={styles.footerLinks}>
           <ul style={styles.footerLinksUl}>
-            <li style={styles.footerLinksLi}>Services</li>
-            <li style={styles.footerLinksLi}>Our Projects</li>
-            <li style={styles.footerLinksLi}>Meet the Farmers</li>
-            <li style={styles.footerLinksLi}>Latest News</li>
-            <li style={styles.footerLinksLi}>Contact</li>
+            <li style={styles.footerLinksLi}><FaServicestack /> Services</li>
+            <li style={styles.footerLinksLi}><FaProjectDiagram /> Our Projects</li>
+            <li style={styles.footerLinksLi}><FaUsers /> Meet the Farmers</li>
+            <li style={styles.footerLinksLi}><FaNewspaper /> Latest News</li>
+            <li style={styles.footerLinksLi}><FaEnvelope /> Contact</li>
           </ul>
         </div>
         <div style={styles.footerNews}>
@@ -160,6 +160,8 @@ const styles = {
   },
   footerLinksLi: {
     marginBottom: '8px',
+    display: 'flex',
+    alignItems: 'center',
   },
   footerNews: {
     flex: 1,

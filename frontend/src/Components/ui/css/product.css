@@ -1,43 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=San+Francisco:wght@400;700&display=swap');
+
 .product-page {
-    font-family: Arial, sans-serif;
-    background-color: #dbe6f7; /* Light background for contrast */
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    font-family: 'San Francisco', Arial, sans-serif; /* Use San Francisco font */
+    background-color: #f0f4ff; /* Soft light background */
+    background-image: url('../img/background.jpg'); /* Background image */
+    background-size: cover; /* Cover the entire area */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
     padding: 20px;
-    background-color: #d6e8ba;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-}
-
-.header .logo {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333; /* Dark text for contrast */
-}
-
-.header nav ul {
-    list-style-type: none;
-    display: flex;
-    gap: 20px;
-}
-
-.header nav ul li {
-    cursor: pointer;
-    transition: color 0.3s ease; /* Smooth color transition */
-}
-
-.header nav ul li:hover {
-    color: #4285f4; /* Change color on hover */
-}
-
-.header .user-profile img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid #4285f4; /* Avatar border */
 }
 
 .products-section {
@@ -52,30 +22,32 @@
 }
 
 .search-bar input {
-    padding: 10px;
-    width: 300px;
+    padding: 12px;
+    width: 350px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    transition: border 0.3s ease; /* Transition effect */
+    transition: border 0.3s ease;
+    font-size: 16px; /* Increased font size */
 }
 
 .search-bar input:focus {
-    border: 1px solid #4285f4; /* Highlight border on focus */
+    border: 1px solid #2196f3; /* Highlight border on focus */
+    box-shadow: 0 0 5px rgba(33, 150, 243, 0.5); /* Focus shadow */
 }
 
 .technical-name-btn {
-    padding: 10px 20px;
-    background-color: #4285f4;
+    padding: 12px 24px;
+    background-color: #2196f3;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    transition: background-color 0.3s ease;
+    font-size: 16px; /* Increased font size */
 }
 
 .technical-name-btn:hover {
-    background-color: #357ae8;
-    transform: scale(1.05);
+    background-color: #1976d2; /* Darker shade on hover */
 }
 
 .product-categories {
@@ -89,110 +61,38 @@
     flex: 1 1 20%;
     padding: 10px;
     text-align: center;
-    background-color: rgb(255, 255, 255);
-    border: 1px solid #ffffff;
-    border-radius: 5px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add shadow */
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
 }
 
 .product-categories .category img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-bottom: 1px solid #ffffff;
+    max-width: 100%; /* Ensure images fit within their container */
+    height: auto; /* Maintain aspect ratio */
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
     margin-bottom: 10px;
-    border-radius: 5px 5px 0 0; /* Rounded top corners */
 }
 
 .product-categories .category span {
     display: block;
     font-weight: bold;
-    font-family: Arial, sans-serif;
-    color: #000;
-    text-decoration: none; /* Remove underline */
-    margin-top: 5px; /* Add spacing */
+    color: #333;
+    margin-top: 5px;
+    font-size: 18px; /* Increased font size */
 }
 
 .product-categories .category:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px); /* Lift effect */
 }
 
-.see-more {
-    display: block;
+.no-categories {
     text-align: center;
-    margin-top: 20px;
-    color: red;
-    text-decoration: none; /* Remove underline */
-    transition: color 0.3s ease;
-}
-
-.see-more:hover {
-    color: darkred;
-}
-
-.footer {
-    background-color: #333;
-    color: white;
-    padding: 40px 20px;
-    margin-top: 40px;
-    text-align: center; /* Center footer content */
-}
-
-.footer-content {
-    display: flex;
-    justify-content: space-between;
-}
-
-.footer-logo, .footer-explore, .footer-news, .footer-contact {
-    flex: 1 1 20%;
-}
-
-.footer-logo h2 {
-    margin-bottom: 10px;
-}
-
-.footer-logo p {
-    margin-bottom: 20px;
-}
-
-.footer-logo .social-icons i {
-    margin-right: 10px;
-}
-
-.footer-explore ul, .footer-news ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.footer-explore ul li, .footer-news ul li {
-    margin-bottom: 10px;
-    cursor: pointer;
-}
-
-.footer-contact input[type="email"] {
-    padding: 10px;
-    width: calc(100% - 20px);
-    border-radius: 5px;
-    border: none;
-    margin-bottom: 10px;
-}
-
-.footer-contact button {
-    padding: 10px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.footer-contact button:hover {
-    background-color: #45a049;
-    transform: scale(1.05);
+    font-size: 18px;
+    color: #555;
 }
 
 /* Remove underline from all links */
@@ -201,5 +101,5 @@ a {
 }
 
 a:hover {
-    text-decoration: underline; /* Optional: underline on hover */
+    text-decoration: none; /* Keep no underline on hover */
 }

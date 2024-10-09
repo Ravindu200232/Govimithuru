@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './css/Seeds.css';
+import { FaSearch, FaSortAmountDown, FaSortAmountUp } from 'react-icons/fa'; // Import icons
+import './css/Seeds.css'; // Using the same CSS file for consistency
 
 function Remedies() {
   const [remedyItems, setRemedyItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortOrder, setSortOrder] = useState('asc'); // State for sorting
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,6 +28,15 @@ function Remedies() {
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Sort remedies based on selected order
+  const sortedRemedies = [...filteredRemedies].sort((a, b) => {
+    if (sortOrder === 'asc') {
+      return a.price - b.price; // Ascending order
+    } else {
+      return b.price - a.price; // Descending order
+    }
+  });
+
   const handleBuyNow = (id) => {
     navigate(`/description/${id}`);
   };
@@ -33,7 +44,7 @@ function Remedies() {
   return (
     <div className="remedies-page">
       <section className="remedies-section">
-        <h1>Remedies</h1>
+        <h1><center>Remedies</center></h1>
         
         {/* Search Bar */}
         <div className="search-bar">
@@ -44,19 +55,34 @@ function Remedies() {
             onChange={handleSearchChange}
             className="search-input"
           />
+          <FaSearch className="search-icon" />
         </div>
 
         <div className="remedies-info">
           <div className="info-left">
             <h3>HERBAL REMEDIES</h3>
-            <p>(Total products: {filteredRemedies.length})</p>
-            {/* Categories, Manufacturers, Sizes */}
+            <p>(Total products: {sortedRemedies.length})</p>
+            {/* Sorting Options */}
+            <div className="sorting-options">
+              <button 
+                onClick={() => setSortOrder('asc')}
+                className={sortOrder === 'asc' ? 'active' : ''}
+              >
+                <FaSortAmountUp /> Ascending
+              </button>
+              <button 
+                onClick={() => setSortOrder('desc')}
+                className={sortOrder === 'desc' ? 'active' : ''}
+              >
+                <FaSortAmountDown /> Descending
+              </button>
+            </div>
           </div>
 
           <div className="info-right">
             <div className="products-grid">
-              {filteredRemedies.length > 0 ? (
-                filteredRemedies.map((item) => {
+              {sortedRemedies.length > 0 ? (
+                sortedRemedies.map((item) => {
                   const [name, unit] = item.name.split(/(\(\d+ml\))/);
                   return (
                     <div className="product-card" key={item._id}>

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './css/Seeds.css';
+import { FaSearch, FaSortAmountDown, FaSortAmountUp } from 'react-icons/fa'; // Import icons
+import './css/Seeds.css'; // Using the same CSS file for consistency
 
 function Gardening() {
   const [gardeningItems, setGardeningItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortOrder, setSortOrder] = useState('asc'); // State for sorting
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,6 +28,15 @@ function Gardening() {
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Sort gardening items based on selected order
+  const sortedGardening = [...filteredGardening].sort((a, b) => {
+    if (sortOrder === 'asc') {
+      return a.price - b.price; // Ascending order
+    } else {
+      return b.price - a.price; // Descending order
+    }
+  });
+
   const handleBuyNow = (id) => {
     navigate(`/description/${id}`);
   };
@@ -33,8 +44,9 @@ function Gardening() {
   return (
     <div className="gardening-page">
       <section className="gardening-section">
-        <h1>Gardening</h1>
+        <h1><center>Gardening</center></h1>
         
+        {/* Search Bar */}
         <div className="search-bar">
           <input
             type="text"
@@ -43,18 +55,34 @@ function Gardening() {
             onChange={handleSearchChange}
             className="search-input"
           />
+          <FaSearch className="search-icon" />
         </div>
 
         <div className="gardening-info">
           <div className="info-left">
             <h3>GARDENING</h3>
-            <p>(Total products: {filteredGardening.length})</p>
+            <p>(Total products: {sortedGardening.length})</p>
+            {/* Sorting Options */}
+            <div className="sorting-options">
+              <button 
+                onClick={() => setSortOrder('asc')}
+                className={sortOrder === 'asc' ? 'active' : ''}
+              >
+                <FaSortAmountUp /> Ascending
+              </button>
+              <button 
+                onClick={() => setSortOrder('desc')}
+                className={sortOrder === 'desc' ? 'active' : ''}
+              >
+                <FaSortAmountDown /> Descending
+              </button>
+            </div>
           </div>
 
           <div className="info-right">
             <div className="products-grid">
-              {filteredGardening.length > 0 ? (
-                filteredGardening.map((item) => (
+              {sortedGardening.length > 0 ? (
+                sortedGardening.map((item) => (
                   <div className="product-card" key={item._id}>
                     <img 
                       src={`data:image/jpeg;base64,${item.imageBase64}`} 
