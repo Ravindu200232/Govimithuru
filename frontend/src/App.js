@@ -83,6 +83,7 @@ import BestSellerDashboard from './Components/inventry/BestSellerDashboard';
 import Cashbook from './Components/finance/Cashbook';
 import Attendance from './Components/Employee/Attendance';
 import AttendanceDashboard from './Components/Employee/Employeecss/AttendanceDashboard';
+import ProtectedRoute from './ProtectedRoute';
 
 
 function App() {
@@ -90,34 +91,33 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const loggedInUser = Cookies.get('isLoggedIn') === 'true';
-    const adminUser = Cookies.get('isAdmin') === 'true';
-    setIsLoggedIn(loggedInUser);
-    setIsAdmin(adminUser);
+      const loggedInUser = Cookies.get('isLoggedIn') === 'true';
+      const adminUser = Cookies.get('isAdmin') === 'true';
+      setIsLoggedIn(loggedInUser);
+      setIsAdmin(adminUser);
   }, []);
 
   const handleLogin = () => {
-    setIsLoggedIn(true);
-    Cookies.set('isLoggedIn', 'true', { expires: 20 / 288 });
-   
+      setIsLoggedIn(true);
+      Cookies.set('isLoggedIn', 'true', { expires: 20 / 288 });
   };
 
   const handleAdminLogin = (email, password) => {
-    if (email === 'admin2232@gmail.com' && password === 'R200232r#') {
-      setIsAdmin(true);
-      Cookies.set('isAdmin', 'true', { expires: 20 / 288 });
-      alert("Admin logged in successfully!");
-    } else {
-      alert("Invalid admin credentials!");
-    }
+      if (email === 'admin2232@gmail.com' && password === 'R200232r#') {
+          setIsAdmin(true);
+          Cookies.set('isAdmin', 'true', { expires: 20 / 288 });
+          alert("Admin logged in successfully!");
+      } else {
+          alert("Invalid admin credentials!");
+      }
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
-    setIsAdmin(false);
-    Cookies.remove('isLoggedIn');
-    Cookies.remove('isAdmin');
-    alert("Logged out due to inactivity!");
+      setIsLoggedIn(false);
+      setIsAdmin(false);
+      Cookies.remove('isLoggedIn');
+      Cookies.remove('isAdmin');
+      alert("Logged out successfully!");
   };
 
   return (
@@ -131,8 +131,8 @@ function App() {
 
           {/* User-facing routes */}
           
-          <Route path="/Home" element={
-            isLoggedIn ? (
+          <Route path="/home" element={
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
               <>
                 <Navbar />
                 <Banner />
@@ -141,193 +141,161 @@ function App() {
                 <CropSolution />
                 <BestSeller />
                 <Footer />
-              </>
-            ) : (
-              <Navigate to="/Home" />
-            )
-          } />
+                </>
+                        </ProtectedRoute>
+                    } />
 
 
           <Route path="/profile" element={
-            isLoggedIn ? (
+             <ProtectedRoute isLoggedIn={isLoggedIn}>
               <>
                 <Navbar />
                 <Profile />
                 <Footer />
               </>
-            ) : (
+            
               <Navigate to="/profile" />
-            )
+            </ProtectedRoute>
           } />
 
 
           <Route path="/products" element={
-            isLoggedIn ? (
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
               <>
                 <Navbar />
                 <Products />
                 <Footer />
               </>
-            ) : (
-              <Navigate to="/products" />
-            )
+           </ProtectedRoute>
           } />
           <Route path="/seeds" element={
-            isLoggedIn ? (
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
               <>
                 <Navbar />
                 <Seeds />
                 <Footer />
               </>
-            ) : (
-              <Navigate to="/seeds" />
-            )
+           </ProtectedRoute>
           } />
           <Route path="/growthPromoters" element={
-            isLoggedIn ? (
+           <ProtectedRoute isLoggedIn={isLoggedIn}>
               <>
                 <Navbar />
                 <GrowthPromoters />
                 <Footer />
               </>
-            ) : (
-              <Navigate to="/growthPromoters" />
-            )
+            </ProtectedRoute>
           } />
           <Route path="/remedies" element={
-            isLoggedIn ? (
+           <ProtectedRoute isLoggedIn={isLoggedIn}>
               <>
                 <Navbar />
                 <Remedies />
                 <Footer />
               </>
-            ) : (
-              <Navigate to="/remedies" />
-            )
+            </ProtectedRoute>
           } />
           <Route path="/organicFarming" element={
-            isLoggedIn ? (
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
               <>
                 <Navbar />
                 <OrganicFarming />
                 <Footer />
               </>
-            ) : (
-              <Navigate to="/organicFarming" />
-            )
+            </ProtectedRoute>
           } />
           <Route path="/equipments" element={
-            isLoggedIn ? (
+           <ProtectedRoute isLoggedIn={isLoggedIn}>
               <>
                 <Navbar />
                 <Equipments />
                 <Footer />
               </>
-            ) : (
-              <Navigate to="/equipments" />
-            )
+            </ProtectedRoute>
           } />
           <Route path="/fertilizers" element={
-            isLoggedIn ? (
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
               <>
                 <Navbar />
                 <Fertilizers />
                 <Footer />
               </>
-            ) : (
-              <Navigate to="/fertilizers" />
-            )
+            </ProtectedRoute>
           } />
           <Route path="/irrigation" element={
-            isLoggedIn ? (
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
               <>
                 <Navbar />
                 <Irrigation />
                 <Footer />
               </>
-            ) : (
-              <Navigate to="/irrigation" />
-            )
+            </ProtectedRoute>
           } />
           <Route path="/gardening" element={
-            isLoggedIn ? (
+          <ProtectedRoute isLoggedIn={isLoggedIn}>
               <>
                 <Navbar />
                 <Gardening />
                 <Footer />
               </>
-            ) : (
-              <Navigate to="/gardening" />
-            )
+            </ProtectedRoute>
           } />
           <Route path="/description/:id" element={
-            isLoggedIn ? (
+           <ProtectedRoute isLoggedIn={isLoggedIn}>
               <>
                 <Navbar />
                 <Description />
                 <Footer />
               </>
-            ) : (
-              <Navigate to="/description" />
-            )
+            </ProtectedRoute>
           } />
           <Route path="/cart" element={
-            isLoggedIn ? (
+           <ProtectedRoute isLoggedIn={isLoggedIn}>
               <>
                 <Navbar />
                 <Card />
                 <Footer />
               </>
-            ) : (
-              <Navigate to="/cart" />
-            )
+           </ProtectedRoute>
           } />
 
             <Route path="/contact" element={
-            isLoggedIn ? (
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
               <>
                 <Navbar />
                 <Contact />
                 <Footer />
               </>
-            ) : (
-              <Navigate to="/contact" />
-            )
+            </ProtectedRoute>
           } />
 
 
           <Route path="/order-summary" element={
-            isLoggedIn ? (
+          <ProtectedRoute isLoggedIn={isLoggedIn}>
               <>
                 <Navbar />
                 <OrderSummary />
                 <Footer />
               </>
-            ) : (
-              <Navigate to="/order-summary" />
-            )
+            </ProtectedRoute>
           } />
           <Route path="/confirmation/:orderId" element={
-            isLoggedIn ? (
+           <ProtectedRoute isLoggedIn={isLoggedIn}>
               <>
                 <Navbar />
                 <OrderConfirmation />
                 <Footer />
               </>
-            ) : (
-              <Navigate to="/confirmation/:orderId" />
-            )
+            </ProtectedRoute>
           } />
           <Route path="/about" element={
-            isLoggedIn ? (
+           <ProtectedRoute isLoggedIn={isLoggedIn}>
               <>
                 <Navbar />
                 <About />
                 <Footer />
               </>
-            ) : (
-              <Navigate to="/about" />
-            )
+           </ProtectedRoute>
           } />
 
           {/* Admin-facing routes */}

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { jsPDF } from "jspdf";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS for toast notifications
 import './css/deliverAll.css';
 import logo from '../ui/img/logo.png';
 
@@ -18,7 +20,7 @@ function DeliveryDashboard() {
                 const res = await axios.get('http://localhost:8000/delivery/');
                 setDeliveries(res.data);
             } catch (err) {
-                alert('Error fetching deliveries: ' + err.message);
+                toast.error('Error fetching deliveries: ' + err.message);
             }
         };
         fetchDeliveries();
@@ -30,7 +32,7 @@ function DeliveryDashboard() {
                 const res = await axios.get('http://localhost:8000/drivers/status/available');
                 setDrivers(res.data);
             } catch (err) {
-                alert('Error fetching drivers: ' + err.message);
+                toast.error('Error fetching drivers: ' + err.message);
             }
         };
         fetchDrivers();
@@ -49,10 +51,10 @@ function DeliveryDashboard() {
         if (window.confirm('Are you sure you want to delete this delivery?')) {
             try {
                 await axios.delete(`http://localhost:8000/delivery/delete/${id}`);
-                alert('Delivery deleted successfully');
+                toast.success('Delivery deleted successfully');
                 setDeliveries(prevDeliveries => prevDeliveries.filter(delivery => delivery._id !== id));
             } catch (err) {
-                alert('Error deleting delivery: ' + err.message);
+                toast.error('Error deleting delivery: ' + err.message);
             }
         }
     };
@@ -60,14 +62,14 @@ function DeliveryDashboard() {
     const handleConfirm = async (id) => {
         try {
             await axios.post(`http://localhost:8000/delivery/confirm/${id}`);
-            alert('Delivery confirmed successfully');
+            toast.success('Delivery confirmed successfully');
             setDeliveries(prevDeliveries =>
                 prevDeliveries.map(delivery =>
                     delivery._id === id ? { ...delivery, status: 'Delivered' } : delivery
                 )
             );
         } catch (err) {
-            alert('Error confirming delivery: ' + err.message);
+            toast.error('Error confirming delivery: ' + err.message);
         }
     };
 
@@ -78,22 +80,23 @@ function DeliveryDashboard() {
 
             try {
                 await axios.put(`http://localhost:8000/delivery/update/${deliveryId}`, { driverName });
-                alert('Driver assigned successfully');
+                toast.success('Driver assigned successfully');
                 setDeliveries(prevDeliveries =>
                     prevDeliveries.map(delivery =>
                         delivery._id === deliveryId ? { ...delivery, driverName } : delivery
                     )
                 );
             } catch (err) {
-                alert('Error assigning driver: ' + err.message);
+                toast.error('Error assigning driver: ' + err.message);
             }
         } else {
-            alert('Please select a driver');
+            toast.warn('Please select a driver');
         }
     };
 
     return (
         <div>
+            <ToastContainer /> {/* Toast container for displaying notifications */}
             <h2 className="delivery-list-title">Delivery Dashboard</h2>
             <div className="search-bar">
                 <input

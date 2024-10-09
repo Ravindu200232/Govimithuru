@@ -21,7 +21,7 @@
   }
   
   .salary-dashboard th {
-    background-color: #f4f4f4;
+    color: '#000000',
   }
   
   .salary-dashboard tr:nth-child(even) {

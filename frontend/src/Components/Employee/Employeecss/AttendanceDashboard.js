@@ -50,7 +50,9 @@ const AttendanceDashboard = () => {
         },
         th: {
             backgroundColor: '#f2f2f2',
+            color: '#000000',
             padding: '10px',
+            
             borderBottom: '1px solid #ddd',
         },
         td: {

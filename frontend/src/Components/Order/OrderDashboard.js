@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { jsPDF } from 'jspdf';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS for toast notifications
 import './css/dashboard.css';
 import logo from '../ui/img/logo.png';
 
@@ -9,6 +11,7 @@ function OrderDashboard() {
     const [orders, setOrders] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [expandedOrderId, setExpandedOrderId] = useState(null);
+    const [selectedOrders, setSelectedOrders] = useState(new Set());
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -17,7 +20,7 @@ function OrderDashboard() {
                 const res = await axios.get('http://localhost:8000/orders/');
                 setOrders(res.data);
             } catch (err) {
-                alert('Error fetching orders: ' + err.message);
+                toast.error('Error fetching orders: ' + err.message);
             }
         };
         fetchOrders();
@@ -36,10 +39,10 @@ function OrderDashboard() {
         if (window.confirm('Are you sure you want to delete this order?')) {
             try {
                 await axios.delete(`http://localhost:8000/orders/delete/${id}`);
-                alert('Order deleted successfully');
+                toast.success('Order deleted successfully');
                 setOrders(prevOrders => prevOrders.filter(order => order._id !== id));
             } catch (err) {
-                alert('Error deleting order: ' + err.message);
+                toast.error('Error deleting order: ' + err.message);
             }
         }
     };
@@ -47,43 +50,40 @@ function OrderDashboard() {
     const handleConfirm = async (id) => {
         try {
             await axios.put(`http://localhost:8000/orders/update/${id}`, { status: 'Confirmed' });
-            alert('Order confirmed successfully');
+            toast.success('Order confirmed successfully');
             setOrders(prevOrders =>
                 prevOrders.map(order =>
                     order._id === id ? { ...order, status: 'Confirmed' } : order
                 )
             );
         } catch (err) {
-            alert('Error confirming order: ' + err.message);
+            toast.error('Error confirming order: ' + err.message);
         }
     };
 
-    const handleUpdate = async (id) => {
-        const newStatus = prompt("Enter new status:", "Pending");
-        if (newStatus) {
-            try {
-                const orderToUpdate = orders.find(order => order._id === id);
-                if (orderToUpdate) {
-                    const updatedOrder = {
-                        ...orderToUpdate,
-                        status: newStatus
-                    };
+    const handleUpdate = async (id, newStatus) => {
+        try {
+            const orderToUpdate = orders.find(order => order._id === id);
+            if (orderToUpdate) {
+                const updatedOrder = {
+                    ...orderToUpdate,
+                    status: newStatus
+                };
 
-                    const res = await axios.put(`http://localhost:8000/orders/update/${id}`, updatedOrder);
-                    if (res.status === 200) {
-                        alert('Order updated successfully');
-                        setOrders(prevOrders =>
-                            prevOrders.map(order =>
-                                order._id === id ? { ...order, status: newStatus } : order
-                            )
-                        );
-                    } else {
-                        alert('Failed to update order');
-                    }
+                const res = await axios.put(`http://localhost:8000/orders/update/${id}`, updatedOrder);
+                if (res.status === 200) {
+                    toast.success('Order updated successfully');
+                    setOrders(prevOrders =>
+                        prevOrders.map(order =>
+                            order._id === id ? { ...order, status: newStatus } : order
+                        )
+                    );
+                } else {
+                    toast.error('Failed to update order');
                 }
-            } catch (err) {
-                alert('Error updating order: ' + err.message);
             }
+        } catch (err) {
+            toast.error('Error updating order: ' + err.message);
         }
     };
 
@@ -91,7 +91,7 @@ function OrderDashboard() {
         const doc = new jsPDF();
 
         // Add logo
-        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Adjust size and position
+        doc.addImage(logo, 'PNG', 10, 10, 50, 20);
 
         // Add company details
         doc.setFontSize(10);
@@ -101,7 +101,7 @@ function OrderDashboard() {
 
         // Order details
         doc.setFontSize(12);
-        doc.text(`Order ID: ${index + 1}`, 10, 60); // Display as (1, 2, 3, ...)
+        doc.text(`Order ID: ${index + 1}`, 10, 60);
         doc.text(`Customer Name: ${order.customerName}`, 10, 70);
         doc.text(`Sale Date: ${new Date(order.saleDate).toLocaleDateString()}`, 10, 80);
         doc.text(`Status: ${order.status}`, 10, 90);
@@ -120,8 +120,19 @@ function OrderDashboard() {
         doc.save(`Order_${index + 1}.pdf`);
     };
 
+    const toggleSelectOrder = (id) => {
+        const newSelectedOrders = new Set(selectedOrders);
+        if (newSelectedOrders.has(id)) {
+            newSelectedOrders.delete(id);
+        } else {
+            newSelectedOrders.add(id);
+        }
+        setSelectedOrders(newSelectedOrders);
+    };
+
     return (
         <div>
+            <ToastContainer />
             <h2 className="order-list-title">Order Dashboard</h2>
             <div className="search-bar">
                 <input
@@ -135,6 +146,7 @@ function OrderDashboard() {
             <table className="order-table">
                 <thead>
                     <tr>
+                        <th>Select</th>
                         <th>Order ID</th>
                         <th>Customer Name</th>
                         <th>Product Details</th>
@@ -151,11 +163,18 @@ function OrderDashboard() {
                 <tbody>
                     {filteredOrders.map((order, index) => (
                         <tr key={order._id}>
-                            <td>{index + 1}</td> {/* Fake ID Display */}
+                            <td>
+                                <input
+                                    type="checkbox"
+                                    checked={selectedOrders.has(order._id)}
+                                    onChange={() => toggleSelectOrder(order._id)}
+                                />
+                            </td>
+                            <td>{index + 1}</td>
                             <td>{order.customerName}</td>
                             <td>
-                                <button 
-                                    className="details-btn" 
+                                <button
+                                    className="details-btn"
                                     onClick={() => setExpandedOrderId(expandedOrderId === order._id ? null : order._id)}
                                 >
                                     {expandedOrderId === order._id ? 'Hide Details' : 'Show Details'}
@@ -171,14 +190,36 @@ function OrderDashboard() {
                                 )}
                             </td>
                             <td>{new Date(order.saleDate).toLocaleDateString()}</td>
-                            <td>{order.status}</td>
+                            <td>
+                                <div>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name={`status-${order._id}`}
+                                            value="Pending"
+                                            checked={order.status === "Pending"}
+                                            onChange={() => handleUpdate(order._id, "Pending")}
+                                        />
+                                        Pending
+                                    </label>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name={`status-${order._id}`}
+                                            value="Confirmed"
+                                            checked={order.status === "Confirmed"}
+                                            onChange={() => handleUpdate(order._id, "Confirmed")}
+                                        />
+                                        Confirmed
+                                    </label>
+                                </div>
+                            </td>
                             <td>{order.address}</td>
                             <td>{order.postalCode}</td>
                             <td>{order.email}</td>
                             <td>{order.phoneNumber}</td>
                             <td>{order.paymentType}</td>
                             <td>
-                                <button className="update-btn" onClick={() => handleUpdate(order._id)}>Update</button>
                                 <button className="delete-btn" onClick={() => handleDelete(order._id)}>Delete</button>
                                 <button className="download-btn" onClick={() => handleDownloadPDF(order, index)}>Download PDF</button>
                             </td>

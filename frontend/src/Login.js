@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import logo from './Components/ui/img/logo.png';
-import backgroundImage from './Components/ui/img/1663151489748.png';  // Add your background image here
+import backgroundImage from './Components/ui/img/background.jpg';  // Add your background image here
 
 const Login = ({ onLogin }) => {
     const [credentials, setCredentials] = useState({ email: '', password: '' });
