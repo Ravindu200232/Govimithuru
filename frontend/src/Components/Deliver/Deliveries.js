@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { jsPDF } from "jspdf";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Import CSS for toast notifications
 import './css/deliverAll.css';
@@ -48,14 +47,12 @@ function DeliveryDashboard() {
     );
 
     const handleDelete = async (id) => {
-        if (window.confirm('Are you sure you want to delete this delivery?')) {
-            try {
-                await axios.delete(`http://localhost:8000/delivery/delete/${id}`);
-                toast.success('Delivery deleted successfully');
-                setDeliveries(prevDeliveries => prevDeliveries.filter(delivery => delivery._id !== id));
-            } catch (err) {
-                toast.error('Error deleting delivery: ' + err.message);
-            }
+        try {
+            await axios.delete(`http://localhost:8000/delivery/delete/${id}`);
+            toast.success('Delivery deleted successfully');
+            setDeliveries(prevDeliveries => prevDeliveries.filter(delivery => delivery._id !== id));
+        } catch (err) {
+            toast.error('Error deleting delivery: ' + err.message);
         }
     };
 

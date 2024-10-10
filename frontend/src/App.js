@@ -139,6 +139,7 @@ function App() {
                 <Poster />
                 <Offer />
                 <CropSolution />
+                <Poster />
                 <BestSeller />
                 <Footer />
                 </>

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './css/InventoryDashboard.css';
 import logo from '../ui/img/logo.png';
 
@@ -22,7 +24,7 @@ function InventoryDashboard() {
                 checkForLowStock(res.data); // Check for low stock items
             })
             .catch((err) => {
-                alert("Error fetching data: " + err.message);
+                toast.error("Error fetching data: " + err.message);
             });
     };
 
@@ -39,16 +41,14 @@ function InventoryDashboard() {
             setFilteredItems(filtered);
         }
     };
-    const handleDelete = (id) => {
-        if (window.confirm("Are you sure you want to delete this item?")) {
-            axios.delete(`http://localhost:8000/availableitem/${id}`)
-                .then(() => {
-                    alert("Item deleted successfully");
-                    fetchItems(); // Refresh the item list
-                })
-                .catch((err) => {
-                    alert("Error deleting item: " + err.message);
-                });
+
+    const handleDelete = async (id) => {
+        try {
+            await axios.delete(`http://localhost:8000/availableitem/${id}`);
+            toast.success("Item deleted successfully");
+            fetchItems(); // Refresh the item list
+        } catch (err) {
+            toast.error("Error deleting item: " + err.message);
         }
     };
 
@@ -137,19 +137,19 @@ function InventoryDashboard() {
 
     return (
         <div>
+            <ToastContainer />
             <h2 className="inventory-list-title">Available Inventory Dashboard</h2>
             <div className="search-bar">
-            <input
-                type="text"
-                placeholder="Search by Name or Category"
-                value={searchQuery}
-                onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    handleSearch(e.target.value); // Call handleSearch on input change
-                }}
-            />
-
-        </div>
+                <input
+                    type="text"
+                    placeholder="Search by Name or Category"
+                    value={searchQuery}
+                    onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        handleSearch(e.target.value); // Call handleSearch on input change
+                    }}
+                />
+            </div>
             <button className="download-btn" onClick={downloadPDF}>Download All Items as PDF</button>
             <table className="inventory-table">
                 <thead>

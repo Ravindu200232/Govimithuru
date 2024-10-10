@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AlertDashboard = () => {
     const [alerts, setAlerts] = useState([]);
@@ -26,9 +28,9 @@ const AlertDashboard = () => {
         try {
             await axios.delete(`http://localhost:8000/inventoryalert/${alertId}`);
             setAlerts(alerts.filter(alert => alert._id !== alertId));
-            alert("Alert deleted successfully.");
+            toast.success("Alert deleted successfully.");
         } catch (err) {
-            setError("Error deleting alert.");
+            toast.error("Error deleting alert.");
         }
     };
 
@@ -45,13 +47,13 @@ const AlertDashboard = () => {
 
     return (
         <div>
+            <ToastContainer />
             <h2>Inventory Alert Dashboard</h2>
             <table>
                 <thead>
                     <tr>
-                        
                         <th>Alert Message</th>
-                        <td>Date</td>
+                        <th>Date</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -70,7 +72,7 @@ const AlertDashboard = () => {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="4">No alerts found.</td>
+                            <td colSpan="3">No alerts found.</td>
                         </tr>
                     )}
                 </tbody>

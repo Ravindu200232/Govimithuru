@@ -47,18 +47,20 @@ const Contact = () => {
       </div>
 
       <div className="map-section">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.8354345093746!2d144.95373531550455!3d-37.81720997975153!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0xf5772c2a7a41d0a!2sFederation%20Square!5e0!3m2!1sen!2sau!4v1602141019053!5m2!1sen!2sau"
-          title="Location"
-          width="600"
-          height="450"
-          frameBorder="0"
-          style={{ border: 0 }}
-          allowFullScreen=""
-          aria-hidden="false"
-          tabIndex="0"
-        ></iframe>
-      </div>
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1563406.706583331!2d81.80043790531797!3d8.357991192862717!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae17a8edb80f641%3A0x3e4b4f2a7f97e6d!2sKahatagasdigiliya%2C%20Sri%20Lanka!5e0!3m2!1sen!2sau!4v1602141019053!5m2!1sen!2sau"
+      title="Location"
+      width="800" // Increased width
+      height="600" // Increased height
+      frameBorder="0"
+      style={{ border: 0 }}
+      allowFullScreen=""
+      aria-hidden="false"
+      tabIndex="0"
+    ></iframe>
+</div>
+
+
     </div>
   );
 };

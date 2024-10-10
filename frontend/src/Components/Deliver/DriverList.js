@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS for toast notifications
 
 const DriverList = () => {
     const [drivers, setDrivers] = useState([]);
@@ -32,29 +34,29 @@ const DriverList = () => {
 
     const handleStatusChange = async () => {
         if (!editingDriverId) return;
-    
+
         try {
-            console.log(`Updating driver ID: ${editingDriverId} to status: ${status}`); // Debugging log
             await axios.put(`http://localhost:8000/drivers/update/${editingDriverId}`, { status });
             fetchDrivers(); // Refresh the driver list
             setEditingDriverId(null); // Reset the editing driver
             setStatus(''); // Reset the status input
+            toast.success('Driver status updated successfully');
         } catch (error) {
             setError('Error updating status. Please try again.');
             console.error('Error updating status:', error);
+            toast.error('Error updating status. Please try again.');
         }
     };
-    
 
     const handleDelete = async (driverId) => {
-        if (window.confirm('Are you sure you want to delete this driver?')) {
-            try {
-                await axios.delete(`http://localhost:8000/drivers/delete/${driverId}`);
-                fetchDrivers();
-            } catch (error) {
-                setError('Error deleting driver. Please try again.');
-                console.error('Error deleting driver:', error);
-            }
+        try {
+            await axios.delete(`http://localhost:8000/drivers/delete/${driverId}`);
+            fetchDrivers();
+            toast.success('Driver deleted successfully');
+        } catch (error) {
+            setError('Error deleting driver. Please try again.');
+            console.error('Error deleting driver:', error);
+            toast.error('Error deleting driver. Please try again.');
         }
     };
 
@@ -78,15 +80,17 @@ const DriverList = () => {
                     };
                     await axios.post('http://localhost:8000/drivers/add', newDriver);
                 }));
-                alert('Drivers stored successfully!');
+                toast.success('Drivers stored successfully!');
                 fetchDrivers();
             } else {
                 setError('Unexpected response format.');
                 console.error('Unexpected response format:', response.data);
+                toast.error('Unexpected response format.');
             }
         } catch (error) {
             setError('Error refreshing driver data. Please try again.');
             console.error('Error refreshing driver data:', error.response ? error.response.data : error.message);
+            toast.error('Error refreshing driver data. Please try again.');
         } finally {
             setRefreshing(false);
         }
@@ -98,6 +102,7 @@ const DriverList = () => {
 
     return (
         <div>
+            <ToastContainer />
             <h1>Driver List</h1>
             <button onClick={handleRefresh} disabled={refreshing}>
                 {refreshing ? 'Refreshing...' : 'Refresh Drivers'}

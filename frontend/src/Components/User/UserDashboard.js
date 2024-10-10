@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { jsPDF } from "jspdf"; // Import jsPDF
-import "jspdf-autotable"; // Import autoTable
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS for toast notifications
 import './css/UserDashboard.css';
 import logo from '../ui/img/logo.png';
 
@@ -9,6 +11,7 @@ function UserDashboard() {
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [formData, setFormData] = useState({ firstname: '', lastname: '', username: '', email: '' });
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         fetchUsers();
@@ -19,7 +22,7 @@ function UserDashboard() {
             const res = await axios.get("http://localhost:8000/user/");
             setUsers(res.data);
         } catch (err) {
-            alert(err.message);
+            toast.error(err.message);
         }
     };
 
@@ -27,9 +30,9 @@ function UserDashboard() {
         try {
             await axios.delete(`http://localhost:8000/user/delete/${id}`);
             setUsers(users.filter(user => user._id !== id));
-            alert("User deleted successfully");
+            toast.success("User deleted successfully");
         } catch (err) {
-            alert(err.message);
+            toast.error(err.message);
         }
     };
 
@@ -50,46 +53,52 @@ function UserDashboard() {
             fetchUsers();
             setSelectedUser(null);
             setFormData({ firstname: '', lastname: '', username: '', email: '' });
-            alert("User updated successfully");
+            toast.success("User updated successfully");
         } catch (err) {
-            alert(err.message);
+            toast.error(err.message);
         }
     };
 
-    // Function to generate PDF of all users
     const generatePDF = () => {
         const doc = new jsPDF();
-        
-        // Add logo
-        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Adjust size and position as needed
-
-        // Company details
+        doc.addImage(logo, 'PNG', 10, 10, 50, 20);
         doc.setFontSize(10);
         doc.text("Govimithu Pvt Limited", 14, 40);
         doc.text("Anuradhapura Kahatagasdigiliya", 14, 45);
         doc.text("Phone Number: 0789840996", 14, 50);
-        
         doc.setFontSize(20);
-        doc.text("User List", 20, 70); // Adjust Y position after company info
+        doc.text("User List", 20, 70);
         doc.setFontSize(12);
 
-        // Table headers
         const headers = [["Name", "Email"]];
         const data = users.map(user => [user.firstname + ' ' + user.lastname, user.email]);
 
-        // Create the table
         doc.autoTable({
             head: headers,
             body: data,
-            startY: 80, // Start below the title
+            startY: 80,
         });
 
         doc.save("UserList.pdf");
     };
 
+    const filteredUsers = users.filter(user => {
+        const fullName = `${user.firstname} ${user.lastname}`.toLowerCase();
+        return fullName.includes(searchQuery.toLowerCase()) || user.email.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+
     return (
         <div>
+            <ToastContainer />
             <h2 className="user-dashboard-title">User Dashboard</h2>
+
+            <input
+                type="text"
+                placeholder="Search users..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input"
+            />
 
             <button onClick={generatePDF} className="download-pdf-btn">Download PDF</button>
 
@@ -102,7 +111,7 @@ function UserDashboard() {
                     </tr>
                 </thead>
                 <tbody>
-                    {users.map((user) => (
+                    {filteredUsers.map((user) => (
                         <tr key={user._id}>
                             <td>{user.firstname} {user.lastname}</td>
                             <td>{user.email}</td>

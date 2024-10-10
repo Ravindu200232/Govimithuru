@@ -12,7 +12,6 @@ function OrderDashboard() {
     const [searchQuery, setSearchQuery] = useState("");
     const [expandedOrderId, setExpandedOrderId] = useState(null);
     const [selectedOrders, setSelectedOrders] = useState(new Set());
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -36,14 +35,12 @@ function OrderDashboard() {
     );
 
     const handleDelete = async (id) => {
-        if (window.confirm('Are you sure you want to delete this order?')) {
-            try {
-                await axios.delete(`http://localhost:8000/orders/delete/${id}`);
-                toast.success('Order deleted successfully');
-                setOrders(prevOrders => prevOrders.filter(order => order._id !== id));
-            } catch (err) {
-                toast.error('Error deleting order: ' + err.message);
-            }
+        try {
+            await axios.delete(`http://localhost:8000/orders/delete/${id}`);
+            toast.success('Order deleted successfully');
+            setOrders(prevOrders => prevOrders.filter(order => order._id !== id));
+        } catch (err) {
+            toast.error('Error deleting order: ' + err.message);
         }
     };
 
@@ -70,17 +67,13 @@ function OrderDashboard() {
                     status: newStatus
                 };
 
-                const res = await axios.put(`http://localhost:8000/orders/update/${id}`, updatedOrder);
-                if (res.status === 200) {
-                    toast.success('Order updated successfully');
-                    setOrders(prevOrders =>
-                        prevOrders.map(order =>
-                            order._id === id ? { ...order, status: newStatus } : order
-                        )
-                    );
-                } else {
-                    toast.error('Failed to update order');
-                }
+                await axios.put(`http://localhost:8000/orders/update/${id}`, updatedOrder);
+                toast.success('Order updated successfully');
+                setOrders(prevOrders =>
+                    prevOrders.map(order =>
+                        order._id === id ? { ...order, status: newStatus } : order
+                    )
+                );
             }
         } catch (err) {
             toast.error('Error updating order: ' + err.message);

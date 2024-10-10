@@ -27,7 +27,7 @@
     border-radius: 5px;
     border: 1px solid #ccc;
     transition: border 0.3s ease;
-    font-size: 16px; /* Increased font size */
+    font-size: 25px; /* Increased font size */
 }
 
 .search-bar input:focus {
@@ -43,7 +43,7 @@
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    font-size: 16px; /* Increased font size */
+    font-size: 25px; /* Increased font size */
 }
 
 .technical-name-btn:hover {
@@ -82,7 +82,7 @@
     font-weight: bold;
     color: #333;
     margin-top: 5px;
-    font-size: 18px; /* Increased font size */
+    font-size: 25px; /* Increased font size */
 }
 
 .product-categories .category:hover {
@@ -91,7 +91,7 @@
 
 .no-categories {
     text-align: center;
-    font-size: 18px;
+    font-size: 25px; /* Consistent font size */
     color: #555;
 }
 

@@ -17,6 +17,7 @@ const Cashbook = () => {
     const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
     const [paycheckRecords, setPaycheckRecords] = useState([]);
     const [error, setError] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
 
     const handleMonthChange = (e) => {
         setSelectedMonth(e.target.value);
@@ -185,6 +186,15 @@ const Cashbook = () => {
     // Calculate Table Total
     const tableTotal = totalSales - (totalOtherExpenses + totalPaychecks + totalSalaries + totalGiveChecks);
 
+    // Combined records for searching
+    const combinedRecords = [...sellSummary, ...expenses, ...salaries, ...paycheckRecords];
+
+    // Filtered records based on search query
+    const filteredRecords = combinedRecords.filter(record => {
+        const description = record.itemName || record.expenseName || `${record.name} Salary` || `${record.customerName} Paycheck`;
+        return description.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+
     return (
         <div>
             <label htmlFor="month">Select Month: </label>
@@ -196,6 +206,13 @@ const Cashbook = () => {
             />
 
             <h1>Cash Book</h1>
+            <input
+                type="text"
+                placeholder="Search records..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input"
+            />
             <button onClick={generatePDF} className="download-pdf-button">Download PDF</button>
             <table>
                 <thead>
@@ -208,27 +225,16 @@ const Cashbook = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {/* Individual Sales Entries */}
-                    {sellSummary.concat(expenses, salaries, paycheckRecords).reduce((acc, item) => {
-                        const type = item.itemName ? 'Sales' : item.expenseName ? 'Expense' : item.name ? 'Salary' : 'Paycheck';
-                        const amount = item.totalSales || -item.amount || -item.totalSalary || -item.totalAmount;
-                        const newRow = {
-                            ...item,
-                            type,
-                            amount
-                        };
-                        acc.push(newRow);
-                        return acc;
-                    }, []).reduce((acc, row) => {
-                        const balance = (acc.length ? acc[acc.length - 1].balance : 0) + row.amount;
+                    {filteredRecords.reduce((acc, row) => {
+                        const balance = (acc.length ? acc[acc.length - 1].balance : 0) + (row.totalSales || -row.amount || -row.totalSalary || -row.totalAmount);
                         acc.push({ ...row, balance });
                         return acc;
                     }, []).map((row, index) => (
                         <tr key={index}>
                             <td>{new Date(row.date || row.payday || row.saleDate).toLocaleDateString()}</td>
                             <td>{row.itemName || row.expenseName || `${row.name} Salary` || `${row.customerName} Paycheck`}</td>
-                            <td>{row.type}</td>
-                            <td>{row.amount.toFixed(2)}</td>
+                            <td>{row.itemName ? 'Sales' : row.expenseName ? 'Expense' : row.name ? 'Salary' : 'Paycheck'}</td>
+                            <td>{(row.totalSales || -row.amount || -row.totalSalary || -row.totalAmount).toFixed(2)}</td>
                             <td>{row.balance.toFixed(2)}</td>
                         </tr>
                     ))}
