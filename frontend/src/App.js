@@ -169,76 +169,76 @@ function App() {
            </ProtectedRoute>
           } />
           <Route path="/seeds" element={
-            <ProtectedRoute isLoggedIn={isLoggedIn}>
+            
               <>
                 <Navbar />
                 <Seeds />
                 <Footer />
               </>
-           </ProtectedRoute>
+          
           } />
           <Route path="/growthPromoters" element={
-           <ProtectedRoute isLoggedIn={isLoggedIn}>
+           
               <>
                 <Navbar />
                 <GrowthPromoters />
                 <Footer />
               </>
-            </ProtectedRoute>
+           
           } />
           <Route path="/remedies" element={
-           <ProtectedRoute isLoggedIn={isLoggedIn}>
+          
               <>
                 <Navbar />
                 <Remedies />
                 <Footer />
               </>
-            </ProtectedRoute>
+            
           } />
           <Route path="/organicFarming" element={
-            <ProtectedRoute isLoggedIn={isLoggedIn}>
+            
               <>
                 <Navbar />
                 <OrganicFarming />
                 <Footer />
               </>
-            </ProtectedRoute>
+           
           } />
           <Route path="/equipments" element={
-           <ProtectedRoute isLoggedIn={isLoggedIn}>
+          
               <>
                 <Navbar />
                 <Equipments />
                 <Footer />
               </>
-            </ProtectedRoute>
+            
           } />
           <Route path="/fertilizers" element={
-            <ProtectedRoute isLoggedIn={isLoggedIn}>
+           
               <>
                 <Navbar />
                 <Fertilizers />
                 <Footer />
               </>
-            </ProtectedRoute>
+            
           } />
           <Route path="/irrigation" element={
-            <ProtectedRoute isLoggedIn={isLoggedIn}>
+           
               <>
                 <Navbar />
                 <Irrigation />
                 <Footer />
               </>
-            </ProtectedRoute>
+           
           } />
           <Route path="/gardening" element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
+         
               <>
                 <Navbar />
                 <Gardening />
                 <Footer />
               </>
-            </ProtectedRoute>
+           
           } />
           <Route path="/description/:id" element={
            <ProtectedRoute isLoggedIn={isLoggedIn}>
