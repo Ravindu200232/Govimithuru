@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import img2 from "./img/WhatsApp Image 2024-09-21 at 01.51.31_83da0e81.jpg"; // Imported profile image
+import img2 from "./img/WhatsApp Image 2024-09-21 at 01.51.31_83da0e81.jpg";
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Profile() {
   const [user, setUser] = useState({
@@ -8,33 +11,56 @@ function Profile() {
     lastname: '',
     username: '',
     email: '',
-    imageUrl: img2 // Use the imported image as the default
+    imageUrl: img2
   });
   const [isEditing, setIsEditing] = useState(false);
+  const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [showHistory, setShowHistory] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortOrder, setSortOrder] = useState('asc'); // 'asc' or 'desc'
   const navigate = useNavigate();
   const username = localStorage.getItem('username');
 
   useEffect(() => {
     if (!username) {
-      navigate('/login'); // Redirect to login if no username
+      navigate('/login');
       return;
     }
 
     const fetchUserProfile = async () => {
+      setLoadingUser(true);
       try {
         const response = await fetch(`http://localhost:8000/user/getByUsername/${username}`);
         const data = await response.json();
-
         if (data.user) {
           setUser({
             ...data.user,
-            imageUrl: data.user.imageUrl || img2 // Use the user's image URL or the default
+            imageUrl: data.user.imageUrl || img2
           });
+          fetchUserOrders(data.user.firstname, data.user.lastname);
         } else {
-          console.error("User not found");
+          toast.error("User not found");
         }
       } catch (error) {
-        console.error("Error fetching user profile:", error);
+        toast.error("Error fetching user profile");
+      } finally {
+        setLoadingUser(false);
+      }
+    };
+
+    const fetchUserOrders = async (firstname, lastname) => {
+      try {
+        const response = await fetch(`http://localhost:8000/orders?customerName=${encodeURIComponent(firstname + ' ' + lastname)}`);
+        const data = await response.json();
+        setOrders(data);
+        setFilteredOrders(data); // Initialize filtered orders
+      } catch (error) {
+        toast.error("Error fetching orders");
+      } finally {
+        setLoadingOrders(false);
       }
     };
 
@@ -43,10 +69,7 @@ function Profile() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setUser({
-      ...user,
-      [name]: value,
-    });
+    setUser((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleUpdate = async () => {
@@ -60,13 +83,13 @@ function Profile() {
       });
 
       if (response.ok) {
-        alert("User updated successfully!");
+        toast.success("User updated successfully!");
         setIsEditing(false);
       } else {
-        alert("Error updating user");
+        toast.error("Error updating user");
       }
     } catch (error) {
-      console.error("Error updating user:", error);
+      toast.error("Error updating user");
     }
   };
 
@@ -74,37 +97,55 @@ function Profile() {
     localStorage.removeItem('user');
     localStorage.removeItem('username');
     navigate('/login');
+    toast.success("Logged out successfully");
   };
 
   const handleDeleteAccount = async () => {
-    const confirmDelete = window.confirm("Are you sure you want to delete your account? This action cannot be undone.");
-    if (confirmDelete) {
+    if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
       try {
-        const response = await fetch(`http://localhost:8000/user/delete/${user._id}`, {
-          method: 'DELETE',
-        });
+        const response = await fetch(`http://localhost:8000/user/delete/${user._id}`, { method: 'DELETE' });
 
         if (response.ok) {
-          alert("Account deleted successfully!");
-          handleLogout(); // Log out after deletion
+          toast.success("Account deleted successfully!");
+          handleLogout();
         } else {
-          alert("Error deleting account");
+          toast.error("Error deleting account");
         }
       } catch (error) {
-        console.error("Error deleting account:", error);
+        toast.error("Error deleting account");
       }
     }
   };
 
-  if (!user) {
-    return <div>Loading...</div>;
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+
+    const filtered = orders.filter(order => {
+      return order.productDetails.some(item => item.itemName.toLowerCase().includes(value.toLowerCase()));
+    });
+
+    setFilteredOrders(filtered);
+  };
+
+  const handleSortChange = (order) => {
+    setSortOrder(order);
+    const sortedOrders = [...filteredOrders].sort((a, b) => {
+      const priceA = a.productDetails.reduce((sum, item) => sum + item.totalPrice, 0);
+      const priceB = b.productDetails.reduce((sum, item) => sum + item.totalPrice, 0);
+      return order === 'asc' ? priceA - priceB : priceB - priceA;
+    });
+    setFilteredOrders(sortedOrders);
+  };
+
+  if (loadingUser) {
+    return <div>Loading user profile...</div>;
   }
 
   const containerStyle = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
     padding: '20px',
     backgroundColor: '#f5f5f5',
     borderRadius: '10px',
@@ -113,103 +154,159 @@ function Profile() {
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
   };
 
-  const headingStyle = {
-    fontSize: '2rem',
-    marginBottom: '20px',
-    color: '#333',
-    fontFamily: 'Alegreya Sans SC, sans-serif',
-  };
 
-  const detailStyle = {
-    fontSize: '1.2rem',
-    margin: '10px 0',
-    color: '#555',
-    fontFamily: 'Alegreya Sans SC, sans-serif',
-  };
-
-  const deleteButtonStyle = {
-    backgroundColor: 'red',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    padding: '10px 15px',
-    cursor: 'pointer',
-    fontSize: '1rem',
-    marginLeft: '10px',
-  };
 
   const imageStyle = {
     width: '150px',
     height: '150px',
-    borderRadius: '50%', // Circular border
+    borderRadius: '50%',
     marginBottom: '20px',
-    objectFit: 'cover', // Maintain aspect ratio
+    objectFit: 'cover',
+  };
+
+  const ordersContainerStyle = {
+    width: '100%',
+    marginTop: '20px',
+    borderRadius: '8px',
+    padding: '10px',
+    backgroundColor: '#ffffff',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+  };
+
+  const orderItemStyle = {
+    padding: '10px',
+    borderBottom: '1px solid #e0e0e0',
+    display: 'flex',
+    flexDirection: 'column',
+  };
+
+  
+
+
+
+  const orderDateStyle = {
+    fontWeight: 'bold',
+  };
+
+  const orderPriceStyle = {
+    color: '#388e3c',
   };
 
   return (
     <div style={containerStyle}>
-      <h1 style={headingStyle}>Profile Details</h1>
-      
-      {/* Profile Image */}
-      <img 
-        src={user.imageUrl} 
-        alt="Profile" 
-        style={imageStyle} 
-      />
-
-      {/* Editable form */}
+      <h1>Profile Details</h1>
+      <img src={user.imageUrl} alt="Profile" style={imageStyle} />
       <div>
-        <label style={detailStyle}>
+        <label>
           First Name:
-          <input 
-            type="text" 
-            name="firstname" 
-            value={user.firstname} 
-            onChange={handleInputChange} 
+          <input
+            type="text"
+            name="firstname"
+            value={user.firstname}
+            onChange={handleInputChange}
             disabled={!isEditing}
           />
         </label>
-        <label style={detailStyle}>
+        <label>
           Last Name:
-          <input 
-            type="text" 
-            name="lastname" 
-            value={user.lastname} 
-            onChange={handleInputChange} 
+          <input
+            type="text"
+            name="lastname"
+            value={user.lastname}
+            onChange={handleInputChange}
             disabled={!isEditing}
           />
         </label>
-        <label style={detailStyle}>
+        <label>
           Username:
-          <input 
-            type="text" 
-            name="username" 
-            value={user.username} 
-            onChange={handleInputChange} 
+          <input
+            type="text"
+            name="username"
+            value={user.username}
+            onChange={handleInputChange}
             disabled={!isEditing}
           />
         </label>
-        <label style={detailStyle}>
+        <label>
           Email:
-          <input 
-            type="email" 
-            name="email" 
-            value={user.email} 
-            onChange={handleInputChange} 
+          <input
+            type="email"
+            name="email"
+            value={user.email}
+            onChange={handleInputChange}
             disabled={!isEditing}
           />
         </label>
       </div>
 
-      <div style={{ marginTop: '20px' }}>
+      <div>
         {isEditing ? (
           <button onClick={handleUpdate}>Update</button>
         ) : (
-          <button onClick={() => setIsEditing(true)}>Edit</button>
+          <button onClick={() => setIsEditing(true)}  style={{ margin: '10px' }}>Edit</button>
         )}
-        <button onClick={handleLogout} style={{ marginLeft: '10px' }}>Logout</button>
-        <button onClick={handleDeleteAccount} style={deleteButtonStyle}>Delete Account</button>
+        <button onClick={handleLogout} style={{ margin: '10px' }}>Logout</button>
+        <button onClick={handleDeleteAccount}  style={{ backgroundColor: 'red', color: 'white' ,margin: '10px'} }>Delete Account</button>
+        <button onClick={() => setShowHistory(!showHistory)} style={{margin: '10px' }}>
+          {showHistory ? 'Hide Purchase History' : 'Show Purchase History'}
+        </button>
       </div>
+
+      {showHistory && (
+  <>
+    <h3>Purchase History</h3>
+    <input
+      type="text"
+      placeholder="Search by item name"
+      value={searchTerm}
+      onChange={handleSearchChange}
+      style={{ marginBottom: '10px', padding: '5px', width: '100%' }}
+    />
+    <button onClick={() => handleSortChange('asc')}  style={{ margin: '10px' }}>Sort by Price Ascending</button>
+    <button onClick={() => handleSortChange('desc')}  style={{ margin: '10px' }}>Sort by Price Descending</button>
+    
+    <div style={ordersContainerStyle}>
+      {loadingOrders ? (
+        <p>Loading orders...</p>
+      ) : filteredOrders.length === 0 ? (
+        <p>No orders found.</p>
+      ) : (
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ backgroundColor: '#f0f0f0' }}>
+              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Date</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Total Price</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Items</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredOrders.map((order) => (
+              <tr key={order._id}>
+                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                  {new Date(order.saleDate).toLocaleDateString()}
+                </td>
+                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                  Rs.{order.productDetails.reduce((sum, item) => sum + item.totalPrice, 0).toFixed(2)}
+                </td>
+                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                  <ul style={{ margin: 0, padding: 0 }}>
+                    {order.productDetails.map((item) => (
+                      <li key={item.itemName} style={{ listStyleType: 'none' }}>
+                        {item.itemName} (Qty: {item.quantitySold})
+                      </li>
+                    ))}
+                  </ul>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  </>
+)}
+
+      <ToastContainer />
     </div>
   );
 }

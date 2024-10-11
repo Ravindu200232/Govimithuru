@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './css/ShowcaseForm.css';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function BestSellingForm() {
   const [title, setTitle] = useState('');
@@ -35,10 +36,11 @@ function BestSellingForm() {
 
     try {
       await axios.post('http://localhost:8000/bestSelling/add', formData);
-      alert('Best Selling Item Added');
+      toast.success('Best Selling Item Added'); // Use toast for success message
       resetForm();
     } catch (err) {
       setError('Failed to add best selling item. Please try again.');
+      toast.error(err.message || 'Failed to add best selling item.'); // Use toast for error message
       console.error(err);
     } finally {
       setLoading(false);
@@ -47,26 +49,27 @@ function BestSellingForm() {
 
   return (
     <div className="best-selling-form-container">
+      <ToastContainer /> {/* Include ToastContainer here */}
       <h2>Add Best Selling Item</h2>
       {error && <p className="error-message">{error}</p>}
       <form className="best-selling-form" onSubmit={sendData}>
-      <div className="form-group">
-  <label htmlFor="title">Title</label>
-  <input
-    type="text"
-    id="title"
-    placeholder="Enter Title"
-    value={title}
-    onChange={(e) => {
-      const newValue = e.target.value;
-      // Only update state if the new value does not contain numbers
-      if (!/\d/.test(newValue)) {
-        setTitle(newValue);
-      }
-    }}
-    required
-  />
-</div>
+        <div className="form-group">
+          <label htmlFor="title">Title</label>
+          <input
+            type="text"
+            id="title"
+            placeholder="Enter Title"
+            value={title}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              // Only update state if the new value does not contain numbers
+              if (!/\d/.test(newValue)) {
+                setTitle(newValue);
+              }
+            }}
+            required
+          />
+        </div>
 
         <div className="form-group">
           <label htmlFor="image">Upload Image</label>

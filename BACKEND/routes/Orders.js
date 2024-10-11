@@ -106,4 +106,22 @@ router.delete('/delete/:id', async (req, res) => {
     }
 });
 
+
+// Get orders by customer name
+router.get('/by-customer', async (req, res) => {
+    const { customerName } = req.query;
+
+    if (!customerName) {
+        return res.status(400).json({ status: "Error", message: "Customer name is required" });
+    }
+
+    try {
+        const orders = await Order.find({ customerName });
+        res.status(200).json(orders);
+    } catch (err) {
+        res.status(500).json({ status: "Error", message: "Error fetching orders", error: err.message });
+    }
+});
+
+
 module.exports = router;

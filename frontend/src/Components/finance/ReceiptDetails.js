@@ -16,6 +16,13 @@ const ReceiptDetails = ({ receipt, onClose }) => {
         doc.text("Anuradhapura Kahatagasdigiliya", 14, 45);
         doc.text("Phone Number: 0789840996", 14, 50);
 
+
+        // Watermark setup
+        doc.setFontSize(40);
+        doc.setTextColor(150, 150, 150);
+        doc.text('Govimithuru.lk', 70, 150, { angle: 45 });
+        doc.setTextColor(0, 0, 0); // Reset color for other text
+
         // Receipt details
         doc.setFontSize(12);
         doc.text('Receipt Details', 20, 70);
@@ -68,6 +75,19 @@ const ReceiptDetails = ({ receipt, onClose }) => {
         doc.text(`Company Name: ${receipt.companyName}`, 20, summaryY + 70);
         doc.text(`Company Address: ${receipt.companyAddress}`, 20, summaryY + 80);
         doc.text(`Company Contact: ${receipt.companyContact}`, 20, summaryY + 90);
+
+        // Signature line
+        const signatureName = "----------------"; // Change to your desired name
+        const signatureY = summaryY + 100;
+        
+        // Set dotted line
+        doc.setLineDash([2, 2], 0); // Create a dotted line
+        doc.line(20, signatureY + 10, 190, signatureY + 10); // Draw the line slightly below the name
+        
+        // Add signature text above the dotted line
+        doc.setLineDash([]); // Reset to solid line for text
+        doc.text(`Signature: ${signatureName}`, 20, signatureY);
+        
 
         // Save PDF
         doc.save(`receipt_${receipt.receiptNumber}.pdf`);

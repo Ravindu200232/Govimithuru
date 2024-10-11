@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import './css/ShowcaseForm.css';
 import axios from 'axios';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const predefinedItems = [
 
 
@@ -163,10 +164,11 @@ function ShowcaseForm() {
 
     try {
       await axios.post('http://localhost:8000/showcase/add', formData);
-      alert('Showcase Item Added');
+      toast.success('Showcase Item Added');
       resetForm();
     } catch (err) {
       setError('Failed to add showcase item. Please try again.');
+      toast.error('Failed to add showcase item. Please try again.');
       console.error(err);
     } finally {
       setLoading(false);
@@ -271,25 +273,25 @@ function ShowcaseForm() {
           </select>
         </div>
         <div className="form-group">
-  <label htmlFor="price">Price</label>
-  <input
-    type="number"
-    id="price"
-    placeholder="Enter Price"
-    min="0"
-    max="1000000"
-    step="0.01" // Allows decimals with two places
-    value={price}
-    onChange={(e) => {
-      let value = parseFloat(e.target.value);
-      if (value > 1000000) {
-        value = 1000000;
-      }
-      setPrice(value.toFixed(2)); // Ensures two decimal places
-    }}
-    required
-  />
-</div>
+          <label htmlFor="price">Price</label>
+          <input
+            type="number"
+            id="price"
+            placeholder="Enter Price"
+            min="0"
+            max="1000000"
+            step="0.01" // Allows decimals with two places
+            value={price}
+            onChange={(e) => {
+              let value = parseFloat(e.target.value);
+              if (value > 1000000) {
+                value = 1000000;
+              }
+              setPrice(value.toFixed(2)); // Ensures two decimal places
+            }}
+            required
+          />
+        </div>
 
         <div className="form-group">
           <label htmlFor="discount">Discount (%)</label>
@@ -315,6 +317,7 @@ function ShowcaseForm() {
           </button>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 }

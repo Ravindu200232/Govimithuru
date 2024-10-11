@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS for toast notifications
 import './css/ShowcaseDashboard.css';
 import logo from '../ui/img/logo.png';
 
@@ -50,10 +52,9 @@ function ShowcaseDashboard() {
 
         axios.put(`http://localhost:8000/showcase/update/${id}`, formData)
             .then(() => {
-                alert("Item updated successfully");
+                toast.success("Item updated successfully");
                 setEditId(null);
                 setUpdatedImage(null);
-                // Optionally update state to reflect changes immediately
                 setItems(prevItems => 
                     prevItems.map(item => 
                         item._id === id ? { ...item, ...formData } : item
@@ -61,22 +62,22 @@ function ShowcaseDashboard() {
                 );
             })
             .catch((err) => {
-                alert('Failed to update item.');
+                toast.error('Failed to update item.');
             });
     };
 
     const handleDelete = (id) => {
-        if (window.confirm("Are you sure you want to delete this item?")) {
-            axios.delete(`http://localhost:8000/showcase/delete/${id}`)
-                .then(() => {
-                    setItems(items.filter(item => item._id !== id));
-                    alert("Showcase Item Deleted");
-                })
-                .catch((err) => {
-                    setError('Failed to delete item. Please try again.');
-                });
-        }
+        axios.delete(`http://localhost:8000/showcase/delete/${id}`)
+            .then(() => {
+                setItems(items.filter(item => item._id !== id));
+                toast.success("Showcase Item Deleted");
+            })
+            .catch((err) => {
+                setError('Failed to delete item. Please try again.');
+                toast.error("Failed to delete item.");
+            });
     };
+    
 
     const handleAddNew = () => {
         navigate('/admin/showcase/ShowcaseForm');
@@ -122,6 +123,7 @@ function ShowcaseDashboard() {
 
     return (
         <div className="showcase-dashboard-container">
+            <ToastContainer /> {/* Add ToastContainer here */}
             <h2 className="showcase-dashboard-title">Showcase Dashboard</h2>
             <input
                 type="text"
