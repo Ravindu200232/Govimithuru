@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './css/ShowcaseForm.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function CropSolutionForm() {
   const [title, setTitle] = useState('');
@@ -28,16 +30,17 @@ function CropSolutionForm() {
 
     const formData = new FormData();
     formData.append('title', title);
-    formData.append('img', image); // Adjusting to match the field name in your backend
+    formData.append('img', image);
     formData.append('description', description);
     formData.append('link', link);
 
     try {
       await axios.post('http://localhost:8000/cropSolutions/add', formData);
-      alert('Crop Solution Added');
+      toast.success('Crop Solution Added'); // Use toast for success message
       resetForm();
     } catch (err) {
       setError('Failed to add crop solution. Please try again.');
+      toast.error(err.message || 'Failed to add crop solution.'); // Use toast for error message
       console.error(err);
     } finally {
       setLoading(false);
@@ -46,26 +49,27 @@ function CropSolutionForm() {
 
   return (
     <div className="crop-solution-form-container">
+      <ToastContainer /> {/* Include ToastContainer here */}
       <h2>Add Crop Solution</h2>
       {error && <p className="error-message">{error}</p>}
       <form className="crop-solution-form" onSubmit={sendData}>
-      <div className="form-group">
-  <label htmlFor="title">Title</label>
-  <input
-    type="text"
-    id="title"
-    placeholder="Enter Title"
-    value={title}
-    onChange={(e) => {
-      const newValue = e.target.value;
-      // Allow only non-numeric input
-      if (!/\d/.test(newValue)) {
-        setTitle(newValue);
-      }
-    }}
-    required
-  />
-</div>
+        <div className="form-group">
+          <label htmlFor="title">Title</label>
+          <input
+            type="text"
+            id="title"
+            placeholder="Enter Title"
+            value={title}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              // Allow only non-numeric input
+              if (!/\d/.test(newValue)) {
+                setTitle(newValue);
+              }
+            }}
+            required
+          />
+        </div>
 
         <div className="form-group">
           <label htmlFor="image">Upload Image</label>

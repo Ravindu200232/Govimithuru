@@ -35,13 +35,16 @@
     border-collapse: collapse;
 }
 
+
 .employee-table th, .employee-table td {
-    border: 1px solid #ddd;
+    border: 1px solid #610dcf;
     padding: 8px;
+    
 }
 
 .employee-table th {
     background-color: #f4f4f4;
+    background-color: #032e61;
 }
 
 .employee-table img {

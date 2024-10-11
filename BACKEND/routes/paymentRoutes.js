@@ -44,4 +44,24 @@ router.get('/', async (req, res) => {
   }
 });
 
+
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find and delete the payment
+    const deletedPayment = await Payment.findByIdAndDelete(id);
+    
+    if (!deletedPayment) {
+      return res.status(404).json({ error: 'Payment not found.' });
+    }
+
+    res.status(200).json({ message: 'Payment deleted successfully!' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to delete payment.' });
+  }
+});
+
+
 module.exports = router;

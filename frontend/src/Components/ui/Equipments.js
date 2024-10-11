@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './css/Seeds.css';
+import { FaSearch, FaSortAmountDown, FaSortAmountUp } from 'react-icons/fa'; // Importing icons
+import './css/Seeds.css'; // Using the same CSS file for consistency
 
 function Equipments() {
   const [equipmentItems, setEquipmentItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortOrder, setSortOrder] = useState('asc'); // State for sorting
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,6 +28,11 @@ function Equipments() {
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Sort items based on selected order
+  const sortedEquipment = [...filteredEquipment].sort((a, b) => {
+    return sortOrder === 'asc' ? a.price - b.price : b.price - a.price;
+  });
+
   const handleBuyNow = (id) => {
     navigate(`/description/${id}`);
   };
@@ -33,8 +40,9 @@ function Equipments() {
   return (
     <div className="equipments-page">
       <section className="equipments-section">
-        <h1>Equipments</h1>
+        <h1><center>Equipments</center></h1>
         
+        {/* Search Bar */}
         <div className="search-bar">
           <input
             type="text"
@@ -43,18 +51,34 @@ function Equipments() {
             onChange={handleSearchChange}
             className="search-input"
           />
+          <FaSearch className="search-icon" />
         </div>
 
         <div className="equipment-info">
           <div className="info-left">
             <h3>EQUIPMENTS</h3>
-            <p>(Total products: {filteredEquipment.length})</p>
+            <p>(Total products: {sortedEquipment.length})</p>
+            {/* Sorting Options */}
+            <div className="sorting-options">
+              <button 
+                onClick={() => setSortOrder('asc')}
+                className={sortOrder === 'asc' ? 'active' : ''}
+              >
+                <FaSortAmountUp /> Ascending
+              </button>
+              <button 
+                onClick={() => setSortOrder('desc')}
+                className={sortOrder === 'desc' ? 'active' : ''}
+              >
+                <FaSortAmountDown /> Descending
+              </button>
+            </div>
           </div>
 
           <div className="info-right">
             <div className="products-grid">
-              {filteredEquipment.length > 0 ? (
-                filteredEquipment.map((item) => (
+              {sortedEquipment.length > 0 ? (
+                sortedEquipment.map((item) => (
                   <div className="product-card" key={item._id}>
                     <img 
                       src={`data:image/jpeg;base64,${item.imageBase64}`} 

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { FaSearch, FaSortAmountDown, FaSortAmountUp } from 'react-icons/fa'; // Import icons
 import './css/Seeds.css';
 
 function Seeds() {
   const [seedItems, setSeedItems] = useState([]);
-  const [searchQuery, setSearchQuery] = useState(''); // State for the search query
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortOrder, setSortOrder] = useState('asc'); // State for sorting
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,7 +20,6 @@ function Seeds() {
       });
   }, []);
 
-  // Function to handle search input
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -27,6 +28,15 @@ function Seeds() {
   const filteredSeeds = seedItems.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  // Sort seeds based on selected order
+  const sortedSeeds = [...filteredSeeds].sort((a, b) => {
+    if (sortOrder === 'asc') {
+      return a.price - b.price; // Ascending order
+    } else {
+      return b.price - a.price; // Descending order
+    }
+  });
 
   const handleBuyNow = (id) => {
     navigate(`/description/${id}`);
@@ -46,20 +56,34 @@ function Seeds() {
             onChange={handleSearchChange}
             className="search-input"
           />
+          <FaSearch className="search-icon" />
         </div>
 
         <div className="seeds-info">
           <div className="info-left">
             <h3>AGRICULTURAL SEEDS</h3>
-            <p>(Total products: {filteredSeeds.length})</p>
-            {/* Categories, Manufacturers, Sizes */}
+            <p>(Total products: {sortedSeeds.length})</p>
+            {/* Sorting Options */}
+            <div className="sorting-options">
+              <button 
+                onClick={() => setSortOrder('asc')}
+                className={sortOrder === 'asc' ? 'active' : ''}
+              >
+                <FaSortAmountUp /> Ascending
+              </button>
+              <button 
+                onClick={() => setSortOrder('desc')}
+                className={sortOrder === 'desc' ? 'active' : ''}
+              >
+                <FaSortAmountDown /> Descending
+              </button>
+            </div>
           </div>
 
           <div className="info-right">
             <div className="products-grid">
-              {filteredSeeds.length > 0 ? (
-                filteredSeeds.map((item) => {
-                  // Extract name and unit for styling
+              {sortedSeeds.length > 0 ? (
+                sortedSeeds.map((item) => {
                   const [name, unit] = item.name.split(/(\(\d+kg\))/);
                   return (
                     <div className="product-card" key={item._id}>
@@ -69,10 +93,9 @@ function Seeds() {
                       />
                       <h4>
                         {name}
-                        <span className="item-unit">{unit}</span> {/* Add unit with styling */}
+                        <span className="item-unit">{unit}</span>
                       </h4>
                       
-                      {/* Display Price and Discount */}
                       <p>
                         Price: Rs{item.price.toFixed(2)}
                         {item.discount > 0 && (
