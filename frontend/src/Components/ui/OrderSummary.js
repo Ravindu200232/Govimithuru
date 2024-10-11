@@ -363,35 +363,27 @@ function OrderSummary() {
     onChange={(e) => {
       const value = e.target.value;
       // Regex to allow only letters and spaces
-      const namePattern = /^[A-Za-z\s]+$/;
+      const namePattern = /^[A-Za-z\s]*$/;
 
-      // Allow all input initially
-      handlePaymentChange(e);
-
-      // Check if the value is invalid
-      if (!namePattern.test(value) && value !== "") {
-        // Show error if needed
+      // Check if the value is valid
+      if (namePattern.test(value)) {
+        handlePaymentChange(e); // Update state only if valid
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          cardName: "", // Clear error if valid
+        }));
+      } else {
+        // Set error if invalid
         setErrors((prevErrors) => ({
           ...prevErrors,
           cardName: "Card name can only contain letters and spaces",
-        }));
-      } else if (value.length === 0) {
-        // Clear error if empty
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          cardName: "",
-        }));
-      } else {
-        // Clear the error if valid
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          cardName: "",
         }));
       }
     }}
   />
   {errors.cardName && <span className="error">{errors.cardName}</span>}
 </label>
+
 
             <label>
               Card Type:
@@ -441,12 +433,22 @@ function OrderSummary() {
     name="expirationDate"
     value={paymentDetails.expirationDate}
     onChange={(e) => {
-      const value = e.target.value;
-      // Regex to match MM/YY format
-      const expirationPattern = /^(0[1-9]|1[0-2])\/?([0-9]{2})$/;
-      handlePaymentChange(e);
+      let value = e.target.value;
+
+      // Remove any non-digit characters
+      value = value.replace(/\D/g, '');
+
+      // Automatically format as MM/YY
+      if (value.length >= 2) {
+        value = value.slice(0, 2) + '/' + value.slice(2, 4);
+      }
+
+      handlePaymentChange({
+        target: { name: "expirationDate", value }
+      });
 
       // Validate expiration date format
+      const expirationPattern = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
       if (!expirationPattern.test(value) && value !== "") {
         setErrors((prevErrors) => ({
           ...prevErrors,
@@ -473,9 +475,11 @@ function OrderSummary() {
       }
     }}
     placeholder="MM/YY"
+    maxLength="5" // Allow max length of "MM/YY"
   />
   {errors.expirationDate && <span className="error">{errors.expirationDate}</span>}
 </label>
+
 
 <label>
   CVV:

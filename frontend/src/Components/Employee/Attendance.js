@@ -51,6 +51,7 @@ const Attendance = () => {
         th: {
             backgroundColor: '#f2f2f2',
             padding: '10px',
+            color: '#000000',
             borderBottom: '1px solid #ddd',
         },
         td: {

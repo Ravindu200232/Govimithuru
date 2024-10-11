@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const PaymentReceiptForm = () => {
     const [formData, setFormData] = useState({
@@ -36,9 +38,9 @@ const PaymentReceiptForm = () => {
 
     const calculateTotalAmount = () => {
         const subtotal = calculateSubtotal();
-        const discount = Math.min(formData.discount, subtotal); // Ensure discount is not greater than subtotal
+        const discount = Math.min(formData.discount, subtotal);
         const total = subtotal - discount + formData.taxes + formData.shippingCost;
-        return total.toFixed(2); // Format to 2 decimal places
+        return total.toFixed(2);
     };
 
     const validateForm = () => {
@@ -89,7 +91,6 @@ const PaymentReceiptForm = () => {
             [name]: value,
         }));
 
-        // Update totalAmount whenever input changes for discount, taxes, or shippingCost
         if (['discount', 'taxes', 'shippingCost'].includes(name)) {
             const updatedTotalAmount = calculateTotalAmount();
             setFormData((prevData) => ({
@@ -105,8 +106,8 @@ const PaymentReceiptForm = () => {
         updatedItems[index][name] = value;
 
         if (name === "quantity" || name === "pricePerUnit") {
-            const quantity = Math.max(1, Math.min(1000, Number(updatedItems[index].quantity))); // Clamp between 1 and 1000
-            const pricePerUnit = Math.max(0, Number(updatedItems[index].pricePerUnit)); // Non-negative
+            const quantity = Math.max(1, Math.min(1000, Number(updatedItems[index].quantity)));
+            const pricePerUnit = Math.max(0, Number(updatedItems[index].pricePerUnit));
             updatedItems[index].quantity = quantity;
             updatedItems[index].totalPrice = quantity * pricePerUnit;
         }
@@ -115,7 +116,7 @@ const PaymentReceiptForm = () => {
             ...prevData,
             items: updatedItems,
             subtotal: calculateSubtotal(),
-            totalAmount: calculateTotalAmount(), // Update totalAmount
+            totalAmount: calculateTotalAmount(),
         }));
     };
 
@@ -132,7 +133,7 @@ const PaymentReceiptForm = () => {
             ...prevData,
             items: updatedItems,
             subtotal: calculateSubtotal(),
-            totalAmount: calculateTotalAmount(), // Update totalAmount
+            totalAmount: calculateTotalAmount(),
         }));
     };
 
@@ -142,292 +143,232 @@ const PaymentReceiptForm = () => {
 
         try {
             const response = await axios.post('http://localhost:8000/api/givechecks/create', formData);
-            alert(`Receipt created: ${response.data.data.receiptNumber}`);
+            toast.success(`Receipt created: ${response.data.data.receiptNumber}`);
             // Reset form or handle success
         } catch (error) {
             console.error('Error creating receipt:', error);
-            alert('Error creating receipt: ' + error.response?.data.message || error.message);
+            toast.error('Error creating receipt: ' + (error.response?.data.message || error.message));
         }
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Create Payment Receipt</h2>
+        <div>
+            <form onSubmit={handleSubmit}>
+                <h2>Create Payment Receipt</h2>
 
-            {/* Basic Information */}
-            <label>
-                Receipt Number:
-                <input type="text" name="receiptNumber" placeholder="Receipt Number" onChange={handleInputChange} required />
-                {errors.receiptNumber && <span className="error">{errors.receiptNumber}</span>}
-            </label>
-            <label>
-                Transaction ID:
-                <input type="number" name="transactionId" placeholder="Transaction ID" onChange={handleInputChange} required />
-                {errors.transactionId && <span className="error">{errors.transactionId}</span>}
-            </label>
-            <label>
-                Date:
-                <input type="date" name="date" onChange={handleInputChange} required />
-                {errors.date && <span className="error">{errors.date}</span>}
-            </label>
-            <label>
-    Customer Name:
+                {/* Basic Information */}
+                <label>
+                    Receipt Number:
+                    <input type="text" name="receiptNumber" placeholder="Receipt Number" onChange={handleInputChange} required />
+                    {errors.receiptNumber && <span className="error">{errors.receiptNumber}</span>}
+                </label>
+                <label>
+                    Transaction ID:
+                    <input type="number" name="transactionId" placeholder="Transaction ID" onChange={handleInputChange} required />
+                    {errors.transactionId && <span className="error">{errors.transactionId}</span>}
+                </label>
+                <label>
+                    Date:
+                    <input type="date" name="date" onChange={handleInputChange} required />
+                    {errors.date && <span className="error">{errors.date}</span>}
+                </label>
+                <label>
+                    Customer Name:
+                    <input
+                        type="text"
+                        name="customerName"
+                        placeholder="Customer Name"
+                        onChange={handleInputChange}
+                        onKeyPress={(e) => {
+                            // Allow only letters (a-z and A-Z)
+                            if (!/^[a-zA-Z\s]*$/.test(e.key)) {
+                                e.preventDefault();
+                            }
+                        }}
+                        required
+                    />
+                    {errors.customerName && <span className="error">{errors.customerName}</span>}
+                </label>
+                <label>
+                    Customer Email:
+                    <input
+                        type="email"
+                        name="customerEmail"
+                        placeholder="Customer Email"
+                        value={formData.customerEmail}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            handleInputChange(e);
+
+                            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                            if (!emailPattern.test(value) && value !== "") {
+                                setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    customerEmail: "Invalid email format",
+                                }));
+                            } else {
+                                setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    customerEmail: "",
+                                }));
+                            }
+                        }}
+                        required
+                    />
+                    {errors.customerEmail && <span className="error">{errors.customerEmail}</span>}
+                </label>
+                <label>
+                    Customer Phone:
+                    <input
+                        type="text"
+                        name="customerPhone"
+                        placeholder="Customer Phone"
+                        maxLength={10}
+                        onKeyPress={(e) => {
+                            if (!/[0-9]/.test(e.key)) {
+                                e.preventDefault();
+                            }
+                        }}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            if (/^\d{0,10}$/.test(value)) {
+                                handleInputChange(e);
+                            }
+                        }}
+                        required
+                    />
+                    {errors.customerPhone && <span className="error">{errors.customerPhone}</span>}
+                </label>
+                <label>
+                    Billing Address:
+                    <input type="text" name="billingAddress" placeholder="Billing Address" onChange={handleInputChange} required />
+                    {errors.billingAddress && <span className="error">{errors.billingAddress}</span>}
+                </label>
+                <label>
+                    Shipping Address:
+                    <input type="text" name="shippingAddress" placeholder="Shipping Address" onChange={handleInputChange} />
+                </label>
+
+                {/* Items Section */}
+                <h3>Items</h3>
+                {formData.items.map((item, index) => (
+                    <div key={index}>
+                        <label>
+                            Item Name:
+                            <input type="text" name="itemName" placeholder="Item Name" value={item.itemName} onChange={(e) => handleItemChange(index, e)} required />
+                            {errors[`itemName${index}`] && <span className="error">{errors[`itemName${index}`]}</span>}
+                        </label>
+                        <label>
+                            Description:
+                            <input type="text" name="itemDescription" placeholder="Description" value={item.itemDescription} onChange={(e) => handleItemChange(index, e)} />
+                        </label>
+                        <label>
+                            Quantity:
+                            <input type="number" name="quantity" value={item.quantity} onChange={(e) => handleItemChange(index, e)} min="1" />
+                            {errors[`quantity${index}`] && <span className="error">{errors[`quantity${index}`]}</span>}
+                        </label>
+                        <label>
+                            Price per Unit:
+                            <input type="number" name="pricePerUnit" value={item.pricePerUnit} onChange={(e) => handleItemChange(index, e)} min="0" />
+                            {errors[`pricePerUnit${index}`] && <span className="error">{errors[`pricePerUnit${index}`]}</span>}
+                        </label>
+                        <label>
+                            Total Price: {item.totalPrice.toFixed(2)}
+                        </label>
+                        <button type="button" onClick={() => handleRemoveItem(index)}>Remove Item</button>
+                    </div>
+                ))}
+                <button type="button" onClick={handleAddItem}>Add Item</button>
+
+                {/* Totals Section */}
+                <h3>Totals</h3>
+                <label>
+                    Subtotal: {formData.subtotal.toFixed(2)}
+                </label>
+                <label>
+                    Discount:
+                    <input type="number" name="discount" value={formData.discount} onChange={handleInputChange} min="0" />
+                    {errors.discount && <span className="error">{errors.discount}</span>}
+                </label>
+                
+                <label>
+                    Total Amount: {calculateTotalAmount()}
+                </label>
+
+                {/* Payment Method */}
+                <label>
+    Payment Method:
+    <select name="paymentMethod" onChange={handleInputChange} required>
+        <option value="">Select Payment Method</option>
+        <option value="Cash">Cash</option>
+        <option value="Check">Check</option>
+    </select>
+    {errors.paymentMethod && <span className="error">{errors.paymentMethod}</span>}
+</label>
+
+
+                {/* Company Information */}
+                <h3>Company Information</h3>
+                <label>
+    Company Name:
     <input
         type="text"
-        name="customerName"
-        placeholder="Customer Name"
+        name="companyName"
+        placeholder="Company Name"
         onChange={handleInputChange}
         onKeyPress={(e) => {
-            // Allow only letters (a-z and A-Z)
+            // Allow only letters and spaces
             if (!/^[a-zA-Z\s]*$/.test(e.key)) {
                 e.preventDefault();
             }
         }}
         required
     />
-    {errors.customerName && <span className="error">{errors.customerName}</span>}
+    {errors.companyName && <span className="error">{errors.companyName}</span>}
 </label>
 
-            <label>
-                Customer Email:
-                <input
-                    type="email"
-                    name="customerEmail"
-                    placeholder="Customer Email"
-                    value={formData.customerEmail}
-                    onChange={(e) => {
-                        const value = e.target.value;
-                        handleInputChange(e);
+<label>
+    Company Address:
+    <input
+        type="text"
+        name="companyAddress"
+        placeholder="Company Address"
+        onChange={handleInputChange}
+        required
+    />
+    {errors.companyAddress && <span className="error">{errors.companyAddress}</span>}
+</label>
 
-                        // Validate email format
-                        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        if (!emailPattern.test(value) && value !== "") {
-                            setErrors((prevErrors) => ({
-                                ...prevErrors,
-                                customerEmail: "Invalid email format",
-                            }));
-                        } else {
-                            setErrors((prevErrors) => ({
-                                ...prevErrors,
-                                customerEmail: "",
-                            }));
-                        }
-                    }}
-                    required
-                />
-                {errors.customerEmail && <span className="error">{errors.customerEmail}</span>}
-            </label>
-            <label>
-                Customer Phone:
-                <input
-    type="text"
-    name="customerPhone"
-    placeholder="Customer Phone"
-    maxLength={10} // Restrict to 10 digits
-    onKeyPress={(e) => {
-        // Allow only digits (0-9)
-        if (!/[0-9]/.test(e.key)) {
-            e.preventDefault();
-        }
-    }}
-    onChange={(e) => {
-        const value = e.target.value;
-        // Ensure only numeric input and restrict to 10 digits
-        if (/^\d{0,10}$/.test(value)) {
-            handleInputChange(e); // Call your input handler here
-        }
-    }}
-    required
-/>
-                {errors.customerPhone && <span className="error">{errors.customerPhone}</span>}
-            </label>
-            <label>
-                Billing Address:
-                <input type="text" name="billingAddress" placeholder="Billing Address" onChange={handleInputChange} required />
-                {errors.billingAddress && <span className="error">{errors.billingAddress}</span>}
-            </label>
-            <label>
-                Shipping Address:
-                <input type="text" name="shippingAddress" placeholder="Shipping Address" onChange={handleInputChange} />
-            </label>
-
-            <h3>Items</h3>
-            {formData.items.map((item, index) => (
-                <div key={index}>
-                    <label>
-                        Item Name:
-                        <input
-                            type="text"
-                            name="itemName"
-                            placeholder="Item Name"
-                            value={item.itemName}
-                            onChange={(e) => handleItemChange(index, e)}
-                            required
-                        />
-                        {errors[`itemName${index}`] && <span className="error">{errors[`itemName${index}`]}</span>}
-                    </label>
-                    <label>
-                        Item Description:
-                        <input
-                            type="text"
-                            name="itemDescription"
-                            placeholder="Item Description"
-                            value={item.itemDescription}
-                            onChange={(e) => handleItemChange(index, e)}
-                        />
-                    </label>
-                    <label>
-                        Quantity:
-                        <input
-                            type="number"
-                            name="quantity"
-                            placeholder="Quantity"
-                            min={1}
-                            max={1000}
-                            value={item.quantity}
-                            onChange={(e) => handleItemChange(index, e)}
-                            required
-                        />
-                        {errors[`quantity${index}`] && <span className="error">{errors[`quantity${index}`]}</span>}
-                    </label>
-                    <label>
-                        Price per Unit:
-                        <input
-                            type="number"
-                            name="pricePerUnit"
-                            placeholder="Price per Unit"
-                            min={0}
-                            value={item.pricePerUnit}
-                            onChange={(e) => handleItemChange(index, e)}
-                            required
-                        />
-                        {errors[`pricePerUnit${index}`] && <span className="error">{errors[`pricePerUnit${index}`]}</span>}
-                    </label>
-                    <label>
-                        Total Price:
-                        <input
-                            type="number"
-                            name="totalPrice"
-                            placeholder="Total Price"
-                            value={item.totalPrice}
-                            readOnly
-                        />
-                    </label>
-                    <button type="button" onClick={() => handleRemoveItem(index)}>Remove Item</button>
-                </div>
-            ))}
-
-            <button type="button" onClick={handleAddItem}>Add Item</button>
-
-            {/* Financial Information */}
-            <label>
-                Subtotal:
-                <input type="number" name="subtotal" value={formData.subtotal} readOnly />
-            </label>
-            <label>
-                Discount:
-                <input
-                    type="number"
-                    name="discount"
-                    placeholder="Discount"
-                    min={0}
-                    value={formData.discount}
-                    onChange={handleInputChange}
-                />
-                {errors.discount && <span className="error">{errors.discount}</span>}
-            </label>
-            <label>
-                Taxes:
-                <input
-                    type="number"
-                    name="taxes"
-                    placeholder="Taxes"
-                    min={0}
-                    value={formData.taxes}
-                    onChange={handleInputChange}
-                    required
-                />
-                {errors.taxes && <span className="error">{errors.taxes}</span>}
-            </label>
-            <label>
-                Shipping Cost:
-                <input
-                    type="number"
-                    name="shippingCost"
-                    placeholder="Shipping Cost"
-                    min={0}
-                    max={100000}
-                    value={formData.shippingCost}
-                    onChange={handleInputChange}
-                />
-                {errors.shippingCost && <span className="error">{errors.shippingCost}</span>}
-            </label>
-            <label>
-                Total Amount:
-                <input
-                    type="number"
-                    name="totalAmount"
-                    placeholder="Total Amount"
-                    value={formData.totalAmount}
-                    readOnly
-                />
-            </label>
-
-            <label>
-                Payment Method:
-                <select name="paymentMethod" onChange={handleInputChange} required>
-                    <option value="" disabled>Select Payment Method</option>
-                    <option value="Cash">Cash</option>
-                    <option value="Check">Check</option>
-                </select>
-                {errors.paymentMethod && <span className="error">{errors.paymentMethod}</span>}
-            </label>
-            
-            <label>
-                Payment Status:
-                <select name="paymentStatus" onChange={handleInputChange}>
-                    <option value="Confirmed">Confirmed</option>
-                    <option value="Pending">Pending</option>
-                </select>
-            </label>
-            <label>
-                Company Name:
-                <input type="text" name="companyName" placeholder="Company Name" onChange={handleInputChange} required />
-                {errors.companyName && <span className="error">{errors.companyName}</span>}
-            </label>
-            <label>
-                Company Address:
-                <input type="text" name="companyAddress" placeholder="Company Address" onChange={handleInputChange} required />
-                {errors.companyAddress && <span className="error">{errors.companyAddress}</span>}
-            </label>
-            <label>
+<label>
     Company Contact:
     <input
         type="text"
         name="companyContact"
         placeholder="Company Contact"
+        maxLength={10} // Restrict to 10 digits
         onKeyPress={(e) => {
-            // Allow only digits (0-9)
+            // Allow only digits
             if (!/[0-9]/.test(e.key)) {
                 e.preventDefault();
             }
         }}
         onChange={(e) => {
             const value = e.target.value;
-            // Only allow up to 10 digits
+            // Ensure only numeric input and restrict to 10 digits
             if (/^\d{0,10}$/.test(value)) {
                 handleInputChange(e);
             }
         }}
-        maxLength={10}
         required
     />
     {errors.companyContact && <span className="error">{errors.companyContact}</span>}
 </label>
 
 
-            <button type="submit">Create Receipt</button>
-        </form>
+                <button type="submit">Create Receipt</button>
+            </form>
+            <ToastContainer />
+        </div>
     );
 };
 

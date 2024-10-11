@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './css/OfferDashboard.css'; // Make sure to create this CSS file
 
 function OfferDashboard() {
@@ -27,14 +29,13 @@ function OfferDashboard() {
     };
 
     const handleDeleteOffer = async (id) => {
-        if (window.confirm("Are you sure you want to delete this offer?")) {
-            try {
-                await axios.delete(`http://localhost:8000/offers/delete/${id}`);
-                setOffers(offers.filter(offer => offer._id !== id));
-                alert("Offer deleted successfully.");
-            } catch (err) {
-                setError('Failed to delete offer.');
-            }
+        try {
+            await axios.delete(`http://localhost:8000/offers/delete/${id}`);
+            setOffers(offers.filter(offer => offer._id !== id));
+            toast.success("Offer deleted successfully.");
+        } catch (err) {
+            setError('Failed to delete offer.');
+            toast.error("Failed to delete offer.");
         }
     };
 
@@ -44,6 +45,7 @@ function OfferDashboard() {
 
     return (
         <div className="offer-dashboard">
+            <ToastContainer />
             <h2>Offer Dashboard</h2>
             {error && <p className="error-message">{error}</p>}
             <button onClick={handleAddOffer} className="add-offer-btn">Add Offer</button>

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './css/ShowcaseForm.css';
 
 function OfferForm() {
@@ -34,10 +36,11 @@ function OfferForm() {
 
     try {
       await axios.post('http://localhost:8000/offers/add', formData);
-      alert('Offer Added');
+      toast.success('Offer Added');
       resetForm();
     } catch (err) {
       setError('Failed to add offer. Please try again.');
+      toast.error('Failed to add offer. Please try again.');
       console.error(err);
     } finally {
       setLoading(false);
@@ -49,23 +52,23 @@ function OfferForm() {
       <h2>Add Offer</h2>
       {error && <p className="error-message">{error}</p>}
       <form className="offer-form" onSubmit={sendData}>
-      <div className="form-group">
-  <label htmlFor="title">Title</label>
-  <input
-    type="text"
-    id="title"
-    placeholder="Enter Title"
-    value={title}
-    onChange={(e) => {
-      const newValue = e.target.value;
-      // Check if the input contains numbers
-      if (!/\d/.test(newValue)) {
-        setTitle(newValue);
-      }
-    }}
-    required
-  />
-</div>
+        <div className="form-group">
+          <label htmlFor="title">Title</label>
+          <input
+            type="text"
+            id="title"
+            placeholder="Enter Title"
+            value={title}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              // Check if the input contains numbers
+              if (!/\d/.test(newValue)) {
+                setTitle(newValue);
+              }
+            }}
+            required
+          />
+        </div>
         <div className="form-group">
           <label htmlFor="image">Upload Image</label>
           <input
@@ -107,6 +110,7 @@ function OfferForm() {
           </button>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 }

@@ -33,8 +33,9 @@ function Irrigation() {
   return (
     <div className="irrigation-page">
       <section className="irrigation-section">
-        <h1>Irrigation</h1>
+        <h1><center>Irrigation</center></h1>
         
+        {/* Search Bar */}
         <div className="search-bar">
           <input
             type="text"

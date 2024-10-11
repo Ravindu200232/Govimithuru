@@ -1,6 +1,7 @@
 /* Seeds Page Styling */
+@import url('https://fonts.googleapis.com/css2?family=San+Francisco:wght@400;700&display=swap');
 .seeds-page {
-  font-family: Arial, sans-serif;
+  font-family: 'Apple San Francisco', Arial, sans-serif; 
 }
 
 /* Header Styling */
@@ -13,7 +14,7 @@
 }
 
 .header .logo {
-  font-size: 24px;
+  font-size: 32px; /* Increased font size for the logo */
   font-weight: bold;
 }
 
@@ -41,12 +42,37 @@
 .seeds-section h1 {
   text-align: center;
   margin-bottom: 20px;
+  font-size: 28px; /* Increased header size */
 }
 
 /* Search Bar Styling */
 .search-bar {
   text-align: center;
   margin-bottom: 20px;
+}
+
+.sorting-options {
+  display: flex;
+  gap: 10px; /* Spacing between buttons */
+  margin-top: 10px; /* Space above sorting buttons */
+}
+
+.sorting-options button {
+  padding: 8px 12px;
+  border: 1px solid #2196f3;
+  border-radius: 5px;
+  background-color: #d32121;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sorting-options button:hover {
+  background-color: #459ca8; /* Light blue on hover */
+}
+
+.sorting-options .active {
+  background-color: #2196f3;
+  color: rgb(81, 81, 81); /* Highlight active button */
 }
 
 .search-input {

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaSearch } from 'react-icons/fa'; // Import the search icon
 import './css/product.css';
 
 // Import category images
@@ -44,7 +45,10 @@ function Product() {
             value={searchTerm}
             onChange={handleSearch}
           />
-          <button className="technical-name-btn">Search by Technical Name</button>
+          <button className="technical-name-btn">
+            <FaSearch /> {/* Search icon */}
+            Search by Technical Name
+          </button>
         </div>
 
         <div className="product-categories">
@@ -62,17 +66,8 @@ function Product() {
           )}
         </div>
       </section>
-
-      <div>
-        <br></br> <br></br> <br></br> <br></br> <br></br> <br></br> <br></br> <br></br> <br></br> <br></br> <br></br> <br></br> <br></br>
-      </div>
     </div>
-    
   );
-
-
-
-  
 }
 
 export default Product;

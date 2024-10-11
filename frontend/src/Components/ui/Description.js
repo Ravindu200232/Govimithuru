@@ -1,28 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import { FaShoppingCart, FaStar } from 'react-icons/fa';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './css/Description.css';
 
 function Description() {
-  const { id } = useParams(); // Get item ID from URL
+  const { id } = useParams();
   const [seedItem, setSeedItem] = useState(null);
-  const [quantity, setQuantity] = useState(1); // State for quantity
+  const [quantity, setQuantity] = useState(1);
   const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState({ reviewerName: '', reviewText: '', rating: 1 });
-  const navigate = useNavigate(); // To navigate to the cart
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch item details by ID
     axios.get(`http://localhost:8000/showcase/get/${id}`)
       .then((res) => {
         setSeedItem(res.data.showcaseItem);
       })
       .catch((err) => {
         console.error('Error fetching seed item:', err);
-        alert('Error fetching item details');
+        toast.error('Error fetching item details');
       });
 
-    // Fetch reviews for the item
     axios.get(`http://localhost:8000/reviews/item/${id}`)
       .then((res) => {
         setReviews(res.data);
@@ -34,48 +35,46 @@ function Description() {
 
   const handleQuantityChange = (e) => {
     const value = parseInt(e.target.value, 10);
-    setQuantity(value >= 1 ? value : 1); // Ensure quantity is at least 1
+    setQuantity(value >= 1 ? value : 1);
   };
 
   const increaseQuantity = () => {
-    setQuantity(prev => prev + 1); // Increase quantity
+    setQuantity(prev => prev + 1);
   };
 
   const decreaseQuantity = () => {
-    setQuantity(prev => (prev > 1 ? prev - 1 : 1)); // Decrease quantity but ensure it's at least 1
+    setQuantity(prev => (prev > 1 ? prev - 1 : 1));
   };
 
-  // Function to calculate discounted price
   const getDiscountedPrice = (price, discount) => {
     return price - (price * (discount / 100));
   };
 
   const addToCart = () => {
     if (!seedItem) {
-        return alert('Item details are not available');
+      return toast.error('Item details are not available');
     }
 
     const discountedPrice = getDiscountedPrice(seedItem.price, seedItem.discount);
 
     axios.post('http://localhost:8000/card/add', {
-        itemNamec: seedItem.name,
-        categoryc: seedItem.category,
-        pricec: discountedPrice.toFixed(2), // Send the discounted price to the backend
-        quantityc: quantity, // Send the quantity to the backend
-        imagec: seedItem.imageBase64 // Add imageBase64 to the cart data
+      itemNamec: seedItem.name,
+      categoryc: seedItem.category,
+      pricec: discountedPrice.toFixed(2),
+      quantityc: quantity,
+      imagec: seedItem.imageBase64
     })
     .then(response => {
-        if (response.status === 200) {
-            
-            navigate('/cart'); // Redirect to the cart page
-        }
+      if (response.status === 200) {
+        toast.success('Item added to cart successfully');
+        navigate('/cart');
+      }
     })
     .catch(err => {
-        console.error('Error adding item to cart:', err);
-        alert('Error adding item to cart');
+      console.error('Error adding item to cart:', err);
+      toast.error('Error adding item to cart');
     });
-};
-
+  };
 
   const handleReviewChange = (e) => {
     const { name, value } = e.target;
@@ -84,7 +83,7 @@ function Description() {
 
   const submitReview = () => {
     if (!newReview.reviewerName || !newReview.reviewText) {
-      return alert('Please fill out all fields');
+      return toast.error('Please fill out all fields');
     }
 
     axios.post('http://localhost:8000/reviews/add', {
@@ -94,16 +93,15 @@ function Description() {
       rating: newReview.rating,
     })
     .then(() => {
-      alert('Review added successfully');
+      toast.success('Review added successfully');
       setNewReview({ reviewerName: '', reviewText: '', rating: 1 });
-      // Refresh reviews
       axios.get(`http://localhost:8000/reviews/item/${id}`)
         .then((res) => setReviews(res.data))
         .catch((err) => console.error('Error fetching reviews:', err));
     })
     .catch(err => {
       console.error('Error adding review:', err);
-      alert('Error adding review');
+      toast.error('Error adding review');
     });
   };
 
@@ -123,7 +121,7 @@ function Description() {
               <>
                 <p className="discount">Original Price: Rs:{seedItem.price.toFixed(2)}</p>
                 <p className="discount-percentage">Discount: {seedItem.discount}% off</p>
-                <p>Discounted Price: Rs:{ (seedItem.price - (seedItem.price * (seedItem.discount / 100))).toFixed(2) }</p>
+                <p>Discounted Price: Rs:{(getDiscountedPrice(seedItem.price, seedItem.discount)).toFixed(2)}</p>
               </>
             ) : (
               <p>Price: Rs:{seedItem.price.toFixed(2)}</p>
@@ -144,7 +142,7 @@ function Description() {
           </div>
           
           <button className="add-to-cart-btn" onClick={addToCart}>
-            Add to Cart
+            <FaShoppingCart style={{ marginRight: '5px' }} /> Add to Cart
           </button>
           
           <div className="reviews-section">
@@ -153,7 +151,7 @@ function Description() {
               <ul>
                 {reviews.map(review => (
                   <li key={review._id} className="review-item">
-                    <strong>{review.reviewerName}</strong> - {review.rating} Stars
+                    <strong>{review.reviewerName}</strong> - {review.rating} <FaStar />
                     <p>{review.reviewText}</p>
                     <small>{new Date(review.createdAt).toLocaleDateString()}</small>
                   </li>
@@ -193,13 +191,16 @@ function Description() {
                 onChange={handleReviewChange} 
               />
               
-              <button onClick={submitReview}>Submit Review</button>
+              <button onClick={submitReview}>
+                <FaStar style={{ marginRight: '5px' }} /> Submit Review
+              </button>
             </div>
           </div>
         </div>
       ) : (
         <p>Loading...</p>
       )}
+      <ToastContainer />
     </div>
   );
 }

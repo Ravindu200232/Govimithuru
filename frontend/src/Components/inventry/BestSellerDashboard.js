@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './css/BestSellerDashboard.css'; // Make sure to create this CSS file
 
 function BestSellerDashboard() {
@@ -27,14 +29,13 @@ function BestSellerDashboard() {
     };
 
     const handleDeleteBestSeller = async (id) => {
-        if (window.confirm("Are you sure you want to delete this item?")) {
-            try {
-                await axios.delete(`http://localhost:8000/bestselling/delete/${id}`);
-                setBestSellers(bestSellers.filter(item => item._id !== id));
-                alert("Item deleted successfully.");
-            } catch (err) {
-                setError('Failed to delete item.');
-            }
+        try {
+            await axios.delete(`http://localhost:8000/bestselling/delete/${id}`);
+            setBestSellers(bestSellers.filter(item => item._id !== id));
+            toast.success("Item deleted successfully.");
+        } catch (err) {
+            setError('Failed to delete item.');
+            toast.error("Failed to delete item.");
         }
     };
 
@@ -44,6 +45,7 @@ function BestSellerDashboard() {
 
     return (
         <div className="best-seller-dashboard">
+            <ToastContainer />
             <h2>Best Seller Dashboard</h2>
             {error && <p className="error-message">{error}</p>}
             <button onClick={handleAddBestSeller} className="add-item-btn">Add Best Seller</button>

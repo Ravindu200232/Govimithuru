@@ -8,8 +8,8 @@ const PaymentSchema = new Schema({
   cardNumber: { type: String, required: true }, // Ensure this is masked before saving
   expirationDate: { type: String, required: true },
   totalPrice: { type: Number, required: true },
-  // cvv is no longer required, or remove it completely from the schema if you don't need it.
-  cvv: { type: String, required: false } // Optional now or remove this field
+  cvv: { type: String, required: false }, // Optional now or remove this field
+  date: { type: Date, default: Date.now } // Automatically set the date to now
 });
 
 module.exports = mongoose.model('Payment', PaymentSchema);
