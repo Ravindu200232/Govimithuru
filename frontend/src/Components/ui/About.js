@@ -20,13 +20,14 @@ const About = () => {
                     <h2>Get to Know Us</h2>
                     <h1>The Best Agriculture Market</h1>
                     <p>
-                        There are many variations of passages of lorem ipsum available, but the majority have suffered alteration. 
-                        There are many variations of passages of lorem ipsum available but the majority have suffered alteration in some form.
+                    In the world of agriculture, the landscape is ever-evolving, with numerous markets showcasing a rich tapestry of produce. However, many of these markets have undergone significant transformations over time.
+
+The pulse of the industry beats strongly in regions where innovation meets tradition, driving a dynamic exchange of goods. From the rolling fields of grain to vibrant farmer’s markets, the agriculture sector continually adapts to meet the needs of a changing world.
                     </p>
                     <ul>
-                        <li>Suscipit suscipit sagittis leo</li>
-                        <li>Rutrum estibulum dignissim posuere</li>
-                        <li>Lorem ipsum on the tend to repeat</li>
+                        <li>Diverse Offerings: A variety of crops and livestock, each contributing to the local economy.</li>
+                        <li>Sustainable Practices: Increasing focus on eco-friendly farming techniques that ensure the longevity of resources.</li>
+                        <li>Market Access: Enhanced distribution channels that connect farmers directly to consumers.</li>
                     </ul>
                     <button className="discover-btn">Discover More</button>
                 </div>
