@@ -90,6 +90,11 @@ function InventoryDashboard() {
             startY: 70, // Adjust start position after company details
         });
 
+        const pageHeight = doc.internal.pageSize.getHeight();
+        doc.setFontSize(10);
+        doc.text('Generated on: ' + new Date().toLocaleDateString(), 10, pageHeight - 20);
+        doc.text('Thank you for using our service!', 10, pageHeight - 15);
+
         doc.save('inventory_items.pdf');
     };
 
@@ -112,6 +117,11 @@ function InventoryDashboard() {
         doc.text(`Category: ${item.category}`, 20, 100);
         doc.text(`Unit: ${item.unit}`, 20, 110);
         doc.text(`Available Item: ${item.availableItem}`, 20, 120);
+
+        const pageHeight = doc.internal.pageSize.getHeight();
+        doc.setFontSize(10);
+        doc.text('Generated on: ' + new Date().toLocaleDateString(), 10, pageHeight - 20);
+        doc.text('Thank you for using our service!', 10, pageHeight - 15);
         
         doc.save(`${item.name}.pdf`); // Save with item name as file name
     };
