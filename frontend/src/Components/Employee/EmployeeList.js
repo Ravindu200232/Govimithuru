@@ -144,6 +144,12 @@ function EmployeeList() {
             const imgData = `data:image/jpeg;base64,${employee.profileImageBase64}`;
             doc.addImage(imgData, 'JPEG', 10, 190, 50, 50);
         }
+
+        const pageHeight = doc.internal.pageSize.getHeight();
+        doc.setFontSize(10);
+        doc.text('Generated on: ' + new Date().toLocaleDateString(), 10, pageHeight - 20);
+        doc.text('Thank you for using our service!', 10, pageHeight - 15);
+
         doc.save(`Employee_${employee._id}.pdf`);
     };
 

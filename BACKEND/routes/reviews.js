@@ -2,6 +2,17 @@ const express = require('express');
 const router = express.Router();
 const Review = require('../models/Review');
 
+
+// Get all reviews
+router.get('/', async (req, res) => {
+  try {
+    const reviews = await Review.find().sort({ createdAt: -1 });
+    res.status(200).json(reviews);
+  } catch (err) {
+    res.status(500).send({ status: "Error fetching reviews", error: err.message });
+  }
+});
+
 // Get reviews for an item
 router.get('/item/:itemId', async (req, res) => {
   try {

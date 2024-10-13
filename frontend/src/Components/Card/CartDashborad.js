@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
+import autoTable from "jspdf-autotable";
 import './css/Dashboard.css';
 import logo from '../ui/img/logo.png';
 
@@ -49,42 +50,73 @@ function Carts() {
 
     const generatePDF = () => {
         const doc = new jsPDF();
-
+    
         // Add logo
-        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Adjust the position and size as needed
-
+        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Adjust position and size as needed
+    
         // Add company details
         doc.setFontSize(10);
         doc.text("Govimithu Pvt Limited", 14, 40);
         doc.text("Anuradhapura Kahatagasdigiliya", 14, 45);
         doc.text("Phone Number: 0789840996", 14, 50);
-
+    
         // Title
         doc.setFontSize(20);
         doc.text('Cart Items', 14, 60);
-
-        // Column headings
-        doc.setFontSize(12);
-        doc.text('ID', 14, 70);
-        doc.text('Name', 40, 70);
-        doc.text('Category', 80, 70);
-        doc.text('Price', 120, 70);
-        doc.text('Available', 150, 70);
-        doc.text('Quantity', 180, 70);
-        
-        // Adding the items to the PDF
-        filteredItems.forEach((item, index) => {
-            const y = 80 + (index * 10);
-            doc.text(`${index + 1}`, 14, y);
-            doc.text(item.itemNamec, 40, y);
-            doc.text(item.categoryc, 80, y);
-            doc.text(`RS:${item.pricec.toFixed(2)}`, 120, y);
-            doc.text(`${item.available}`, 150, y);
-            doc.text(`${item.quantityc}`, 180, y);
+    
+        // Define columns for the table
+        const columns = [
+            { header: 'ID', dataKey: 'id' },
+            { header: 'Name', dataKey: 'itemNamec' },
+            { header: 'Category', dataKey: 'categoryc' },
+            { header: 'Price', dataKey: 'pricec' },
+            { header: 'Available', dataKey: 'available' },
+            { header: 'Quantity', dataKey: 'quantityc' }
+        ];
+    
+        // Prepare data for the table
+        const rows = filteredItems.map((item, index) => ({
+            id: index + 1,
+            itemNamec: item.itemNamec,
+            categoryc: item.categoryc,
+            pricec: `Rs: ${item.pricec.toFixed(2)}`,
+            available: item.available,
+            quantityc: item.quantityc
+        }));
+    
+        // Add the table to the PDF
+        autoTable(doc, {
+            head: [columns.map(col => col.header)],
+            body: rows.map(row => columns.map(col => row[col.dataKey])),
+            startY: 70,
+            styles: {
+                fillColor: [240, 240, 240],
+                cellPadding: 3,
+                fontSize: 10,
+                textColor: [0, 0, 0],
+                overflow: 'linebreak',
+            },
+            headStyles: {
+                fillColor: [0, 102, 204], // Blue color for headers
+                textColor: [255, 255, 255], // White text
+            },
+            alternateRowStyles: {
+                fillColor: [255, 255, 255], // White for alternate rows
+            },
         });
-
+    
+        // Footer
+        const pageHeight = doc.internal.pageSize.getHeight();
+        doc.setFontSize(10);
+        doc.text('Generated on: ' + new Date().toLocaleDateString(), 10, pageHeight - 20);
+        doc.text('Thank you for using our service!', 10, pageHeight - 15);
+    
+        // Save the PDF
         doc.save('cart_items.pdf');
     };
+    
+    
+    
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div className="error-message">{error}</div>;
