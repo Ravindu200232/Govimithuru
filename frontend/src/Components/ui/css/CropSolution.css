@@ -27,6 +27,7 @@
 .crop-item {
   text-align: center;
   padding-left: 50px;
+  margin-right: 70px;
   flex: 0 0 auto; /* Prevent items from shrinking */
   width: 100px; /* Adjust width to fit smaller images */
 }
@@ -35,11 +36,12 @@
 .crop-item img {
   max-width: 200px; /* Smaller size for the image */
   border-radius: 20%;
+
   height: 200px; /* Set height to control size while keeping the aspect ratio */
 }
 
 /* Paragraph styling within crop items */
 .crop-item p {
   margin-top: 10px;
-  font-size: 14px; /* Optional: adjust the font size for better balance */
+  font-size: 20px; /* Optional: adjust the font size for better balance */
 }
