@@ -2,15 +2,17 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { jsPDF } from "jspdf";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Employeecss/emplist.css';
-import logo from '../ui/img/logo.png'; // Ensure the path is correct
+import logo from '../ui/img/logo.png';
 
 function EmployeeList() {
     const [employees, setEmployees] = useState([]);
-    const [filteredEmployees, setFilteredEmployees] = useState([]); // New state for filtered employees
+    const [filteredEmployees, setFilteredEmployees] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [searchQuery, setSearchQuery] = useState(''); // New state for search query
+    const [searchQuery, setSearchQuery] = useState('');
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [formData, setFormData] = useState({
         firstName: '',
@@ -30,7 +32,7 @@ function EmployeeList() {
         axios.get('http://localhost:8000/employee/')
             .then((res) => {
                 setEmployees(res.data);
-                setFilteredEmployees(res.data); // Initialize filtered employees
+                setFilteredEmployees(res.data);
                 setLoading(false);
             })
             .catch((err) => {
@@ -39,19 +41,18 @@ function EmployeeList() {
             });
     }, []);
 
-    // Handle search
     useEffect(() => {
         const lowercasedQuery = searchQuery.toLowerCase();
-        const filtered = employees.filter(emp =>
-            emp.firstName.toLowerCase().includes(lowercasedQuery) ||
-            emp.lastName.toLowerCase().includes(lowercasedQuery) ||
-            emp.email.toLowerCase().includes(lowercasedQuery) ||
-            emp.position.toLowerCase().includes(lowercasedQuery) ||
-            emp.department.toLowerCase().includes(lowercasedQuery) ||
-            emp.phoneNumber.toLowerCase().includes(lowercasedQuery) ||
-            emp.nic.toLowerCase().includes(lowercasedQuery) ||
-            emp.drivingNic.toLowerCase().includes(lowercasedQuery)
-        );
+        const filtered = employees.filter(emp => {
+            return (emp.firstName && emp.firstName.toLowerCase().includes(lowercasedQuery)) ||
+                   (emp.lastName && emp.lastName.toLowerCase().includes(lowercasedQuery)) ||
+                   (emp.email && emp.email.toLowerCase().includes(lowercasedQuery)) ||
+                   (emp.position && emp.position.toLowerCase().includes(lowercasedQuery)) ||
+                   (emp.department && emp.department.toLowerCase().includes(lowercasedQuery)) ||
+                   (emp.phoneNumber && emp.phoneNumber.toLowerCase().includes(lowercasedQuery)) ||
+                   (emp.nic && emp.nic.toLowerCase().includes(lowercasedQuery)) ||
+                   (emp.drivingNic && emp.drivingNic.toLowerCase().includes(lowercasedQuery));
+        });
         setFilteredEmployees(filtered);
     }, [searchQuery, employees]);
 
@@ -64,11 +65,12 @@ function EmployeeList() {
             axios.delete(`http://localhost:8000/employee/delete/${id}`)
                 .then(() => {
                     setEmployees(employees.filter(emp => emp._id !== id));
-                    setFilteredEmployees(filteredEmployees.filter(emp => emp._id !== id)); // Update filtered list
-                    alert('Employee Deleted');
+                    setFilteredEmployees(filteredEmployees.filter(emp => emp._id !== id));
+                    toast.success('Employee Deleted');
                 })
                 .catch((err) => {
                     setError('Failed to delete employee. Please try again.');
+                    toast.error('Failed to delete employee. Please try again.');
                 });
         }
     };
@@ -98,7 +100,7 @@ function EmployeeList() {
         try {
             await axios.put(`http://localhost:8000/employee/update/${selectedEmployee._id}`, formData);
             setEmployees(employees.map(emp => (emp._id === selectedEmployee._id ? { ...emp, ...formData } : emp)));
-            setFilteredEmployees(filteredEmployees.map(emp => (emp._id === selectedEmployee._id ? { ...emp, ...formData } : emp))); // Update filtered list
+            setFilteredEmployees(filteredEmployees.map(emp => (emp._id === selectedEmployee._id ? { ...emp, ...formData } : emp)));
             setSelectedEmployee(null);
             setFormData({
                 firstName: '',
@@ -112,21 +114,19 @@ function EmployeeList() {
                 birthday: '',
                 profileImageBase64: ''
             });
-            alert("Employee updated successfully");
+            toast.success("Employee updated successfully");
         } catch (err) {
-            alert(err.message);
+            toast.error("Failed to update employee: " + err.message);
         }
     };
 
     const generatePDF = (employee) => {
         const doc = new jsPDF();
-        // Add logo
         doc.addImage(logo, 'PNG', 10, 10, 50, 20); 
         doc.setFontSize(12);
         doc.text("Govimithu Pvt Limited", 10, 40);
         doc.text("Anuradhapura Kahatagasdigiliya", 10, 45);
         doc.text("Phone Number: 0789840996", 10, 50);
-        // Add employee details
         doc.setFontSize(20);
         doc.text("Employee Details", 10, 70);
         doc.setFontSize(12);
@@ -159,6 +159,7 @@ function EmployeeList() {
 
     return (
         <div className="employee-list-container">
+            <ToastContainer />
             <h2 className="employee-list-title">Employee List</h2>
             {error && <p className="error-message">{error}</p>}
 
@@ -205,7 +206,7 @@ function EmployeeList() {
                                 <td>{employee.profileImageBase64 ? <img src={`data:image/jpeg;base64,${employee.profileImageBase64}`} alt={`${employee.firstName} ${employee.lastName}`} className="employee-image" /> : 'No Image'}</td>
                                 <td>
                                     <button className="delete-btn" onClick={() => handleDelete(employee._id)}>Delete</button>
-                                    <button className="pdf-btn" onClick={() => generatePDF(employee)}>PDF</button><p></p>
+                                    <button className="pdf-btn" onClick={() => generatePDF(employee)}>PDF</button>
                                     <button className="edit-btn" onClick={() => handleEdit(employee)}>Edit</button>
                                 </td>
                             </tr>

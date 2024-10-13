@@ -52,6 +52,7 @@ function Footer() {
   const handleOptionSelect = (option) => {
     addMessage(option.text, 'user');
     addMessage(option.response, 'ai');
+    if (option.action) option.action();
   };
 
   return (
@@ -102,6 +103,11 @@ function Footer() {
         {/* Chat Bot Icon */}
         <div style={styles.chatBotIcon} onClick={handleChatToggle}>
           <FaCommentDots size={30} style={{ color: '#000' }} />
+        </div>
+
+        {/* WhatsApp Icon */}
+        <div style={styles.whatsappIcon} onClick={() => window.open('https://wa.me/+94789840996', '_blank')}>
+          <FaWhatsapp size={30} style={{ color: '#25D366' }} />
         </div>
       </footer>
 
@@ -155,6 +161,7 @@ const styles = {
     padding: '20px',
     fontFamily: 'Cambria, Cochin, Georgia, Times, "Times New Roman", serif',
     backgroundColor: '#B0EACD',
+    position: 'relative',
   },
   footerLeft: {
     flex: 1,
@@ -216,6 +223,17 @@ const styles = {
   },
   chatBotIcon: {
     position: 'fixed',
+    bottom: '80px',
+    marginBottom:'20px',
+    right: '30px',
+    backgroundColor: '#fff',
+    borderRadius: '50%',
+    padding: '10px',
+    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+    cursor: 'pointer',
+  },
+  whatsappIcon: {
+    position: 'fixed',
     bottom: '30px',
     right: '30px',
     backgroundColor: '#fff',
@@ -235,10 +253,11 @@ const styles = {
     boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
     display: 'flex',
     flexDirection: 'column',
+    zIndex: 1000,
   },
   chatHeader: {
     padding: '10px',
-    backgroundColor: '#25D366', // WhatsApp green color
+    backgroundColor: '#25D366',
     borderBottom: '1px solid #ccc',
     display: 'flex',
     justifyContent: 'space-between',
@@ -263,7 +282,7 @@ const styles = {
   },
   sendButton: {
     padding: '8px 12px',
-    backgroundColor: '#25D366', // WhatsApp green color
+    backgroundColor: '#25D366',
     border: 'none',
     borderRadius: '4px',
     color: '#fff',
@@ -289,18 +308,16 @@ const styles = {
     cursor: 'pointer',
   },
   userMessage: {
-    backgroundColor: '#25D366',
-    borderRadius: '8px',
-    padding: '10px',
+    backgroundColor: '#d1fcd1',
+    borderRadius: '5px',
+    padding: '5px',
     display: 'inline-block',
-    maxWidth: '75%',
   },
   aiMessage: {
-    backgroundColor: '#25D366',
-    borderRadius: '8px',
-    padding: '10px',
+    backgroundColor: '#f1f1f1',
+    borderRadius: '5px',
+    padding: '5px',
     display: 'inline-block',
-    maxWidth: '75%',
   },
 };
 
