@@ -63,26 +63,30 @@ const PayCashDashboard = () => {
                 </thead>
                 <tbody>
                     {payments.length > 0 ? (
-                        payments.map((payment) => (
-                            <tr key={payment._id}>
-                                <td style={{ padding: '10px', border: '1px solid #ddd' }}>{payment.orderId}</td>
-                                <td style={{ padding: '10px', border: '1px solid #ddd' }}>{payment.customerName}</td>
-                                <td style={{ padding: '10px', border: '1px solid #ddd' }}>{payment.customerAddress}</td>
-                                <td style={{ padding: '10px', border: '1px solid #ddd' }}>{payment.customerPhoneNumber}</td>
-                                <td style={{ padding: '10px', border: '1px solid #ddd' }}>${payment.amountPaid.toFixed(2)}</td>
-                                <td style={{ padding: '10px', border: '1px solid #ddd' }}>{new Date(payment.paymentDate).toLocaleDateString()}</td>
-                                <td style={{ padding: '10px', border: '1px solid #ddd' }}>
-                                    {payment.signature ? (
-                                        <img src={payment.signature} alt="Signature" style={{ width: '100px', height: 'auto' }} />
-                                    ) : 'N/A'}
-                                </td>
-                                <td style={{ padding: '10px', border: '1px solid #ddd' }}>
-                                    <button onClick={() => handleDeletePayment(payment._id)} style={{ color: 'red', cursor: 'pointer' }}>
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        ))
+                        payments.map((payment, index) => {
+                            const orderId = `P${index + 1}`; // Generate Order ID like P1, P2, P3
+
+                            return (
+                                <tr key={payment._id}>
+                                    <td style={{ padding: '10px', border: '1px solid #ddd' }}>{orderId}</td>
+                                    <td style={{ padding: '10px', border: '1px solid #ddd' }}>{payment.customerName}</td>
+                                    <td style={{ padding: '10px', border: '1px solid #ddd' }}>{payment.customerAddress}</td>
+                                    <td style={{ padding: '10px', border: '1px solid #ddd' }}>{payment.customerPhoneNumber}</td>
+                                    <td style={{ padding: '10px', border: '1px solid #ddd' }}>${payment.amountPaid.toFixed(2)}</td>
+                                    <td style={{ padding: '10px', border: '1px solid #ddd' }}>{new Date(payment.paymentDate).toLocaleDateString()}</td>
+                                    <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                                        {payment.signature ? (
+                                            <img src={payment.signature} alt="Signature" style={{ width: '100px', height: 'auto' }} />
+                                        ) : 'N/A'}
+                                    </td>
+                                    <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                                        <button onClick={() => handleDeletePayment(payment._id)} style={{ color: 'red', cursor: 'pointer' }}>
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            );
+                        })
                     ) : (
                         <tr>
                             <td colSpan="8" style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'center' }}>No payments found.</td>

@@ -11,11 +11,7 @@ function PaymentSidebar() {
           </NavLink>
         </li>
         
-        <li>
-          <NavLink to="/admin/payments/alerts" activeClassName="active-link" style={styles.link}>
-            Payment Alerts
-          </NavLink>
-        </li>
+        
 
         <li>
           <NavLink to="/admin/payments/summery" activeClassName="active-link" style={styles.link}>
