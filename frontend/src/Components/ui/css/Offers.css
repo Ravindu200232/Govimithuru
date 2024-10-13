@@ -65,7 +65,8 @@
     max-width: 100%;
     height: auto; /* Maintain aspect ratio */
     margin-bottom: 15px;
-  }
+}
+
   
   /* Heading styling within offer items */
   .offer-item h3 {

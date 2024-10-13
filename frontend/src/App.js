@@ -132,7 +132,7 @@ function App() {
           {/* User-facing routes */}
           
           <Route path="/home" element={
-            <ProtectedRoute isLoggedIn={isLoggedIn}>
+            
               <>
                 <Navbar />
                 <Banner />
@@ -143,7 +143,7 @@ function App() {
                 <BestSeller />
                 <Footer />
                 </>
-                        </ProtectedRoute>
+                        
                     } />
 
 
