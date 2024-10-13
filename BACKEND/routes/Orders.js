@@ -124,4 +124,16 @@ router.get('/by-customer', async (req, res) => {
 });
 
 
+// Get all cash orders
+router.get('/cash-orders', async (req, res) => {
+    try {
+        const cashOrders = await Order.find({ paymentType: 'cash' });
+        res.status(200).json(cashOrders);
+    } catch (err) {
+        res.status(500).json({ status: "Error", message: "Error fetching cash orders", error: err.message });
+    }
+});
+
+
+
 module.exports = router;

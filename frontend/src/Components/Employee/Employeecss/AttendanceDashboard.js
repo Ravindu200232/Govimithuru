@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AttendanceDashboard = () => {
     const [attendanceRecords, setAttendanceRecords] = useState([]);
@@ -19,11 +21,12 @@ const AttendanceDashboard = () => {
     const deleteAttendance = async (id) => {
         try {
             await axios.delete(`http://localhost:8000/api/attendances/${id}`);
-            alert('Attendance record deleted successfully!');
+            toast.success('Attendance record deleted successfully!');
             fetchAttendance();
         } catch (error) {
             console.error('Error deleting attendance record:', error);
             setErrorMessage(error.response?.data?.message || 'Error deleting attendance record');
+            toast.error('Error deleting attendance record');
         }
     };
 
@@ -52,7 +55,6 @@ const AttendanceDashboard = () => {
             backgroundColor: '#f2f2f2',
             color: '#000000',
             padding: '10px',
-            
             borderBottom: '1px solid #ddd',
         },
         td: {
@@ -76,6 +78,7 @@ const AttendanceDashboard = () => {
 
     return (
         <div style={styles.container}>
+            <ToastContainer />
             <h1 style={styles.header}>Attendance Dashboard</h1>
             {errorMessage && <p style={styles.errorMessage}>{errorMessage}</p>}
             <table style={styles.table}>
@@ -104,7 +107,7 @@ const AttendanceDashboard = () => {
                                     ))}
                                 </ul>
                             </td>
-                            <td style={styles.td}>{record.attendanceCount}</td> {/* Display Attendance Count */}
+                            <td style={styles.td}>{record.attendanceCount}</td>
                             <td style={styles.td}>
                                 <button 
                                     style={styles.button}

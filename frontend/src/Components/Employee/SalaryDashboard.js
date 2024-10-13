@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { jsPDF } from "jspdf"; 
 import autoTable from "jspdf-autotable";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './SalaryDashboard.css'; 
 import logo from '../ui/img/logo.png';
 
@@ -93,26 +95,33 @@ function SalaryDashboard() {
 
     // Save the PDF
     doc.save(`Paysheet_${salary._id}.pdf`);
-};
-
+  };
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this salary record?")) {
-      axios.delete(`http://localhost:8000/salary/delete/${id}`)
-        .then(() => {
-          alert('Salary record deleted successfully');
-          setSalaries(salaries.filter(salary => salary._id !== id)); // Update local state
-        })
-        .catch(err => {
-          setError('Failed to delete salary record');
-        });
-    }
+    // Ask for confirmation using toast
+    toast.info("Are you sure you want to delete this salary record?", {
+      autoClose: false,
+      closeOnClick: true,
+      onClose: () => {
+        // Handle deletion on confirmation
+        axios.delete(`http://localhost:8000/salary/delete/${id}`)
+          .then(() => {
+            toast.success('Salary record deleted successfully');
+            setSalaries(salaries.filter(salary => salary._id !== id)); // Update local state
+          })
+          .catch(err => {
+            setError('Failed to delete salary record');
+            toast.error('Failed to delete salary record');
+          });
+      }
+    });
   };
 
   if (loading) return <p>Loading...</p>;
 
   return (
     <div className="salary-dashboard">
+      <ToastContainer />
       <h2>Salary Dashboard</h2>
       {error && <p className="error-message">{error}</p>}
       {salaries.length === 0 ? (
@@ -136,10 +145,10 @@ function SalaryDashboard() {
               <tr key={salary._id}>
                 <td>{salary.name}</td>
                 <td>{salary.position}</td>
-                <td>Rs:{salary.basicSalary.toFixed(2)}</td>
-                <td>Rs:{salary.bonus.toFixed(2)}</td>
-                <td>Rs:{salary.ETF.toFixed(2)}</td>
-                <td>Rs:{salary.totalSalary.toFixed(2)}</td>
+                <td>Rs: {salary.basicSalary.toFixed(2)}</td>
+                <td>Rs: {salary.bonus.toFixed(2)}</td>
+                <td>Rs: {salary.ETF.toFixed(2)}</td>
+                <td>Rs: {salary.totalSalary.toFixed(2)}</td>
                 <td>{new Date(salary.payday).toLocaleDateString()}</td>
                 <td>
                   <button onClick={() => generatePDF(salary)}>Download PDF</button>

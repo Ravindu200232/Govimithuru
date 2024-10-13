@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Attendance = () => {
     const [attendanceRecords, setAttendanceRecords] = useState([]);
@@ -19,11 +21,12 @@ const Attendance = () => {
     const markAttendance = async (employeeName, nic) => {
         try {
             await axios.post('http://localhost:8000/api/attendances/increment', { employeeName, nic });
-            alert('Attendance marked successfully!');
+            toast.success('Attendance marked successfully!');
             fetchAttendance();
         } catch (error) {
             console.error('Error marking attendance:', error);
             setErrorMessage(error.response?.data?.message || 'Error marking attendance');
+            toast.error('Error marking attendance');
         }
     };
 
@@ -75,6 +78,7 @@ const Attendance = () => {
 
     return (
         <div style={styles.container}>
+            <ToastContainer />
             <h1 style={styles.header}>Attendance List</h1>
             {errorMessage && <p style={styles.errorMessage}>{errorMessage}</p>}
             <table style={styles.table}>

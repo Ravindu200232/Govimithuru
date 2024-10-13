@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './EmployeeForm.css';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function EmployeeForm() {
     const [firstName, setFirstName] = useState('');
@@ -15,7 +17,7 @@ function EmployeeForm() {
     const [profileImage, setProfileImage] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-  const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState({});
 
     // Handler for image upload
     function handleImageChange(e) {
@@ -57,13 +59,13 @@ function EmployeeForm() {
 
     // Validate NIC
     function isValidNic(nic) {
-        const nicRegex = /^\d{1,11}[0-9V]$/; // First 11 digits followed by either a digit or 'V'
-        return nicRegex.test(nic) && nic.length <= 12; // Ensure length is up to 12
+        const nicRegex = /^\d{12}$|^\d{11}[0-9V]$/; // Exactly 12 characters or 11 digits followed by a digit or 'V'
+        return nicRegex.test(nic);
     }
 
     // Validate Driving NIC
     function isValidDrivingNic(drivingNic) {
-        const drivingNicRegex = /^\d{1,11}[0-9V]$/; // Driving NIC follows the same format
+        const drivingNicRegex = /^\d{12}$|^\d{11}[0-9V]$/; // Driving NIC follows the same format
         return drivingNicRegex.test(drivingNic) && drivingNic.length <= 12;
     }
 
@@ -159,11 +161,12 @@ function EmployeeForm() {
 
         try {
             await axios.post('http://localhost:8000/employee/add', formData);
-            alert('Employee Added');
+            toast.success('Employee added successfully!');
             resetForm();
         } catch (err) {
             setError('Failed to add employee. Please try again.');
             console.error(err);
+            toast.error('Failed to add employee. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -178,77 +181,76 @@ function EmployeeForm() {
 
     return (
         <div className="employee-form-container">
+            <ToastContainer />
             <h2>Add Employee</h2>
             {error && <p className="error-message">{error}</p>}
             <form className="employee-form" onSubmit={sendData}>
-            <div className="form-group">
-    <label htmlFor="firstName">First Name</label>
-    <input
-        type="text"
-        id="firstName"
-        placeholder="Enter First Name"
-        value={firstName}
-        onChange={(e) => {
-            const value = e.target.value;
-            // Allow only letters and spaces
-            if (/^[a-zA-Z\s]*$/.test(value) || value === '') {
-                setFirstName(value);
-            }
-        }}
-        required
-    />
-</div>
+                <div className="form-group">
+                    <label htmlFor="firstName">First Name</label>
+                    <input
+                        type="text"
+                        id="firstName"
+                        placeholder="Enter First Name"
+                        value={firstName}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            // Allow only letters and spaces
+                            if (/^[a-zA-Z\s]*$/.test(value) || value === '') {
+                                setFirstName(value);
+                            }
+                        }}
+                        required
+                    />
+                </div>
 
-<div className="form-group">
-    <label htmlFor="lastName">Last Name</label>
-    <input
-        type="text"
-        id="lastName"
-        placeholder="Enter Last Name"
-        value={lastName}
-        onChange={(e) => {
-            const value = e.target.value;
-            // Allow only letters and spaces
-            if (/^[a-zA-Z\s]*$/.test(value) || value === '') {
-                setLastName(value);
-            }
-        }}
-        required
-    />
-</div>
+                <div className="form-group">
+                    <label htmlFor="lastName">Last Name</label>
+                    <input
+                        type="text"
+                        id="lastName"
+                        placeholder="Enter Last Name"
+                        value={lastName}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            // Allow only letters and spaces
+                            if (/^[a-zA-Z\s]*$/.test(value) || value === '') {
+                                setLastName(value);
+                            }
+                        }}
+                        required
+                    />
+                </div>
 
-<label htmlFor="email">Email</label>
-<input
-  type="email"
-  id="email"
-  placeholder="Enter Email"
-  value={email}
-  onChange={(e) => {
-    const value = e.target.value;
-    // Simple email regex for validation
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                <label htmlFor="email">Email</label>
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter Email"
+                    value={email}
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        // Simple email regex for validation
+                        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    // Allow all input initially
-    setEmail(value);
+                        // Allow all input initially
+                        setEmail(value);
 
-    // Check if the value is invalid
-    if (!emailPattern.test(value) && value !== "") {
-      // Show error if needed (you might want to set an error state here)
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        email: "Invalid email format",
-      }));
-    } else {
-      // Clear the error if valid
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        email: "",
-      }));
-    }
-  }}
-  required
-/>
-{errors.email && <span className="error">{errors.email}</span>}
+                        // Check if the value is invalid
+                        if (!emailPattern.test(value) && value !== "") {
+                            setErrors((prevErrors) => ({
+                                ...prevErrors,
+                                email: "Invalid email format",
+                            }));
+                        } else {
+                            setErrors((prevErrors) => ({
+                                ...prevErrors,
+                                email: "",
+                            }));
+                        }
+                    }}
+                    required
+                />
+                {errors.email && <span className="error">{errors.email}</span>}
 
                 <div className="form-group">
                     <label htmlFor="position">Designation</label>
@@ -270,6 +272,7 @@ function EmployeeForm() {
                         <option value="Finance Manager">Finance Manager</option>
                     </select>
                 </div>
+
                 <div className="form-group">
                     <label htmlFor="department">Department</label>
                     <input
@@ -281,6 +284,7 @@ function EmployeeForm() {
                         required
                     />
                 </div>
+
                 <div className="form-group">
                     <label htmlFor="phoneNumber">Phone Number</label>
                     <input
@@ -300,6 +304,7 @@ function EmployeeForm() {
                         required
                     />
                 </div>
+
                 <div className="form-group">
                     <label htmlFor="nic">NIC</label>
                     <input
@@ -309,7 +314,7 @@ function EmployeeForm() {
                         value={nic}
                         onChange={(e) => {
                             const value = e.target.value.toUpperCase(); // Convert to uppercase for 'V'
-                            // Validate NIC format: 11 digits followed by a digit or 'V'
+                            // Validate NIC format: 12 digits followed by a digit or 'V'
                             if (/^\d{0,11}[0-9V]?$/.test(value)) {
                                 setNic(value);
                             }
@@ -318,6 +323,7 @@ function EmployeeForm() {
                         required
                     />
                 </div>
+
                 {/* Conditionally render Driving License field if position is Driver */}
                 {position === 'Driver' && (
                     <div className="form-group">
@@ -339,18 +345,19 @@ function EmployeeForm() {
                         />
                     </div>
                 )}
+
                 <div className="form-group">
-    <label htmlFor="birthday">Birthday</label>
-    <input
-        type="date"
-        id="birthday"
-        value={birthday}
-        onChange={(e) => setBirthday(e.target.value)}
-        min="1961-01-01" // Restrict minimum date to January 1, 1961
-        max="2006-12-31" // Restrict maximum date to December 31, 2006
-        required
-    />
-</div>
+                    <label htmlFor="birthday">Birthday</label>
+                    <input
+                        type="date"
+                        id="birthday"
+                        value={birthday}
+                        onChange={(e) => setBirthday(e.target.value)}
+                        min="1961-01-01" // Restrict minimum date to January 1, 1961
+                        max="2006-12-31" // Restrict maximum date to December 31, 2006
+                        required
+                    />
+                </div>
 
                 <div className="form-group">
                     <label htmlFor="profileImage">Profile Image</label>
@@ -361,6 +368,7 @@ function EmployeeForm() {
                         onChange={handleImageChange}
                     />
                 </div>
+
                 <div className="form-buttons">
                     <button type="submit" className="add-button" disabled={loading}>
                         {loading ? 'Adding...' : 'Add Employee'}
