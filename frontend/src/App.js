@@ -84,6 +84,7 @@ import Cashbook from './Components/finance/Cashbook';
 import Attendance from './Components/Employee/Attendance';
 import AttendanceDashboard from './Components/Employee/Employeecss/AttendanceDashboard';
 import ProtectedRoute from './ProtectedRoute';
+import ReviewDashboard from './Components/User/ReviewDashboard';
 
 
 function App() {
@@ -132,7 +133,7 @@ function App() {
           {/* User-facing routes */}
           
           <Route path="/home" element={
-            <ProtectedRoute isLoggedIn={isLoggedIn}>
+            
               <>
                 <Navbar />
                 <Banner />
@@ -143,7 +144,7 @@ function App() {
                 <BestSeller />
                 <Footer />
                 </>
-                        </ProtectedRoute>
+                        
                     } />
 
 
@@ -945,6 +946,23 @@ function App() {
                   <SidebarE />
                   <div className="content">
                     <AttendanceDashboard />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+
+          <Route path="/admin/user/review" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <UserSide />
+                  <div className="content">
+                    <ReviewDashboard />
                   </div>
                 </div>
               </>

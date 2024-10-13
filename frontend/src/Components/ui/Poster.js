@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import './css/Poster.css';
 import Banner1 from './img/banner1.webp';
 import Banner2 from './img/banner2.webp';
+import Banner3 from './img/backgroun3.webp';
+import Banner4 from './img/background4.webp';
 
 function Poster({ altText }) {
-  const images = [Banner1, Banner2]; // Array of images
+  const images = [Banner4,Banner1, Banner2,Banner3]; // Array of images
   const [currentIndex, setCurrentIndex] = useState(0); // State to track the current image index
 
   useEffect(() => {
