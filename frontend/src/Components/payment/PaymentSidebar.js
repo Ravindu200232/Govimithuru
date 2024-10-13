@@ -22,6 +22,18 @@ function PaymentSidebar() {
             Payment Summery
           </NavLink>
         </li>
+
+        <li>
+          <NavLink to="/admin/payments/cashpay" activeClassName="active-link" style={styles.link}>
+            Cashpay
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink to="/admin/payments/cashpaydashboard" activeClassName="active-link" style={styles.link}>
+            Cashpay Dashboard
+          </NavLink>
+        </li>
       </ul>
     </aside>
   );
