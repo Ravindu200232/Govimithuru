@@ -7,42 +7,51 @@ function Footer() {
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState('');
 
+  const options = [
+    { text: 'Learn about our services', response: 'We offer a variety of agricultural services, including plant sales and consultations.' },
+    { text: 'View our projects', response: 'We are currently working on several sustainable farming projects focused on community engagement.' },
+    { text: 'Meet our farmers', response: 'We collaborate with local farmers to promote sustainable agriculture and enhance productivity.' },
+    { text: 'Get the latest news', response: 'Stay tuned for our latest news on sustainable farming and community events.' },
+    { text: 'Learn about sustainable practices', response: 'We promote crop rotation and cover crops to maintain soil health.' },
+    { text: 'Ask a common question', response: 'What crops grow best in this region?' },
+    { text: 'Get plant care tips', response: 'Ensure your plants receive at least 6 hours of sunlight daily.' },
+    { text: 'Learn about pest management', response: 'Natural predators can help control pest populations.' },
+    { text: 'Understand weather impacts', response: 'Extreme weather can affect crop yields significantly.' },
+    { text: 'Explore community engagement', response: 'Join our workshops to learn more about sustainable farming.' },
+    { text: 'Contact us on WhatsApp', response: 'You can reach us on WhatsApp for more information!', action: () => window.open('https://wa.me/your-number', '_blank') },
+  ];
+
   const handleChatToggle = () => {
     setShowChat(!showChat);
   };
 
   const handleSend = () => {
     if (userInput.trim()) {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: userInput, sender: 'user' },
-      ]);
-
-      // Hardcoded responses
+      addMessage(userInput, 'user');
       const response = getResponse(userInput);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: response, sender: 'ai' },
-      ]);
+      addMessage(response, 'ai');
       setUserInput('');
     }
+  };
+
+  const addMessage = (text, sender) => {
+    setMessages((prevMessages) => [...prevMessages, { text, sender }]);
   };
 
   const getResponse = (input) => {
     const lowerInput = input.toLowerCase();
     if (lowerInput.includes('hello') || lowerInput.includes('hi')) {
       return 'Hello! How can I help you today?';
-    } else if (lowerInput.includes('services')) {
-      return 'We offer a variety of agricultural services, including plant sales and consultations.';
-    } else if (lowerInput.includes('projects')) {
-      return 'We are currently working on several sustainable farming projects.';
-    } else if (lowerInput.includes('farmers')) {
-      return 'We collaborate with local farmers to promote sustainable agriculture.';
-    } else if (lowerInput.includes('news')) {
-      return 'Stay tuned for our latest news on sustainable farming and community events.';
+    } else if (lowerInput.includes('options')) {
+      return 'Please select an option:';
     } else {
-      return 'I am not sure how to help with that. Can you please specify?';
+      return 'I am not sure how to help with that. Can you please specify or type "options" to see what I can help with?';
     }
+  };
+
+  const handleOptionSelect = (option) => {
+    addMessage(option.text, 'user');
+    addMessage(option.response, 'ai');
   };
 
   return (
@@ -51,7 +60,7 @@ function Footer() {
         <div style={styles.footerLeft}>
           <img src={logo} alt="Govimithuru Logo" style={styles.logo} />
           <p style={styles.footerLeftP}>
-            To offer our ultimate gratitude towards this amazing nature by providing the best agricultural plants and products in order sustain a greener future.
+            To offer our ultimate gratitude towards this amazing nature by providing the best agricultural plants and products in order to sustain a greener future.
           </p>
         </div>
         <div style={styles.footerLinks}>
@@ -84,7 +93,7 @@ function Footer() {
             <a href="https://instagram.com" style={styles.iconLink}>
               <FaInstagram size={24} />
             </a>
-            <a href="https://whatsapp.com" style={styles.iconLink}>
+            <a href="https://wa.me/+94789840996" style={styles.iconLink} target="_blank" rel="noopener noreferrer">
               <FaWhatsapp size={24} />
             </a>
           </div>
@@ -107,9 +116,11 @@ function Footer() {
           </div>
           <div style={styles.chatBody}>
             {messages.map((msg, index) => (
-              <p key={index} style={{ textAlign: msg.sender === 'user' ? 'right' : 'left' }}>
-                {msg.text}
-              </p>
+              <div key={index} style={{ textAlign: msg.sender === 'user' ? 'right' : 'left', margin: '5px 0' }}>
+                <span style={msg.sender === 'user' ? styles.userMessage : styles.aiMessage}>
+                  {msg.text}
+                </span>
+              </div>
             ))}
           </div>
           <div style={styles.chatFooter}>
@@ -122,6 +133,15 @@ function Footer() {
             />
             <button onClick={handleSend} style={styles.sendButton}>Send</button>
           </div>
+          {messages.length && messages[messages.length - 1].text === 'Please select an option:' && (
+            <div style={styles.optionContainer}>
+              {options.map((option, index) => (
+                <button key={index} onClick={() => handleOptionSelect(option)} style={styles.optionButton}>
+                  {option.text}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </>
@@ -218,10 +238,11 @@ const styles = {
   },
   chatHeader: {
     padding: '10px',
-    backgroundColor: '#B0EACD',
+    backgroundColor: '#25D366', // WhatsApp green color
     borderBottom: '1px solid #ccc',
     display: 'flex',
     justifyContent: 'space-between',
+    color: '#fff',
   },
   chatBody: {
     flex: 1,
@@ -242,15 +263,44 @@ const styles = {
   },
   sendButton: {
     padding: '8px 12px',
-    backgroundColor: '#B0EACD',
+    backgroundColor: '#25D366', // WhatsApp green color
     border: 'none',
     borderRadius: '4px',
+    color: '#fff',
     cursor: 'pointer',
   },
   closeChat: {
     background: 'none',
     border: 'none',
     cursor: 'pointer',
+    color: '#fff',
+  },
+  optionContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '10px',
+  },
+  optionButton: {
+    padding: '8px',
+    margin: '4px 0',
+    backgroundColor: '#B0EACD',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+  },
+  userMessage: {
+    backgroundColor: '#25D366',
+    borderRadius: '8px',
+    padding: '10px',
+    display: 'inline-block',
+    maxWidth: '75%',
+  },
+  aiMessage: {
+    backgroundColor: '#25D366',
+    borderRadius: '8px',
+    padding: '10px',
+    display: 'inline-block',
+    maxWidth: '75%',
   },
 };
 
