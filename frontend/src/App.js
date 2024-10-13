@@ -85,6 +85,8 @@ import Attendance from './Components/Employee/Attendance';
 import AttendanceDashboard from './Components/Employee/Employeecss/AttendanceDashboard';
 import ProtectedRoute from './ProtectedRoute';
 import ReviewDashboard from './Components/User/ReviewDashboard';
+import CashPay from './Components/payment/cashPay';
+import PayCashDashboard from './Components/payment/PayCashDashboard';
 
 
 function App() {
@@ -971,6 +973,39 @@ function App() {
             )
           } />
 
+
+
+          <Route path="/admin/payments/cashpay" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <PaymentSidebar />
+                  <div className="content">
+                    <CashPay />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
+
+          <Route path="/admin/payments/cashpaydashboard" element={
+            isAdmin ? (
+              <>
+                <NavbarA />
+                <div className="main-content">
+                  <PaymentSidebar />
+                  <div className="content">
+                    <PayCashDashboard />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Navigate to="/admin/login" />
+            )
+          } />
 
       
 

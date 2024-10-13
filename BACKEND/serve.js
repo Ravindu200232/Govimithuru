@@ -58,9 +58,11 @@ const cropSolution = require("./routes/cropSolutions");
 const bestSellingRouter = require('./routes/bestSelling');
 const otherExpensesRoutes = require("./routes/otherExpensesRoutes");
 const OrderRouter = require("./routes/Orders");
+const PayCash = require('./routes/payCash');
 
 // API Endpoints
 app.use("/auth", authRouter);
+app.use("/paycash",PayCash)
 app.use("/inventoryalert", inventoryAlertRoutes);
 app.use('/api/attendances', attendancesRoutes);
 app.use("/offers", OfferRouter);
