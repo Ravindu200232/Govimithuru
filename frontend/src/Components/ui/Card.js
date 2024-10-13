@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaTrash, FaPlus, FaMinus } from 'react-icons/fa'; // Importing icons
+import { ToastContainer, toast } from 'react-toastify'; // Import toast
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS for toast
 import './css/Cart.css';
 
 function Cart() {
@@ -30,7 +32,7 @@ function Cart() {
       })
       .catch(err => {
         console.error('Error fetching cart items:', err);
-        alert('Error fetching cart items');
+        toast.error('Error fetching cart items');
       });
   }, []);
 
@@ -48,7 +50,7 @@ function Cart() {
     const selectedItems = cartItems.filter(item => checkedItems[item._id]);
     
     if (selectedItems.length === 0) {
-      alert('Please select at least one item to proceed to checkout.');
+      toast.error('Please select at least one item to proceed to checkout.');
       return;
     }
 
@@ -69,6 +71,7 @@ function Cart() {
         })
         .catch(err => {
           console.error(`Error updating quantity for item ${item.id}:`, err);
+          toast.error(`Error updating quantity for item ${item.id}`);
         });
     });
 
@@ -78,9 +81,11 @@ function Cart() {
           return axios.delete(`http://localhost:8000/card/delete/${item._id}`)
             .then(() => {
               console.log(`Item ${item._id} deleted successfully`);
+              toast.success(`Item ${item.itemNamec} removed from cart.`);
             })
             .catch(err => {
               console.error(`Error deleting item ${item._id}:`, err);
+              toast.error(`Error deleting item ${item._id}`);
             });
         });
 
@@ -91,7 +96,7 @@ function Cart() {
       })
       .catch(err => {
         console.error('Error during checkout process:', err);
-        alert('An error occurred during checkout.');
+        toast.error('An error occurred during checkout.');
       });
   };
 
@@ -106,10 +111,11 @@ function Cart() {
     axios.delete(`http://localhost:8000/card/delete/${id}`)
       .then(() => {
         setCartItems(cartItems.filter(item => item._id !== id));
+        toast.success('Item removed from cart.');
       })
       .catch(err => {
         console.error('Error removing item from cart:', err);
-        alert('Error removing item from cart');
+        toast.error('Error removing item from cart.');
       });
   };
 
@@ -180,6 +186,7 @@ function Cart() {
           <FaShoppingCart /> Check Out
         </button>
       </div>
+      <ToastContainer /> {/* Add ToastContainer here */}
     </div>
   );
 }

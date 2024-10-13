@@ -443,6 +443,7 @@ function OrderSummary() {
         value = value.slice(0, 2) + '/' + value.slice(2, 4);
       }
 
+      // Update payment details
       handlePaymentChange({
         target: { name: "expirationDate", value }
       });
@@ -455,16 +456,21 @@ function OrderSummary() {
           expirationDate: "Invalid expiration date format (MM/YY)",
         }));
       } else {
-        // Further check if the date is in the past
         const [month, year] = value.split('/').map(Number);
         const currentDate = new Date();
         const currentYear = currentDate.getFullYear() % 100; // Get last two digits of the year
         const currentMonth = currentDate.getMonth() + 1; // Months are 0-based
 
+        // Allow input only for future dates
         if (year < currentYear || (year === currentYear && month < currentMonth)) {
+          // Prevent past date input by resetting the value
+          setPaymentDetails((prevDetails) => ({
+            ...prevDetails,
+            expirationDate: ''
+          }));
           setErrors((prevErrors) => ({
             ...prevErrors,
-            expirationDate: "Expiration date is in the past",
+            expirationDate: "Expiration date must be in the future",
           }));
         } else {
           setErrors((prevErrors) => ({
@@ -479,6 +485,8 @@ function OrderSummary() {
   />
   {errors.expirationDate && <span className="error">{errors.expirationDate}</span>}
 </label>
+
+
 
 
 <label>
