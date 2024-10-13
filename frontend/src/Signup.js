@@ -15,7 +15,7 @@ const Signup = () => {
     });
 
     const [errors, setErrors] = useState({});
-    const [formMessage, setFormMessage] = useState(''); // For success or error message
+    const [formMessage, setFormMessage] = useState('');
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -30,7 +30,7 @@ const Signup = () => {
             case 'lastname':
                 const namePattern = /^[A-Za-z\s]*$/;
                 if (!namePattern.test(value)) {
-                    errorMessage = "Name can only contain letters and spaces.";
+                    errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)} can only contain letters and spaces.`;
                 }
                 break;
             case 'username':
@@ -61,6 +61,15 @@ const Signup = () => {
         setErrors((prevErrors) => ({ ...prevErrors, [name]: errorMessage }));
     };
 
+    const handleKeyPress = (e, type) => {
+        const allowedEmailChars = /^[a-zA-Z0-9@._-]*$/; // Define allowed characters for email
+        const isLetterOrSpecialChar = type === 'email' ? allowedEmailChars.test(e.key) : /^[A-Za-z\s]*$/.test(e.key);
+        
+        if (!isLetterOrSpecialChar) {
+            e.preventDefault();
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (Object.values(errors).some(error => error)) {
@@ -69,7 +78,7 @@ const Signup = () => {
         }
         try {
             const response = await axios.post('http://localhost:8000/auth/signup', formData);
-            setFormMessage(response.data); // Success message from the server
+            setFormMessage(response.data);
             navigate('/login');
         } catch (error) {
             setFormMessage("Email or Username already exists");
@@ -126,7 +135,7 @@ const Signup = () => {
     };
 
     const messageStyle = {
-        color: formMessage.includes('already exists') ? 'red' : 'green', // Red for error, green for success
+        color: formMessage.includes('already exists') ? 'red' : 'green',
         marginBottom: '10px',
         textAlign: 'center'
     };
@@ -149,6 +158,7 @@ const Signup = () => {
                     name="firstname"
                     placeholder="First Name"
                     onChange={handleChange}
+                    onKeyPress={(e) => handleKeyPress(e, 'name')}
                     required
                     style={inputStyle}
                 />
@@ -159,6 +169,7 @@ const Signup = () => {
                     name="lastname"
                     placeholder="Last Name"
                     onChange={handleChange}
+                    onKeyPress={(e) => handleKeyPress(e, 'name')}
                     required
                     style={inputStyle}
                 />
@@ -179,6 +190,7 @@ const Signup = () => {
                     name="email"
                     placeholder="Email"
                     onChange={handleChange}
+                    onKeyPress={(e) => handleKeyPress(e, 'email')}
                     required
                     style={inputStyle}
                 />
