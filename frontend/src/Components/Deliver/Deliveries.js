@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import CSS for toast notifications
+import 'react-toastify/dist/ReactToastify.css';
 import './css/deliverAll.css';
 import logo from '../ui/img/logo.png';
+import jsPDF from 'jspdf';
 
 function DeliveryDashboard() {
     const [deliveries, setDeliveries] = useState([]);
@@ -17,7 +18,12 @@ function DeliveryDashboard() {
         const fetchDeliveries = async () => {
             try {
                 const res = await axios.get('http://localhost:8000/delivery/');
-                setDeliveries(res.data);
+                // Create fake delivery IDs
+                const deliveriesWithFakeIds = res.data.map((delivery, index) => ({
+                    ...delivery,
+                    fakeId: `D${index + 1}` // Assign fake IDs like D1, D2, D3, etc.
+                }));
+                setDeliveries(deliveriesWithFakeIds);
             } catch (err) {
                 toast.error('Error fetching deliveries: ' + err.message);
             }
@@ -91,9 +97,39 @@ function DeliveryDashboard() {
         }
     };
 
+    const handleDownloadPDF = (delivery) => {
+        const doc = new jsPDF();
+
+        // Add logo and company information
+        doc.addImage(logo, 'PNG', 10, 10, 50, 20);
+        doc.setFontSize(12);
+        doc.text("Govimithu Pvt Limited", 10, 40);
+        doc.text("Anuradhapura Kahatagasdigiliya", 10, 45);
+        doc.text("Phone Number: 0789840996", 10, 50);
+
+        // Add delivery information
+        doc.text(`Delivery ID: ${delivery.fakeId}`, 10, 60); // Use the fake ID here
+        doc.text(`Delivery Person: ${delivery.deliveryPersonName}`, 10, 65);
+        doc.text(`Order Date: ${new Date(delivery.deliveryDate).toLocaleDateString()}`, 10, 70);
+        doc.text(`Status: ${delivery.status}`, 10, 75);
+        doc.text(`Address: ${delivery.address}`, 10, 80);
+        doc.text(`Email: ${delivery.email}`, 10, 85);
+
+        // Add item details
+        let yPosition = 95;
+        doc.text("Order Details:", 10, yPosition);
+        yPosition += 10;
+        delivery.deliveryDetails.forEach((detail, index) => {
+            doc.text(`${index + 1}. ${detail.itemName} - Qty: ${detail.quantity}, Price: Rs:${detail.itemPrice}, Total: Rs:${detail.totalPrice}`, 10, yPosition);
+            yPosition += 10;
+        });
+
+        doc.save(`Delivery_${delivery.fakeId}.pdf`); // Use the fake ID for the PDF filename
+    };
+
     return (
         <div>
-            <ToastContainer /> {/* Toast container for displaying notifications */}
+            <ToastContainer />
             <h2 className="delivery-list-title">Delivery Dashboard</h2>
             <div className="search-bar">
                 <input
@@ -107,6 +143,7 @@ function DeliveryDashboard() {
             <table className="delivery-table">
                 <thead>
                     <tr>
+                        <th>Delivery ID</th> {/* Delivery ID column */}
                         <th>Customer Name</th>
                         <th>Order Details</th>
                         <th>Order Date</th>
@@ -120,6 +157,7 @@ function DeliveryDashboard() {
                 <tbody>
                     {filteredDeliveries.map(delivery => (
                         <tr key={delivery._id}>
+                            <td>{delivery.fakeId}</td> {/* Display fake ID */}
                             <td>{delivery.deliveryPersonName}</td>
                             <td>
                                 <button
@@ -160,6 +198,7 @@ function DeliveryDashboard() {
                                 {delivery.status !== 'Delivered' && (
                                     <button className="confirm-btn" onClick={() => handleConfirm(delivery._id)}>Confirm</button>
                                 )}
+                                <button className="pdf-btn" onClick={() => handleDownloadPDF(delivery)}>Download PDF</button>
                             </td>
                         </tr>
                     ))}

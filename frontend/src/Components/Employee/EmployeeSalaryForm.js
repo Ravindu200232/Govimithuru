@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Employeecss/EmployeeSalaryForm.css';
 
 function EmployeeSalaryForm() {
@@ -47,7 +49,7 @@ function EmployeeSalaryForm() {
       totalSalary // Send total salary to the backend
     })
       .then(() => {
-        alert('Salary added successfully');
+        toast.success('Salary added successfully!');
         // Clear form
         setEmployeeId('');
         setBonus('');
@@ -58,11 +60,13 @@ function EmployeeSalaryForm() {
       })
       .catch(err => {
         setError('Failed to add salary');
+        toast.error('Failed to add salary');
       });
   };
 
   return (
     <div>
+      <ToastContainer />
       <h2>Add Employee Salary</h2>
       {error && <p className="error-message">{error}</p>}
       <form onSubmit={handleSubmit}>

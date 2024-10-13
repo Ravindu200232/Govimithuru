@@ -11,15 +11,23 @@ function PaymentSidebar() {
           </NavLink>
         </li>
         
-        <li>
-          <NavLink to="/admin/payments/alerts" activeClassName="active-link" style={styles.link}>
-            Payment Alerts
-          </NavLink>
-        </li>
+        
 
         <li>
           <NavLink to="/admin/payments/summery" activeClassName="active-link" style={styles.link}>
             Payment Summery
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink to="/admin/payments/cashpay" activeClassName="active-link" style={styles.link}>
+            Cashpay
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink to="/admin/payments/cashpaydashboard" activeClassName="active-link" style={styles.link}>
+            Cashpay Dashboard
           </NavLink>
         </li>
       </ul>
