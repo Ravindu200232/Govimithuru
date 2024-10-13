@@ -209,6 +209,11 @@ function AllInventory() {
             theme: 'striped'
         });
 
+        const pageHeight = doc.internal.pageSize.getHeight();
+        doc.setFontSize(10);
+        doc.text('Generated on: ' + new Date().toLocaleDateString(), 10, pageHeight - 20);
+        doc.text('Thank you for using our service!', 10, pageHeight - 15);
+
         doc.save('inventory_list.pdf');
     };
 
