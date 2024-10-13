@@ -57,13 +57,13 @@ function EmployeeForm() {
 
     // Validate NIC
     function isValidNic(nic) {
-        const nicRegex = /^\d{1,11}[0-9V]$/; // First 11 digits followed by either a digit or 'V'
-        return nicRegex.test(nic) && nic.length <= 12; // Ensure length is up to 12
+        const nicRegex = /^\d{12}$|^\d{11}[0-9V]$/; // Exactly 12 characters or 11 digits followed by a digit or 'V'
+        return nicRegex.test(nic);
     }
 
     // Validate Driving NIC
     function isValidDrivingNic(drivingNic) {
-        const drivingNicRegex = /^\d{1,11}[0-9V]$/; // Driving NIC follows the same format
+        const drivingNicRegex = /^\d{12}$|^\d{11}[0-9V]$/; // Driving NIC follows the same format
         return drivingNicRegex.test(drivingNic) && drivingNic.length <= 12;
     }
 
@@ -217,6 +217,8 @@ function EmployeeForm() {
     />
 </div>
 
+
+
 <label htmlFor="email">Email</label>
 <input
   type="email"
@@ -309,7 +311,7 @@ function EmployeeForm() {
                         value={nic}
                         onChange={(e) => {
                             const value = e.target.value.toUpperCase(); // Convert to uppercase for 'V'
-                            // Validate NIC format: 11 digits followed by a digit or 'V'
+                            // Validate NIC format: 12 digits followed by a digit or 'V'
                             if (/^\d{0,11}[0-9V]?$/.test(value)) {
                                 setNic(value);
                             }
@@ -361,6 +363,7 @@ function EmployeeForm() {
                         onChange={handleImageChange}
                     />
                 </div>
+                
                 <div className="form-buttons">
                     <button type="submit" className="add-button" disabled={loading}>
                         {loading ? 'Adding...' : 'Add Employee'}
