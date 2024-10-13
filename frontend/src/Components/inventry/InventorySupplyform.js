@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './css/InventorySupplyform.css';
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const predefinedItems = [
   //seed
@@ -144,24 +146,28 @@ function InventorySupplyform() {
 
     axios.post("http://localhost:8000/inventoryitem/add", newSupItem)
       .then(() => {
-        alert("Item Added");
+        toast.success("Item Added");
         // Reset form fields
-        setName("");
-        setCompanyName("");
-        setDescription("");
-        setCategory("");
-        setPacketSize(1);
-        setUnit("kg");
-        setQuantityAvailable("");
-        setSupplyDate("");
-        setMfdDate("");
-        setExpireDate("");
-        setPhoneNumber("");
+        resetForm();
       })
       .catch((err) => {
-        alert("Error adding item: " + err.message);
+        toast.error("Error adding item: " + err.message);
       });
   }
+
+  const resetForm = () => {
+    setName("");
+    setCompanyName("");
+    setDescription("");
+    setCategory("");
+    setPacketSize(1);
+    setUnit("kg");
+    setQuantityAvailable("");
+    setSupplyDate("");
+    setMfdDate("");
+    setExpireDate("");
+    setPhoneNumber("");
+  };
 
   return (
     <div className="inventory-supply-form-container">
@@ -305,26 +311,26 @@ function InventorySupplyform() {
           />
         </div>
         <div className="form-group">
-                <label htmlFor="mfdDate">Manufacturing Date</label>
-                <input
-                    required
-                    type="date"
-                    id="mfdDate"
-                    value={mfdDate}
-                    onChange={(e) => setMfdDate(e.target.value)}
-                />
-            </div>
-            <div className="form-group">
-                <label htmlFor="expireDate">Expiration Date</label>
-                <input
-                    required
-                    type="date"
-                    id="expireDate"
-                    value={expireDate}
-                    min={new Date(mfdDate).setDate(new Date(mfdDate).getDate() + 1) ? new Date(mfdDate).toISOString().split('T')[0] : ''}
-                    onChange={(e) => setExpireDate(e.target.value)}
-                />
-            </div>
+          <label htmlFor="mfdDate">Manufacturing Date</label>
+          <input
+            required
+            type="date"
+            id="mfdDate"
+            value={mfdDate}
+            onChange={(e) => setMfdDate(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="expireDate">Expiration Date</label>
+          <input
+            required
+            type="date"
+            id="expireDate"
+            value={expireDate}
+            min={new Date(mfdDate).setDate(new Date(mfdDate).getDate() + 1) ? new Date(mfdDate).toISOString().split('T')[0] : ''}
+            onChange={(e) => setExpireDate(e.target.value)}
+          />
+        </div>
         <div className="form-group">
           <label htmlFor="phoneNumber">Phone Number</label>
           <input
@@ -346,6 +352,7 @@ function InventorySupplyform() {
           <button type="button" className="cancel-button" onClick={() => window.location.reload()}>Cancel</button>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 }

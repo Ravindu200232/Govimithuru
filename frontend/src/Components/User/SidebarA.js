@@ -17,8 +17,8 @@ function SidebarA() {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/admin/inventory/supply-form" activeClassName="active-link">
-           
+          <NavLink to="/admin/user/review" activeClassName="active-link">
+           Reviews
           </NavLink>
         </li>
         <li>

@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { jsPDF } from 'jspdf'; // Import jsPDF
 import 'jspdf-autotable'; // Import autoTable
-
+import { ToastContainer, toast } from 'react-toastify'; // Import Toast
+import 'react-toastify/dist/ReactToastify.css'; // Import Toast CSS
 import logo from '../ui/img/logo.png';
 
 const OtherExpensesDashboard = () => {
@@ -26,14 +27,13 @@ const OtherExpensesDashboard = () => {
     }, []);
 
     const handleDelete = async (id) => {
-        if (window.confirm('Are you sure you want to delete this expense?')) {
-            try {
-                await axios.delete(`http://localhost:8000/api/otherexpenses/${id}`);
-                setExpenses(expenses.filter((expense) => expense._id !== id));
-                alert('Expense deleted successfully');
-            } catch (err) {
-                setError('Error deleting expense: ' + err.message);
-            }
+        try {
+            await axios.delete(`http://localhost:8000/api/otherexpenses/${id}`);
+            setExpenses(expenses.filter((expense) => expense._id !== id));
+            toast.success('Expense deleted successfully!');
+        } catch (err) {
+            setError('Error deleting expense: ' + err.message);
+            toast.error('Error deleting expense: ' + err.message);
         }
     };
 
@@ -82,8 +82,9 @@ const OtherExpensesDashboard = () => {
 
     return (
         <div>
+            <ToastContainer />
             <h2>Other Expenses</h2>
-            <button onClick={generatePDF} className="download-pdf-btn">Download PDF</button> {/* Download PDF Button */}
+            <button onClick={generatePDF} className="download-pdf-btn">Download PDF</button>
             {expenses.length === 0 ? (
                 <p>No expenses available.</p>
             ) : (

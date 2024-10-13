@@ -5,6 +5,8 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import './css/inventryAll.css';
 import logo from '../ui/img/logo.png';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const nameOptions = [
     // Growth Promoters
@@ -118,6 +120,7 @@ function AllInventory() {
     const [items, setItems] = useState([]);
     const [editingItemId, setEditingItemId] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
+    const [showExpiringItems, setShowExpiringItems] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -127,7 +130,7 @@ function AllInventory() {
                 setItems(res.data);
             })
             .catch((err) => {
-                alert(err.message);
+                toast.error(err.message); // Replace alert with toast
             });
     }, []);
 
@@ -138,33 +141,33 @@ function AllInventory() {
     const handleDelete = (id) => {
         axios.delete(`http://localhost:8000/inventoryitem/delete/${id}`)
             .then((res) => {
-                alert(res.data.status);
+                toast.success(res.data.status); // Use toast instead of alert
                 setItems((prevItems) => prevItems.filter(item => item._id !== id));
             })
             .catch((err) => {
-                alert(err.message);
+                toast.error(err.message); // Use toast for error messages
             });
     };
 
     const handleAggregate = () => {
         axios.post("http://localhost:8000/availableitem/aggregate")
             .then((res) => {
-                alert(res.data.message);
+                toast.success(res.data.message); // Use toast instead of alert
             })
             .catch((err) => {
-                alert(err.message);
+                toast.error(err.message); // Use toast for error messages
             });
     };
 
     const handleUpdate = (item) => {
         axios.put(`http://localhost:8000/inventoryitem/update/${item._id}`, item)
             .then((res) => {
-                alert(res.data.status);
+                toast.success(res.data.status); // Use toast instead of alert
                 setItems((prevItems) => prevItems.map(i => (i._id === item._id ? item : i)));
                 setEditingItemId(null);
             })
             .catch((err) => {
-                alert(err.message);
+                toast.error(err.message); // Use toast for error messages
             });
     };
 
@@ -206,22 +209,44 @@ function AllInventory() {
             theme: 'striped'
         });
 
+        const pageHeight = doc.internal.pageSize.getHeight();
+        doc.setFontSize(10);
+        doc.text('Generated on: ' + new Date().toLocaleDateString(), 10, pageHeight - 20);
+        doc.text('Thank you for using our service!', 10, pageHeight - 15);
+
         doc.save('inventory_list.pdf');
     };
 
+    const isExpiringSoon = (expireDate) => {
+        const today = new Date();
+        const expDate = new Date(expireDate);
+        const timeDiff = expDate - today;
+        const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+        return daysDiff <= 10 && daysDiff >= 0; // Within 10 days
+    };
+
+    const handleShowExpiringItems = () => {
+        setShowExpiringItems(prev => !prev);
+    };
+
     // Filter items based on the search term
-    const filteredItems = items.filter(item =>
-        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.supName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.unit.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.quantityAvailable.toString().includes(searchTerm) ||
-        item.supplyDate.includes(searchTerm)
-    );
+    const filteredItems = items.filter(item => {
+        const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.supName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.unit.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.quantityAvailable.toString().includes(searchTerm) ||
+            item.supplyDate.includes(searchTerm);
+
+        const isExpiring = showExpiringItems ? isExpiringSoon(item.expireDate) : true;
+
+        return matchesSearch && isExpiring;
+    });
 
     return (
         <div>
+            <ToastContainer /> {/* Include ToastContainer here */}
             <h2 className="inventory-list-title">Inventory List</h2>
             <div className="search-bar">
                 <input
@@ -233,6 +258,10 @@ function AllInventory() {
                 <button className="search-btn">Search</button>
             </div>
             <button className="aggregate-btn" onClick={handleAggregate}>Aggregate Items</button>
+            <p></p>
+            <button className="expiring-btn" onClick={handleShowExpiringItems}>
+                {showExpiringItems ? "Show All Items" : "Show Expiring Items"}
+            </button>
             <p></p>
             <button className="download-btn" onClick={downloadPDF}>Download Full Inventory PDF</button>
             <table className="inventory-table">
@@ -254,7 +283,7 @@ function AllInventory() {
                 <tbody>
                     {filteredItems.map((item, index) => (
                         <React.Fragment key={item._id}>
-                            <tr>
+                            <tr className={isExpiringSoon(item.expireDate) ? "expiring" : ""}>
                                 <td>{index + 1}</td>
                                 <td>{item.name}</td>
                                 <td>{item.supName}</td>
@@ -262,8 +291,8 @@ function AllInventory() {
                                 <td>{item.category}</td>
                                 <td>{item.unit}</td>
                                 <td>{item.quantityAvailable}</td>
-                                <th>{item.mfdDate}</th>
-                                <th>{item.expireDate}</th>
+                                <td>{item.mfdDate}</td>
+                                <td>{item.expireDate}</td>
                                 <td>{item.supplyDate}</td>
                                 <td>
                                     <button className="delete-btn" onClick={() => handleDelete(item._id)}>Delete</button>
@@ -272,12 +301,12 @@ function AllInventory() {
                             </tr>
                             {editingItemId === item._id && (
                                 <tr>
-                                    <td colSpan="9">
+                                    <td colSpan="11">
                                         <div className="edit-row">
-                                        <select
+                                            <select
                                                 value={item.name}
                                                 onChange={(e) => {
-                                                    const updatedItem = { ...item, name: e.target.value }; // Avoid direct mutation
+                                                    const updatedItem = { ...item, name: e.target.value };
                                                     setItems(prevItems => prevItems.map(i => (i._id === item._id ? updatedItem : i)));
                                                 }}
                                             >

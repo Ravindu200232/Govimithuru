@@ -90,7 +90,7 @@ router.post('/validate', async (req, res) => {
     try {
         const emailExists = await Employee.findOne({ email });
         const nicExists = await Employee.findOne({ nic });
-        const drivingNicExists = await Employee.findOne({ drivingNic });
+        const drivingNicExists = await Employee.findOne({ drivingNic, position: 'Driver' });
 
         if (emailExists || nicExists || drivingNicExists) {
             return res.json({ isUnique: false });
@@ -101,6 +101,7 @@ router.post('/validate', async (req, res) => {
         res.status(500).send({ status: 'Error with validation', error: err.message });
     }
 });
+
 
 
 

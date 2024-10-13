@@ -30,6 +30,8 @@ function OrderConfirmation() {
       doc.text(`Address: ${orderData.address}`, 20, 120);
       doc.text(`Postal Code: ${orderData.postalCode}`, 20, 130);
       doc.text("Items:", 20, 140);
+
+      
       
       let yOffset = 150;
       orderData.productDetails.forEach((item) => {

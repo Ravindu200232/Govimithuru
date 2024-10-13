@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const OtherExpensesForm = () => {
     const [expenseName, setExpenseName] = useState('');
@@ -8,8 +10,6 @@ const OtherExpensesForm = () => {
     const [category, setCategory] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
 
     // Predefined categories for expenses
     const categories = [
@@ -27,8 +27,6 @@ const OtherExpensesForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError('');
-        setSuccess('');
 
         try {
             const response = await axios.post('http://localhost:8000/api/otherexpenses/create', {
@@ -38,7 +36,7 @@ const OtherExpensesForm = () => {
                 category,
                 paymentMethod,
             });
-            setSuccess('Expense created successfully');
+            toast.success('Expense created successfully!');
             // Clear form
             setExpenseName('');
             setExpenseDescription('');
@@ -46,59 +44,80 @@ const OtherExpensesForm = () => {
             setCategory('');
             setPaymentMethod('');
         } catch (err) {
-            setError('Error creating expense: ' + err.message);
+            toast.error('Error creating expense: ' + err.message);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Add Other Expense</h2>
-            {error && <p className="error">{error}</p>}
-            {success && <p className="success">{success}</p>}
-            <input
-                type="text"
-                placeholder="Expense Name"
-                value={expenseName}
-                onChange={(e) => setExpenseName(e.target.value)}
-                required
-            />
-            <input
-                type="text"
-                placeholder="Expense Description"
-                value={expenseDescription}
-                onChange={(e) => setExpenseDescription(e.target.value)}
-                required
-            />
-            <input
-                type="number"
-                placeholder="Amount"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                required
-            />
-            <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                required
-            >
-                <option value="" disabled>Select Category</option>
-                {categories.map((cat, index) => (
-                    <option key={index} value={cat}>{cat}</option>
-                ))}
-            </select>
-            <input
-                type="text"
-                placeholder="Payment Method"
-                value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-                required
-            />
-            <button type="submit" disabled={loading}>
-                {loading ? 'Submitting...' : 'Submit'}
-            </button>
-        </form>
+        <div>
+            <ToastContainer />
+            <form onSubmit={handleSubmit}>
+                <h2>Add Other Expense</h2>
+
+                <input
+                    type="text"
+                    placeholder="Expense Name"
+                    value={expenseName}
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        // Allow only letters and spaces
+                        if (/^[a-zA-Z\s]*$/.test(value) || value === "") {
+                            setExpenseName(value);
+                        }
+                    }}
+                    required
+                />
+
+                <input
+                    type="text"
+                    placeholder="Expense Description"
+                    value={expenseDescription}
+                    onChange={(e) => setExpenseDescription(e.target.value)}
+                    required
+                />
+
+                <input
+                    type="number"
+                    placeholder="Amount"
+                    value={amount}
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        // Ensure the amount is a non-negative number
+                        if (value === "" || /^[0-9]*\.?[0-9]*$/.test(value)) {
+                            setAmount(value);
+                        }
+                    }}
+                    required
+                />
+
+                <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    required
+                >
+                    <option value="" disabled>Select Category</option>
+                    {categories.map((cat, index) => (
+                        <option key={index} value={cat}>{cat}</option>
+                    ))}
+                </select>
+
+                <select
+                    value={paymentMethod}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    required
+                >
+                    <option value="" disabled>Select Payment Method</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Check">Check</option>
+                </select>
+
+                <button type="submit" disabled={loading}>
+                    {loading ? 'Submitting...' : 'Submit'}
+                </button>
+            </form>
+        </div>
     );
 };
 

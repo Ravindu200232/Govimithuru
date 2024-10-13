@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { FaShoppingCart, FaTrash, FaPlus, FaMinus } from 'react-icons/fa'; // Importing icons
 import './css/Cart.css';
 
 function Cart() {
@@ -73,7 +74,6 @@ function Cart() {
 
     Promise.all(updatePromises)
       .then(() => {
-        // Delete the selected items after updating quantities
         const deletePromises = selectedItems.map(item => {
           return axios.delete(`http://localhost:8000/card/delete/${item._id}`)
             .then(() => {
@@ -87,7 +87,6 @@ function Cart() {
         return Promise.all(deletePromises);
       })
       .then(() => {
-        // After deletion, navigate to the order summary
         navigate('/order-summary');
       })
       .catch(err => {
@@ -126,7 +125,7 @@ function Cart() {
   return (
     <div className="cart-page">
       <div className="cart-items">
-        <h2>My Cart</h2>
+        <h2>My Cart <FaShoppingCart /></h2>
         {cartItems.length > 0 ? (
           cartItems.map(item => (
             <div key={item._id} className="cart-item">
@@ -149,14 +148,14 @@ function Cart() {
                     onClick={() => handleQuantityChange(item._id, -1)}
                     disabled={quantities[item._id] <= 1}
                   >
-                    -
+                    <FaMinus />
                   </button>
                   <span>{quantities[item._id]}</span>
                   <button 
                     onClick={() => handleQuantityChange(item._id, 1)}
                     disabled={quantities[item._id] >= availability[item._id]}
                   >
-                    +
+                    <FaPlus />
                     {quantities[item._id] > availability[item._id] && (
                       <span className="warning-message">Max reached</span>
                     )}
@@ -164,7 +163,9 @@ function Cart() {
                 </div>
                 <p>Available: {availability[item._id]}</p>
               </div>
-              <div className="remove-item" onClick={() => removeItem(item._id)}>X</div>
+              <div className="remove-item" onClick={() => removeItem(item._id)}>
+                <FaTrash />
+              </div>
             </div>
           ))
         ) : (
@@ -175,7 +176,9 @@ function Cart() {
         <h3>TOTAL</h3>
         <p>Subtotal: Rs:{calculateTotal()}</p>
         <p>Delivery: Free</p>
-        <button className="checkout-btn" onClick={handleCheckout}>Check Out</button>
+        <button className="checkout-btn" onClick={handleCheckout}>
+          <FaShoppingCart /> Check Out
+        </button>
       </div>
     </div>
   );

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './css/CropSolutionDashboard.css'; // Make sure to create this CSS file
 
 function CropSolutionDashboard() {
@@ -27,14 +29,13 @@ function CropSolutionDashboard() {
     };
 
     const handleDeleteCropSolution = async (id) => {
-        if (window.confirm("Are you sure you want to delete this crop solution?")) {
-            try {
-                await axios.delete(`http://localhost:8000/cropsolutions/delete/${id}`);
-                setCropSolutions(cropSolutions.filter(solution => solution._id !== id));
-                alert("Crop solution deleted successfully.");
-            } catch (err) {
-                setError('Failed to delete crop solution.');
-            }
+        try {
+            await axios.delete(`http://localhost:8000/cropsolutions/delete/${id}`);
+            setCropSolutions(cropSolutions.filter(solution => solution._id !== id));
+            toast.success("Crop solution deleted successfully.");
+        } catch (err) {
+            setError('Failed to delete crop solution.');
+            toast.error("Failed to delete crop solution.");
         }
     };
 
@@ -44,6 +45,7 @@ function CropSolutionDashboard() {
 
     return (
         <div className="crop-solution-dashboard">
+            <ToastContainer />
             <h2>Crop Solution Dashboard</h2>
             {error && <p className="error-message">{error}</p>}
             <button onClick={handleAddCropSolution} className="add-solution-btn">Add Crop Solution</button>
@@ -56,7 +58,7 @@ function CropSolutionDashboard() {
                         <th>Description</th>
                         <th>Link</th>
                         <th>Image</th>
-                        <th>Actions</th> {/* Add Actions column for buttons */}
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>

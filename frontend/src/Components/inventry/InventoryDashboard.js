@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './css/InventoryDashboard.css';
 import logo from '../ui/img/logo.png';
 
@@ -22,15 +24,15 @@ function InventoryDashboard() {
                 checkForLowStock(res.data); // Check for low stock items
             })
             .catch((err) => {
-                alert("Error fetching data: " + err.message);
+                toast.error("Error fetching data: " + err.message);
             });
     };
 
-    const handleSearch = () => {
-        if (searchQuery.trim() === "") {
+    const handleSearch = (query) => {
+        if (query.trim() === "") {
             setFilteredItems(items); // Reset to original items if search query is empty
         } else {
-            const lowerCaseQuery = searchQuery.toLowerCase();
+            const lowerCaseQuery = query.toLowerCase();
             const filtered = items.filter(
                 (item) =>
                     item.name.toLowerCase().includes(lowerCaseQuery) ||
@@ -40,16 +42,13 @@ function InventoryDashboard() {
         }
     };
 
-    const handleDelete = (id) => {
-        if (window.confirm("Are you sure you want to delete this item?")) {
-            axios.delete(`http://localhost:8000/availableitem/${id}`)
-                .then(() => {
-                    alert("Item deleted successfully");
-                    fetchItems(); // Refresh the item list
-                })
-                .catch((err) => {
-                    alert("Error deleting item: " + err.message);
-                });
+    const handleDelete = async (id) => {
+        try {
+            await axios.delete(`http://localhost:8000/availableitem/${id}`);
+            toast.success("Item deleted successfully");
+            fetchItems(); // Refresh the item list
+        } catch (err) {
+            toast.error("Error deleting item: " + err.message);
         }
     };
 
@@ -91,6 +90,11 @@ function InventoryDashboard() {
             startY: 70, // Adjust start position after company details
         });
 
+        const pageHeight = doc.internal.pageSize.getHeight();
+        doc.setFontSize(10);
+        doc.text('Generated on: ' + new Date().toLocaleDateString(), 10, pageHeight - 20);
+        doc.text('Thank you for using our service!', 10, pageHeight - 15);
+
         doc.save('inventory_items.pdf');
     };
 
@@ -113,6 +117,11 @@ function InventoryDashboard() {
         doc.text(`Category: ${item.category}`, 20, 100);
         doc.text(`Unit: ${item.unit}`, 20, 110);
         doc.text(`Available Item: ${item.availableItem}`, 20, 120);
+
+        const pageHeight = doc.internal.pageSize.getHeight();
+        doc.setFontSize(10);
+        doc.text('Generated on: ' + new Date().toLocaleDateString(), 10, pageHeight - 20);
+        doc.text('Thank you for using our service!', 10, pageHeight - 15);
         
         doc.save(`${item.name}.pdf`); // Save with item name as file name
     };
@@ -138,15 +147,18 @@ function InventoryDashboard() {
 
     return (
         <div>
+            <ToastContainer />
             <h2 className="inventory-list-title">Available Inventory Dashboard</h2>
             <div className="search-bar">
                 <input
                     type="text"
                     placeholder="Search by Name or Category"
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        handleSearch(e.target.value); // Call handleSearch on input change
+                    }}
                 />
-                <button className="search-btn" onClick={handleSearch}>Search</button>
             </div>
             <button className="download-btn" onClick={downloadPDF}>Download All Items as PDF</button>
             <table className="inventory-table">

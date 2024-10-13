@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { jsPDF } from "jspdf"; // Import jsPDF
 import "jspdf-autotable"; // Import autoTable
+import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
+import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for toast notifications
 import '../User/css/UserDashboard.css';
 import logo from '../ui/img/logo.png';
 
 function PaymentDashboard() {
     const [payments, setPayments] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         axios.get("http://localhost:8000/payments/")
@@ -14,18 +17,19 @@ function PaymentDashboard() {
                 setPayments(res.data);
             })
             .catch((err) => {
-                alert(err.message);
+                toast.error(err.message); // Use toast for errors
             });
     }, []);
 
     const handleDelete = (id) => {
-        axios.delete(`http://localhost:8000/payment/deletes/${id}`)
+        axios.delete(`http://localhost:8000/payments/${id}`)
             .then(() => {
+                // Update state to remove the deleted payment
                 setPayments(payments.filter(payment => payment._id !== id));
-                alert("Payment deleted successfully");
+                toast.success("Payment deleted successfully"); // Show success toast
             })
             .catch((err) => {
-                alert(err.message);
+                toast.error("Error: " + err.message); // Show error toast
             });
     };
 
@@ -48,7 +52,7 @@ function PaymentDashboard() {
 
         // Prepare table headers
         const headers = [
-            ["ID", "Customer Name", "Card Name", "Card Type", "Card Number", "Expiration Date", "Total Price"]
+            ["ID", "Customer Name", "Card Name", "Card Type", "Card Number", "Expiration Date", "Total Price", "Pay Date"]
         ];
 
         // Prepare table data with auto-generated IDs
@@ -59,7 +63,8 @@ function PaymentDashboard() {
             payment.cardType,
             payment.cardNumber,
             payment.expirationDate,
-            `$${payment.totalPrice.toFixed(2)}`
+            `$${payment.totalPrice.toFixed(2)}`,
+            new Date(payment.date).toLocaleString() // Format the date and time
         ]);
 
         // Create the table
@@ -69,13 +74,31 @@ function PaymentDashboard() {
             startY: 80, // Start below the title
         });
 
+        const pageHeight = doc.internal.pageSize.getHeight();
+        doc.setFontSize(10);
+        doc.text('Generated on: ' + new Date().toLocaleDateString(), 10, pageHeight - 20);
+        doc.text('Thank you for using our service!', 10, pageHeight - 15);
+
         // Save the PDF
         doc.save("PaymentRecords.pdf");
     };
 
+    // Filter payments based on the search term
+    const filteredPayments = payments.filter(payment =>
+        payment.customerName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <div>
+            <ToastContainer /> {/* Include ToastContainer to render toasts */}
             <h2 className="payment-dashboard-title">Payment Dashboard</h2>
+            <input
+                type="text"
+                placeholder="Search by Customer Name"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+            />
             <button onClick={generatePDF} className="download-pdf-btn">Download PDF</button> {/* Download PDF Button */}
             <table className="payment-table">
                 <thead>
@@ -86,23 +109,31 @@ function PaymentDashboard() {
                         <th>Card Number</th>
                         <th>Expiration Date</th>
                         <th>Total Price</th>
+                        <th>Pay Date</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {payments.map((payment) => (
-                        <tr key={payment._id}>
-                            <td>{payment.customerName}</td>
-                            <td>{payment.cardName}</td>
-                            <td>{payment.cardType}</td>
-                            <td>{payment.cardNumber}</td>
-                            <td>{payment.expirationDate}</td>
-                            <td>Rs:{payment.totalPrice.toFixed(2)}</td>
-                            <td>
-                                <button className="delete-btn" onClick={() => handleDelete(payment._id)}>Delete</button>
-                            </td>
+                    {filteredPayments.length === 0 ? (
+                        <tr>
+                            <td colSpan="8">No payments found.</td>
                         </tr>
-                    ))}
+                    ) : (
+                        filteredPayments.map((payment) => (
+                            <tr key={payment._id}>
+                                <td>{payment.customerName}</td>
+                                <td>{payment.cardName}</td>
+                                <td>{payment.cardType}</td>
+                                <td>{payment.cardNumber}</td>
+                                <td>{payment.expirationDate}</td>
+                                <td>Rs: {payment.totalPrice.toFixed(2)}</td>
+                                <td>{new Date(payment.date).toLocaleString()}</td> {/* Show both date and time */}
+                                <td>
+                                    <button className="delete-btn" onClick={() => handleDelete(payment._id)}>Delete</button>
+                                </td>
+                            </tr>
+                        ))
+                    )}
                 </tbody>
             </table>
         </div>
