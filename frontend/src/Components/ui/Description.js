@@ -105,6 +105,15 @@ function Description() {
     });
   };
 
+  // Calculate average rating
+  const calculateAverageRating = () => {
+    if (reviews.length === 0) return 0;
+    const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
+    return (totalRating / reviews.length).toFixed(1);
+  };
+
+  const averageRating = calculateAverageRating();
+
   return (
     <div className="description-page">
       {seedItem ? (
@@ -147,6 +156,9 @@ function Description() {
           
           <div className="reviews-section">
             <h3>Reviews</h3>
+            <div className="average-rating">
+              <span>Average Rating: {averageRating} <FaStar /></span>
+            </div>
             {reviews.length > 0 ? (
               <ul>
                 {reviews.map(review => (

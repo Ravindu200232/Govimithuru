@@ -10,27 +10,33 @@ import logo from '../ui/img/logo.png';
 function PaymentDashboard() {
     const [payments, setPayments] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [loading, setLoading] = useState(true); // Loading state
 
     useEffect(() => {
-        axios.get("http://localhost:8000/payments/")
-            .then((res) => {
+        const fetchPayments = async () => {
+            try {
+                const res = await axios.get("http://localhost:8000/payments/");
                 setPayments(res.data);
-            })
-            .catch((err) => {
-                toast.error(err.message); // Use toast for errors
-            });
+            } catch (err) {
+                toast.error("Error fetching payments: " + err.message); // Use toast for errors
+            } finally {
+                setLoading(false); // Stop loading state
+            }
+        };
+
+        fetchPayments();
     }, []);
 
-    const handleDelete = (id) => {
-        axios.delete(`http://localhost:8000/payments/${id}`)
-            .then(() => {
-                // Update state to remove the deleted payment
+    const handleDelete = async (id) => {
+        if (window.confirm("Are you sure you want to delete this payment?")) { // Confirmation dialog
+            try {
+                await axios.delete(`http://localhost:8000/payments/${id}`);
                 setPayments(payments.filter(payment => payment._id !== id));
                 toast.success("Payment deleted successfully"); // Show success toast
-            })
-            .catch((err) => {
-                toast.error("Error: " + err.message); // Show error toast
-            });
+            } catch (err) {
+                toast.error("Error deleting payment: " + err.message); // Show error toast
+            }
+        }
     };
 
     // Function to generate PDF of payments
@@ -88,6 +94,10 @@ function PaymentDashboard() {
         payment.customerName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    if (loading) {
+        return <p>Loading payments...</p>; // Loading message
+    }
+
     return (
         <div>
             <ToastContainer /> {/* Include ToastContainer to render toasts */}
@@ -98,6 +108,7 @@ function PaymentDashboard() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="search-input"
+                aria-label="Search payments by customer name" // Accessibility
             />
             <button onClick={generatePDF} className="download-pdf-btn">Download PDF</button> {/* Download PDF Button */}
             <table className="payment-table">
