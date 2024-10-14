@@ -6,11 +6,11 @@ const nodemailer = require("nodemailer");
 const userSchema = new mongoose.Schema({
     googleId: { type: String, unique: true }, // Optional for Google sign-in
     displayName: String, // Optional, for Google sign-in
-    firstname: { type: String, required: true },
-    lastname: { type: String, required: true },
-    username: { type: String, required: true, unique: true },
+    firstname: { type: String, required: false },
+    lastname: { type: String, required: false },
+    username: { type: String, required: false, unique: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String, required: false },
     image: String,
 });
 

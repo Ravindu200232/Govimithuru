@@ -20,7 +20,7 @@ function Profile() {
   const [loadingUser, setLoadingUser] = useState(true);
   const [showHistory, setShowHistory] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortOrder, setSortOrder] = useState('asc'); // 'asc' or 'desc'
+  const [sortOrder, setSortOrder] = useState('asc');
   const navigate = useNavigate();
   const username = localStorage.getItem('username');
 
@@ -35,12 +35,13 @@ function Profile() {
       try {
         const response = await fetch(`http://localhost:8000/user/getByUsername/${username}`);
         const data = await response.json();
+        
         if (data.user) {
           setUser({
             ...data.user,
             imageUrl: data.user.imageUrl || img2
           });
-          fetchUserOrders(data.user.firstname, data.user.lastname);
+          fetchUserOrders(data.user.email); // Pass email directly
         } else {
           toast.error("User not found");
         }
@@ -51,14 +52,20 @@ function Profile() {
       }
     };
 
-    const fetchUserOrders = async (firstname, lastname) => {
+    const fetchUserOrders = async (email) => {
+      setLoadingOrders(true);
       try {
-        const response = await fetch(`http://localhost:8000/orders?customerName=${encodeURIComponent(firstname + ' ' + lastname)}`);
+        const response = await fetch(`http://localhost:8000/orders/by-customer?email=${encodeURIComponent(email)}`);
+        
+        if (!response.ok) {
+          throw new Error(`Network response was not ok: ${response.statusText}`);
+        }
+        
         const data = await response.json();
         setOrders(data);
-        setFilteredOrders(data); // Initialize filtered orders
+        setFilteredOrders(data);
       } catch (error) {
-        toast.error("Error fetching orders");
+        toast.error(`Error fetching orders: ${error.message}`);
       } finally {
         setLoadingOrders(false);
       }
@@ -154,8 +161,6 @@ function Profile() {
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
   };
 
-
-
   const imageStyle = {
     width: '150px',
     height: '150px',
@@ -179,10 +184,6 @@ function Profile() {
     display: 'flex',
     flexDirection: 'column',
   };
-
-  
-
-
 
   const orderDateStyle = {
     fontWeight: 'bold',
@@ -243,68 +244,68 @@ function Profile() {
         {isEditing ? (
           <button onClick={handleUpdate}>Update</button>
         ) : (
-          <button onClick={() => setIsEditing(true)}  style={{ margin: '10px' }}>Edit</button>
+          <button onClick={() => setIsEditing(true)} style={{ margin: '10px' }}>Edit</button>
         )}
         <button onClick={handleLogout} style={{ margin: '10px' }}>Logout</button>
-        <button onClick={handleDeleteAccount}  style={{ backgroundColor: 'red', color: 'white' ,margin: '10px'} }>Delete Account</button>
-        <button onClick={() => setShowHistory(!showHistory)} style={{margin: '10px' }}>
+        <button onClick={handleDeleteAccount} style={{ backgroundColor: 'red', color: 'white', margin: '10px' }}>Delete Account</button>
+        <button onClick={() => setShowHistory(!showHistory)} style={{ margin: '10px' }}>
           {showHistory ? 'Hide Purchase History' : 'Show Purchase History'}
         </button>
       </div>
 
       {showHistory && (
-  <>
-    <h3>Purchase History</h3>
-    <input
-      type="text"
-      placeholder="Search by item name"
-      value={searchTerm}
-      onChange={handleSearchChange}
-      style={{ marginBottom: '10px', padding: '5px', width: '100%' }}
-    />
-    <button onClick={() => handleSortChange('asc')}  style={{ margin: '10px' }}>Sort by Price Ascending</button>
-    <button onClick={() => handleSortChange('desc')}  style={{ margin: '10px' }}>Sort by Price Descending</button>
-    
-    <div style={ordersContainerStyle}>
-      {loadingOrders ? (
-        <p>Loading orders...</p>
-      ) : filteredOrders.length === 0 ? (
-        <p>No orders found.</p>
-      ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f0f0f0' }}>
-              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Date</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Total Price</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Items</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredOrders.map((order) => (
-              <tr key={order._id}>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                  {new Date(order.saleDate).toLocaleDateString()}
-                </td>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                  Rs.{order.productDetails.reduce((sum, item) => sum + item.totalPrice, 0).toFixed(2)}
-                </td>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                  <ul style={{ margin: 0, padding: 0 }}>
-                    {order.productDetails.map((item) => (
-                      <li key={item.itemName} style={{ listStyleType: 'none' }}>
-                        {item.itemName} (Qty: {item.quantitySold})
-                      </li>
-                    ))}
-                  </ul>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <>
+          <h3>Purchase History</h3>
+          <input
+            type="text"
+            placeholder="Search by item name"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            style={{ marginBottom: '10px', padding: '5px', width: '100%' }}
+          />
+          <button onClick={() => handleSortChange('asc')} style={{ margin: '10px' }}>Sort by Price Ascending</button>
+          <button onClick={() => handleSortChange('desc')} style={{ margin: '10px' }}>Sort by Price Descending</button>
+          
+          <div style={ordersContainerStyle}>
+            {loadingOrders ? (
+              <p>Loading orders...</p>
+            ) : filteredOrders.length === 0 ? (
+              <p>No orders found.</p>
+            ) : (
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ backgroundColor: '#f0f0f0' }}>
+                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Date</th>
+                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Total Price</th>
+                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Items</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredOrders.map((order) => (
+                    <tr key={order._id}>
+                      <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                        {new Date(order.saleDate).toLocaleDateString()}
+                      </td>
+                      <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                        Rs.{order.productDetails.reduce((sum, item) => sum + item.totalPrice, 0).toFixed(2)}
+                      </td>
+                      <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                        <ul style={{ margin: 0, padding: 0 }}>
+                          {order.productDetails.map((item) => (
+                            <li key={item.itemName} style={{ listStyleType: 'none' }}>
+                              {item.itemName} (Qty: {item.quantitySold})
+                            </li>
+                          ))}
+                        </ul>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </>
       )}
-    </div>
-  </>
-)}
 
       <ToastContainer />
     </div>
