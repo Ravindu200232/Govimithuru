@@ -134,7 +134,7 @@ function DeliveryDashboard() {
             <div className="search-bar">
                 <input
                     type="text"
-                    placeholder="Search by Delivery Person Name or Item"
+                    placeholder="Search by Customer  Name "
                     value={searchQuery}
                     onChange={handleSearch}
                 />
