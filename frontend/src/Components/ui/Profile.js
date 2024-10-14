@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import img2 from "./img/WhatsApp Image 2024-09-21 at 01.51.31_83da0e81.jpg";
+import img2 from "./img/3135715.png";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
