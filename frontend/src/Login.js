@@ -142,9 +142,7 @@ const Login = ({ onLogin }) => {
                     <p>
                         Don't have an account? <span onClick={() => navigate('/signup')} style={{ color: '#007bff', cursor: 'pointer' }}>Sign Up</span>
                     </p>
-                    <p>
-                        <span onClick={() => navigate('/forgot-password')} style={{ color: '#007bff', cursor: 'pointer' }}>Forgot Password?</span>
-                    </p>
+                    
                 </div>
             </form>
         </div>
