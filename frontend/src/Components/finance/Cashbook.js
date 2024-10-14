@@ -225,20 +225,31 @@ const Cashbook = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredRecords.reduce((acc, row) => {
-                        const balance = (acc.length ? acc[acc.length - 1].balance : 0) + (row.totalSales || -row.amount || -row.totalSalary || -row.totalAmount);
-                        acc.push({ ...row, balance });
-                        return acc;
-                    }, []).map((row, index) => (
-                        <tr key={index}>
-                            <td>{new Date(row.date || row.payday || row.saleDate).toLocaleDateString()}</td>
-                            <td>{row.itemName || row.expenseName || `${row.name} Salary` || `${row.customerName} Paycheck`}</td>
-                            <td>{row.itemName ? 'Sales' : row.expenseName ? 'Expense' : row.name ? 'Salary' : 'Paycheck'}</td>
-                            <td>{(row.totalSales || -row.amount || -row.totalSalary || -row.totalAmount).toFixed(2)}</td>
-                            <td>{row.balance.toFixed(2)}</td>
-                        </tr>
-                    ))}
-                </tbody>
+    {filteredRecords.reduce((acc, row) => {
+        const balance = (acc.length ? acc[acc.length - 1].balance : 0) + (row.totalSales || -row.amount || -row.totalSalary || -row.totalAmount);
+        acc.push({ ...row, balance });
+        return acc;
+    }, []).map((row, index) => (
+        <tr key={index}>
+            <td>{new Date(row.date || row.payday || row.saleDate).toLocaleDateString()}</td>
+            <td>
+                {row.itemName || row.expenseName || 
+                (row.name ? `${row.name} Salary` : 
+                (row.companyName ? `${row.companyName} Paycheck` : ''))}
+            </td>
+            <td>
+                {row.itemName ? 'Sales' : 
+                row.expenseName ? 'Expense' : 
+                row.name ? 'Salary' : 
+                row.companyName ? 'Paycheck' : ''}
+            </td>
+            <td>{(row.totalSales || -row.amount || -row.totalSalary || -row.totalAmount).toFixed(2)}</td>
+            <td>{row.balance.toFixed(2)}</td>
+        </tr>
+    ))}
+</tbody>
+
+
             </table>
             <h2>Monthly Income: Rs {tableTotal.toFixed(2)}</h2>
         </div>
