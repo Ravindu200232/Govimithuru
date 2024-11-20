@@ -3,7 +3,10 @@ let InventoryItem = require("../models/InventoryItem");
 
 // Add Inventory Item
 router.route("/add").post((req, res) => {
-    const { name, supName, description, category, unit, quantityAvailable, supplyDate,mfdDate,expireDate} = req.body;
+    const { name, supName, description, category, unit, quantityAvailable, unitPrice, supplyDate, mfdDate, expireDate } = req.body;
+
+    // Calculate totalPrice
+    const totalPrice = unitPrice * quantityAvailable;
 
     const newInventoryItem = new InventoryItem({
         name,
@@ -12,8 +15,10 @@ router.route("/add").post((req, res) => {
         category,
         unit,
         quantityAvailable,
+        unitPrice,
+        totalPrice, // Include totalPrice
         mfdDate: new Date(mfdDate),
-        expireDate:new Date(expireDate),
+        expireDate: new Date(expireDate),
         supplyDate: new Date(supplyDate) // Store only the date part
     });
 
@@ -32,7 +37,10 @@ router.route("/").get((req, res) => {
 // Update Inventory Item
 router.route("/update/:id").put(async (req, res) => {
     let itemId = req.params.id;
-    const { name, supName, description, category, unit, quantityAvailable, supplyDate } = req.body;
+    const { name, supName, description, category, unit, quantityAvailable, unitPrice, supplyDate } = req.body;
+
+    // Calculate totalPrice
+    const totalPrice = unitPrice * quantityAvailable;
 
     const updateInventoryItem = {
         name,
@@ -41,6 +49,8 @@ router.route("/update/:id").put(async (req, res) => {
         category,
         unit,
         quantityAvailable,
+        unitPrice,
+        totalPrice, // Include totalPrice
         supplyDate: new Date(supplyDate) // Store only the date part
     };
 

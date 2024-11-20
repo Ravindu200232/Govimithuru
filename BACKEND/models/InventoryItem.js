@@ -25,6 +25,15 @@ const InventoryItemSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    unitPrice: {
+        type: Number,
+        required: true,
+        min: 0, // Ensure the price is not negative
+    },
+    totalPrice: {
+        type: Number,
+        default: 0, // Default value, can be calculated later
+    },
     supplyDate: {
         type: Date,
         required: true,
@@ -40,11 +49,16 @@ const InventoryItemSchema = new mongoose.Schema({
     expireDate: {
         type: Date,
         required: true,
-       
         get: (v) => v ? v.toISOString().split('T')[0] : null,
         set: (v) => new Date(v.toISOString().split('T')[0]),
     },
 }, { toJSON: { getters: true }, toObject: { getters: true } });
+
+// Pre-save hook to calculate totalPrice
+InventoryItemSchema.pre('save', function (next) {
+    this.totalPrice = this.unitPrice * this.quantityAvailable;
+    next();
+});
 
 const InventoryItem = mongoose.model("InventoryItem", InventoryItemSchema);
 

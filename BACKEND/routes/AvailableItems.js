@@ -3,12 +3,13 @@ const InventoryItem = require("../models/InventoryItem");
 const AvailableItem = require("../models/AvailableItem");
 
 // Aggregate Inventory Items and store in AvailableItem collection
+// Aggregate Inventory Items and store in AvailableItem collection
 router.post("/aggregate", async (req, res) => {
     try {
         // Fetch all inventory items
         const inventoryItems = await InventoryItem.find();
 
-        // Use a Map to aggregate items by name and unit
+        // Use a Map to aggregate items by name
         const itemMap = new Map();
 
         inventoryItems.forEach((item) => {
@@ -16,7 +17,10 @@ router.post("/aggregate", async (req, res) => {
 
             if (itemMap.has(key)) {
                 // If the item already exists, sum the availableItem quantity
-                itemMap.get(key).availableItem += item.quantityAvailable;
+                const existingItem = itemMap.get(key);
+                existingItem.availableItem += item.quantityAvailable;
+                // Update the total price based on the unit price and available quantity
+                existingItem.totalPrice += item.unitPrice * item.quantityAvailable;
             } else {
                 // If it's a new item, add it to the map
                 itemMap.set(key, {
@@ -26,6 +30,8 @@ router.post("/aggregate", async (req, res) => {
                     category: item.category,
                     unit: item.unit,
                     availableItem: item.quantityAvailable,
+                    unitPrice: item.unitPrice, // Include unitPrice
+                    totalPrice: item.unitPrice * item.quantityAvailable // Calculate totalPrice
                 });
             }
         });

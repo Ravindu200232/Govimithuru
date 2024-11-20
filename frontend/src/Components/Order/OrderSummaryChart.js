@@ -54,7 +54,7 @@ const OrderSummaryChart = () => {
                 datasets: [
                     {
                         label: 'Order Status Summary (Bar)',
-                        data: values,
+                       // data: values,
                         backgroundColor: '#36A2EB',
                     },
                 ],

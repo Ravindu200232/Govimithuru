@@ -5,8 +5,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const predefinedItems = [
-  //seed
-
   "Tomato Seed","Pumpkin Seed","Cucumber Seed","Carrot Seed","Pepper Seed",
 
   // Growth Promoters
@@ -126,6 +124,16 @@ function InventorySupplyform() {
   const [mfdDate, setMfdDate] = useState("");
   const [expireDate, setExpireDate] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [unitPrice, setUnitPrice] = useState("");
+  
+  const totalPrice = quantityAvailable * unitPrice;
+
+  // Handle item selection from the dropdown
+  const handleItemSelect = (item) => {
+    setName(item);
+    setDescription("Description for " + item); // Replace with appropriate description if available
+    // Optionally set other fields based on item properties
+  };
 
   function sendDate(e) {
     e.preventDefault();
@@ -141,13 +149,14 @@ function InventorySupplyform() {
       quantityAvailable: Number(quantityAvailable),
       supplyDate,
       mfdDate,
-      expireDate
+      expireDate,
+      unitPrice: Number(unitPrice),
+      totalPrice: totalPrice
     };
 
     axios.post("http://localhost:8000/inventoryitem/add", newSupItem)
       .then(() => {
         toast.success("Item Added");
-        // Reset form fields
         resetForm();
       })
       .catch((err) => {
@@ -167,61 +176,50 @@ function InventorySupplyform() {
     setMfdDate("");
     setExpireDate("");
     setPhoneNumber("");
+    setUnitPrice("");
   };
 
   return (
     <div className="inventory-supply-form-container">
       <h2>Add Supply Item</h2>
       <form className="inventory-supply-form" onSubmit={sendDate}>
+        
         <div className="form-group">
-          <label htmlFor="itemName">Item Name</label>
+          <label htmlFor="itemSelect">Select Item</label>
           <select
-            id="itemName"
+            id="itemSelect"
+            onChange={(e) => handleItemSelect(e.target.value)}
             value={name}
-            onChange={(e) => setName(e.target.value)}
           >
-            <option value="">Select Item Name</option>
+            <option value="">Select an item...</option>
             {predefinedItems.map((item, index) => (
               <option key={index} value={item}>{item}</option>
             ))}
-            <option value="custom">Custom</option>
           </select>
-          {name === "custom" && (
-            <input
-              type="text"
-              placeholder="Enter Custom Item Name"
-              value={name !== "custom" ? name : ""}
-              onChange={(e) => setName(e.target.value)}
-            />
-          )}
         </div>
+
         <div className="form-group">
           <label htmlFor="companyName">Company Name</label>
           <input
             type="text"
-            id="companyName"
             required
+            id="companyName"
             placeholder="Enter Company Name"
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
-            onKeyPress={(e) => {
-              if (!/^[a-zA-Z\s]*$/.test(e.key)) {
-                e.preventDefault();
-              }
-            }}
           />
         </div>
+
         <div className="form-group">
           <label htmlFor="description">Description</label>
-          <input
-            type="text"
+          <textarea
             id="description"
-            required
             placeholder="Enter Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-          />
+          ></textarea>
         </div>
+
         <div className="form-group">
           <label htmlFor="category">Category</label>
           <select
@@ -242,6 +240,7 @@ function InventorySupplyform() {
             <option value="Bulk">Bulk</option>
           </select>
         </div>
+
         <div className="form-group">
           <label htmlFor="packetSize">Packet Size</label>
           <input
@@ -249,20 +248,11 @@ function InventorySupplyform() {
             required
             id="packetSize"
             min="1"
-            max="1000"
             value={packetSize}
-            onChange={(e) => {
-              const value = parseInt(e.target.value, 10);
-              if (value >= 1 && value <= 1000) {
-                setPacketSize(value);
-              } else if (value > 1000) {
-                setPacketSize(1000);
-              } else if (value < 1) {
-                setPacketSize(1);
-              }
-            }}
+            onChange={(e) => setPacketSize(e.target.value)}
           />
         </div>
+
         <div className="form-group">
           <label htmlFor="unit">Unit</label>
           <select
@@ -270,35 +260,26 @@ function InventorySupplyform() {
             value={unit}
             onChange={(e) => setUnit(e.target.value)}
           >
-            <option value="kg">KG</option>
-            <option value="l">L</option>
-            <option value="ml">ml</option>
+            <option value="kg">kg</option>
             <option value="g">g</option>
-            <option value="item">Item</option>
+            <option value="l">L</option>
+            <option value="ml">mL</option>
           </select>
         </div>
+
         <div className="form-group">
-          <label htmlFor="quantity">Quantity Available</label>
+          <label htmlFor="quantityAvailable">Quantity Available</label>
           <input
             type="number"
             required
-            id="quantity"
-            placeholder="Enter Quantity"
-            min="1"
-            max="1000"
+            id="quantityAvailable"
+            placeholder="Enter Quantity Available"
+            min="0"
             value={quantityAvailable}
-            onChange={(e) => {
-              const value = parseInt(e.target.value, 10);
-              if (value >= 1 && value <= 1000) {
-                setQuantityAvailable(value);
-              } else if (value > 1000) {
-                setQuantityAvailable(1000);
-              } else if (value < 1) {
-                setQuantityAvailable(1);
-              }
-            }}
+            onChange={(e) => setQuantityAvailable(e.target.value)}
           />
         </div>
+
         <div className="form-group">
           <label htmlFor="supplyDate">Supply Date</label>
           <input
@@ -347,6 +328,29 @@ function InventorySupplyform() {
             }}
           />
         </div>
+
+        <div className="form-group">
+          <label htmlFor="unitPrice">Unit Price</label>
+          <input
+            type="number"
+            required
+            id="unitPrice"
+            placeholder="Enter Unit Price"
+            min="0"
+            value={unitPrice}
+            onChange={(e) => setUnitPrice(e.target.value)}
+          />
+        </div>
+        
+        <div className="form-group">
+          <label>Total Price</label>
+          <input
+            type="text"
+            readOnly
+            value={`$${totalPrice.toFixed(2)}`} 
+          />
+        </div>
+
         <div className="form-buttons">
           <button type="submit" className="add-button">Add</button>
           <button type="button" className="cancel-button" onClick={() => window.location.reload()}>Cancel</button>

@@ -29,9 +29,43 @@ const AvailableItemSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    unitPrice: {
+        type: Number,
+        required: true,
+        min: 0, // Ensure the price is not negative
+    },
+    totalPrice: {
+        type: Number,
+        default: 0, // Default value will be updated by the pre-save hook
+    },
 }, { toJSON: { getters: true }, toObject: { getters: true } });
 
-// Pre-save hook to check availableItem count and create an alert if necessary
+// Pre-save hook to calculate totalPrice and handle low stock alerts
+AvailableItemSchema.pre('save', async function (next) {
+    // Calculate total price as unitPrice * availableItem
+    this.totalPrice = this.unitPrice * this.availableItem;
+
+    // Check for low stock and send alert if necessary
+    if (this.isModified('availableItem') && this.availableItem <= 3) {
+        const existingAlert = await InventoryAlert.findOne({ itemId: this._id });
+        if (!existingAlert) {
+            const alertMessage = `Low stock alert: Item "${this.name}" has only ${this.availableItem} left in stock.`;
+            
+            const newAlert = new InventoryAlert({
+                itemId: this._id,
+                message: alertMessage
+            });
+            await newAlert.save();
+
+            // Create HTML content for the email
+            const emailMessage = createLowStockEmailContent(this);
+            await sendLowStockEmail('bandarasumith326@gmail.com', 'ravindu2232@gmail.com', 'Low Stock Alert', emailMessage);
+        }
+    }
+
+    next();
+});
+
 // Function to send email when stock is low
 async function sendLowStockEmail(from, to, subject, htmlContent) {
     try {
@@ -74,28 +108,6 @@ function createLowStockEmailContent(item) {
         </div>
     `;
 }
-
-// Update the pre-save hook to generate the email content
-AvailableItemSchema.pre('save', async function (next) {
-    if (this.isModified('availableItem') && this.availableItem <= 3) {
-        const existingAlert = await InventoryAlert.findOne({ itemId: this._id });
-        if (!existingAlert) {
-            const alertMessage = `Low stock alert: Item "${this.name}" has only ${this.availableItem} left in stock.`;
-            
-            const newAlert = new InventoryAlert({
-                itemId: this._id,
-                message: alertMessage
-            });
-            await newAlert.save();
-
-            // Create HTML content for the email
-            const emailMessage = createLowStockEmailContent(this);
-            await sendLowStockEmail('bandarasumith326@gmail.com', 'ravindu2232@gmail.com', 'Low Stock Alert', emailMessage);
-        }
-    }
-    next();
-});
-
 
 // Create and export the model
 const AvailableItem = mongoose.model("AvailableItem", AvailableItemSchema);
